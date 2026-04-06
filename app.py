@@ -477,18 +477,25 @@ def render_home():
     """, unsafe_allow_html=True)
 
     # ── 검색창 ──
-    # label_visibility="collapsed"를 쓰면 input이 label 공간 없이 렌더되므로
-    # 버튼도 label 높이만큼 아래에 맞춤
     st.markdown("""
     <style>
-    /* 검색 버튼 컬럼: input과 수직 중앙 정렬 */
+    /* 검색 행: 컬럼 좌우 패딩 제거 → 밑 섹션과 가로 폭 일치 */
+    [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="column"] {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="column"]:first-child {
+        padding-right: 10px !important;
+    }
+    /* 검색 버튼 컬럼: input과 수직 정렬 */
     [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:last-child {
         display: flex !important;
         align-items: flex-end !important;
+        padding-left: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
-    col_input, col_btn = st.columns([6, 1])
+    col_input, col_btn = st.columns([6, 1], gap="small")
     with col_input:
         query = st.text_input(
             "", placeholder="예: 배달 음식 용기, 폐건전지, 우유팩",
