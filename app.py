@@ -516,7 +516,7 @@ def render_home():
     }
 
     .search-row-wrap {
-        max-width: 760px;
+        max-width: 820px;
         margin: 0 auto;
         width: 100%;
     }
@@ -664,18 +664,20 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="search-row-wrap">', unsafe_allow_html=True)
-    col_input, col_btn = st.columns([6.2, 1.4], gap="medium")
-    with col_input:
-        query = st.text_input(
-            "검색어 입력",
-            placeholder="어떤 품목을 버리시나요?",
-            label_visibility="collapsed",
-            key="home_input",
-        )
-    with col_btn:
-        search_btn = st.button("검색", key="home_search_btn", use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    outer_left, outer_center, outer_right = st.columns([1.2, 8.2, 1.2], gap="small")
+    with outer_center:
+        st.markdown('<div class="search-row-wrap">', unsafe_allow_html=True)
+        col_input, col_btn = st.columns([5.4, 1.25], gap="medium")
+        with col_input:
+            query = st.text_input(
+                "검색어 입력",
+                placeholder="어떤 품목을 버리시나요?",
+                label_visibility="collapsed",
+                key="home_input",
+            )
+        with col_btn:
+            search_btn = st.button("검색", key="home_search_btn", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     if search_btn and query:
         run_search(query)
