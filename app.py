@@ -571,15 +571,52 @@ def render_home():
 
     render_navbar()
 
-    # ── 히어로 (검색창 포함) ──
+    # ── 히어로 ──
     st.markdown("""
     <div class="hero-wrap">
       <div class="hero-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
       <div class="hero-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
     </div>
+    <style>
+    /* 검색창을 히어로 카드 너비에 맞춤 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        background: #fff;
+        border-radius: 14px;
+        padding: 8px 8px 8px 16px !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,.08);
+        gap: 0 !important;
+        margin: 0 !important;
+        align-items: center !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
+        padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 8px 4px !important;
+        font-size: 15px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+        background: #1B4D2E !important;
+        color: #fff !important;
+        border-radius: 10px !important;
+        height: 44px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+        transform: none !important;
+        white-space: nowrap !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
+        background: #163D24 !important;
+        transform: none !important;
+    }
+    </style>
     """, unsafe_allow_html=True)
 
-    # 검색창을 히어로 아래에 배치 (Streamlit 위젯)
+    # 검색창
     col_input, col_btn = st.columns([6, 1], gap="small")
     with col_input:
         query = st.text_input(
