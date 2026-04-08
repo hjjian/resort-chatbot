@@ -604,6 +604,7 @@ def render_home():
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
             width: 100% !important;
             flex: 1 1 100% !important;
+            min-width: 100% !important;
         }
         [data-testid="stForm"] .stTextInput input {
             padding: 12px 16px !important;
@@ -615,6 +616,10 @@ def render_home():
             padding: 0 !important;
             font-size: 15px !important;
             border-radius: 10px !important;
+        }
+        [data-testid="stForm"] [data-testid="stFormSubmitButton"] {
+            display: flex !important;
+            justify-content: center !important;
         }
     }
     </style>
