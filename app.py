@@ -511,52 +511,35 @@ def render_home():
 
 
     /* ── 검색창 ── */
-    /* 검색창 pill 스타일 */
+    /* 검색창 단독 스타일 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-        background: #fff !important;
-        border-radius: 999px !important;
-        box-shadow: 0 4px 24px rgba(0,0,0,.08) !important;
-        border: 1.5px solid rgba(0,0,0,.06) !important;
-        padding: 6px 6px 6px 24px !important;
-        gap: 0 !important; margin: 0 auto !important;
-        align-items: center !important; flex-wrap: nowrap !important;
-        max-width: 600px !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
-        flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
-        flex: 0 0 auto !important; padding: 0 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
-        border: none !important; box-shadow: none !important;
-        background: transparent !important; padding: 0 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
-        border: none !important; box-shadow: none !important;
-        background: transparent !important; padding: 10px 8px !important;
-        font-size: 15px !important; color: #333 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
-        border: none !important; box-shadow: none !important; outline: none !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-        background: #1a1a1a !important; color: #fff !important;
-        border: none !important; border-radius: 999px !important;
-        height: 44px !important; padding: 0 24px !important;
-        font-size: 14px !important; font-weight: 700 !important;
-        box-shadow: none !important; transform: none !important;
-        width: auto !important; white-space: nowrap !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
-        background: #333 !important; transform: none !important;
-    }
-    /* 컬럼 흰박스 제거 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) div[data-testid="column"] > div {
         background: transparent !important;
         box-shadow: none !important;
         border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    /* 단일 텍스트 입력 스타일 */
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] input {
+        border-radius: 999px !important;
+        border: 1.5px solid rgba(0,0,0,.08) !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.08) !important;
+        padding: 16px 24px !important;
+        font-size: 16px !important;
+        background: #fff !important;
+        color: #333 !important;
+        height: 60px !important;
+    }
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] input:focus {
+        border-color: #1a1a1a !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.12) !important;
+        outline: none !important;
+    }
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] > div,
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] > div > div {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
         padding: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
@@ -612,7 +595,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
     # ── 검색창 (가운데 정렬) ──
-    col1, col_mid, col2 = st.columns([0.5, 5, 0.5])
+    _, col_mid, _ = st.columns([0.5, 5, 0.5])
     with col_mid:
         col_input, col_btn = st.columns([6, 1], gap="small")
         with col_input:
