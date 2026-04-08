@@ -146,16 +146,13 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 
 /* ── HOT ISSUE 카드 하단: 태그 버튼 행 ── */
 [data-testid="column"] [data-testid="stHorizontalBlock"] {
-    background: #fff !important;
-    border-radius: 0 0 16px 16px !important;
-    padding: 4px 16px 18px !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
     margin-top: 0 !important;
-    border-left: 1px solid #EBEBEB !important;
-    border-right: 1px solid #EBEBEB !important;
-    border-bottom: 1px solid #EBEBEB !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    gap: 6px !important;
+    gap: 8px !important;
 }
 
 /* ── 태그 컬럼: 내용 너비만큼만 차지 ── */
@@ -479,6 +476,13 @@ def render_navbar():
 def render_home():
     st.markdown("""
     <style>
+    /* 컬럼 배경 흰박스 제거 */
+    div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
     /* 검색버튼 강제 override */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
         background: #1B4D2E !important; color: #fff !important;
