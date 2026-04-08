@@ -40,7 +40,7 @@ section[data-testid="stSidebar"] { display: none !important; }
 /* ── 콘텐츠 최대 너비 ── */
 .block-container {
     max-width: 1080px !important;
-    padding: 0 56px 60px !important;
+    padding: 0 48px 60px !important;
     margin: 0 auto !important;
 }
 
@@ -166,26 +166,7 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
     padding: 2px 0 !important;
 }
 
-/* ── 태그 버튼: pill 스타일, 텍스트 한 줄 유지 ── */
-[data-testid="column"] [data-testid="stHorizontalBlock"] .stButton > button {
-    background: #F0F0EE !important;
-    color: #333 !important;
-    border-radius: 20px !important;
-    padding: 5px 12px !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    height: auto !important;
-    width: auto !important;
-    white-space: nowrap !important;
-    box-shadow: none !important;
-    transform: none !important;
-}
-[data-testid="column"] [data-testid="stHorizontalBlock"] .stButton > button:hover {
-    background: #E2E2E0 !important;
-    transform: none !important;
-}
-
-/* ── 기본 버튼 (초록) — 질문/결과 화면용 ── */
+/* ── 기본 버튼 (초록) ── */
 .stButton > button {
     background: #1B4D2E !important; color: #fff !important;
     border-radius: 10px !important; border: none !important;
@@ -195,22 +176,6 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 }
 .stButton > button:hover { background: #163D24 !important; transform: translateY(-1px); }
 .stButton > button:active { transform: translateY(0); }
-
-/* ── 홈 태그 버튼 — 연초록 pill (전역 초록 덮어쓰기) ── */
-[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] .stButton > button,
-[data-testid="column"]:first-child [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] .stButton > button {
-    background: #F4FAF6 !important; color: #2D6A4F !important;
-    border-radius: 999px !important; padding: 8px 18px !important;
-    font-size: 13px !important; font-weight: 600 !important;
-    border: 1.5px solid #C8E6C9 !important;
-    box-shadow: none !important; transform: none !important;
-    height: auto !important; width: auto !important;
-}
-[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] .stButton > button:hover,
-[data-testid="column"]:first-child [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] .stButton > button:hover {
-    background: #E8F5E9 !important; color: #1B4D2E !important;
-    border-color: #A5D6A7 !important; transform: none !important;
-}
 
 /* ── 카드 ── */
 .card {
@@ -627,18 +592,16 @@ def render_home():
         background: #163D24 !important;
     }
     /* ── 태그 버튼 ── */
-    /* 태그 버튼 — 전역 .stButton override보다 강하게 */
-    div[data-testid="column"]:first-child div[data-testid="stVerticalBlock"] .stButton > button,
-    div[data-testid="column"]:first-child .stButton > button {
+    /* 태그 버튼 — 연초록 pill */
+    .tag-btn-area .stButton > button {
         background: #F4FAF6 !important; color: #2D6A4F !important;
-        border-radius: 999px !important; padding: 8px 20px !important;
+        border-radius: 999px !important; padding: 8px 18px !important;
         font-size: 13px !important; font-weight: 600 !important;
         height: auto !important; width: auto !important;
         border: 1.5px solid #C8E6C9 !important;
         box-shadow: none !important; transform: none !important;
     }
-    div[data-testid="column"]:first-child div[data-testid="stVerticalBlock"] .stButton > button:hover,
-    div[data-testid="column"]:first-child .stButton > button:hover {
+    .tag-btn-area .stButton > button:hover {
         background: #E8F5E9 !important; color: #1B4D2E !important;
         border-color: #A5D6A7 !important; transform: none !important;
     }
@@ -731,13 +694,16 @@ def render_home():
         else:
             top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
-        st.markdown('<div style="height:8px;"></div><div class="trending-label">● TRENDING ITEMS</div><div style="height:10px;"></div>', unsafe_allow_html=True)
-        tag_cols = st.columns(len(top5), gap="small")
-        for i, tag in enumerate(top5):
-            with tag_cols[i]:
-                if st.button(tag, key=f"tag_{i}"):
-                    st.session_state._tag_query = tag
-                    st.rerun()
+        st.markdown('<div style="height:16px;"></div><div class="trending-label">● TRENDING ITEMS</div><div style="height:12px;"></div>', unsafe_allow_html=True)
+        with st.container():
+            st.markdown('<div class="tag-btn-area">', unsafe_allow_html=True)
+            tag_cols = st.columns(len(top5), gap="small")
+            for i, tag in enumerate(top5):
+                with tag_cols[i]:
+                    if st.button(tag, key=f"tag_{i}"):
+                        st.session_state._tag_query = tag
+                        st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
     with col_right:
         carbon_factors = get_carbon_factors()
