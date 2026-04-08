@@ -461,48 +461,55 @@ def render_home():
     }
     /* ── 히어로 배경 ── */
     .hero-wrap {
-        background: linear-gradient(135deg, #1B4D2E 0%, #2D7A4F 60%, #3A9B62 100%);
-        border-radius: 24px;
-        padding: 52px 48px 44px;
-        margin: 0 0 28px;
+        background: linear-gradient(160deg, #f0f7f2 0%, #e8f5ed 40%, #ddf0e6 100%);
+        border-radius: 28px;
+        padding: 56px 52px 52px;
+        margin: 12px 0 0;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 8px 32px rgba(27,77,46,.22);
+        box-shadow:
+            0 2px 0px rgba(255,255,255,.9) inset,
+            0 -2px 0px rgba(27,77,46,.06) inset,
+            0 8px 40px rgba(27,77,46,.08);
+        border: 1px solid rgba(27,77,46,.08);
     }
+    /* 상단 왼쪽 밝은 하이라이트 */
     .hero-wrap::before {
-        content: "♻";
-        position: absolute; right: -20px; top: -20px;
-        font-size: 220px; opacity: .06; line-height: 1;
+        content: "";
+        position: absolute; left: 0; top: 0;
+        width: 100%; height: 50%;
+        background: linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 100%);
+        border-radius: 28px 28px 0 0;
         pointer-events: none;
     }
+    /* 오른쪽 장식 원 */
+    .hero-wrap::after {
+        content: "";
+        position: absolute; right: -80px; top: -80px;
+        width: 320px; height: 320px;
+        background: radial-gradient(circle, rgba(27,77,46,.06) 0%, rgba(27,77,46,0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .hero-tag {
+        display: inline-block;
+        background: rgba(27,77,46,.08);
+        color: #1B4D2E;
+        border-radius: 999px;
+        padding: 4px 14px;
+        font-size: 12px; font-weight: 700;
+        letter-spacing: .8px;
+        margin-bottom: 20px;
+    }
     .hero-title {
-        font-size: 42px; font-weight: 900; line-height: 1.2;
-        color: #fff; margin-bottom: 10px; letter-spacing: -0.5px;
+        font-size: 46px; font-weight: 900; line-height: 1.15;
+        color: #1B4D2E; margin-bottom: 14px; letter-spacing: -1.5px;
         font-family: 'Playfair Display', 'Noto Sans KR', serif;
+        text-shadow: 0 2px 0 rgba(255,255,255,.6);
     }
     .hero-sub {
-        font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 32px;
-    }
-    /* ── 검색창 (히어로 안) ── */
-    .hero-wrap .stTextInput input {
-        border-radius: 12px !important; border: none !important;
-        background: rgba(255,255,255,.95) !important;
-        padding: 14px 20px !important; font-size: 15px !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,.12) !important;
-        color: #111 !important;
-    }
-    .hero-wrap .stTextInput input:focus {
-        box-shadow: 0 0 0 3px rgba(255,255,255,.4) !important;
-    }
-    .hero-wrap .stButton > button {
-        background: #fff !important; color: #1B4D2E !important;
-        border-radius: 12px !important; font-weight: 700 !important;
-        font-size: 14px !important; height: 51px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,.1) !important;
-        transform: none !important;
-    }
-    .hero-wrap .stButton > button:hover {
-        background: #F0F7F2 !important; transform: none !important;
+        font-size: 14px; color: #5a7a65;
+        line-height: 1.8; margin-bottom: 0;
     }
     /* ── HOT ISSUE 카드 ── */
     .hot-card-v2 {
@@ -574,6 +581,7 @@ def render_home():
     # ── 히어로 (검색창 포함) ──
     st.markdown("""
     <div class="hero-wrap">
+      <div class="hero-tag">♻ RE:SORT — 분리배출 가이드</div>
       <div class="hero-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
       <div class="hero-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
     </div>
