@@ -32,7 +32,7 @@ st.markdown("""
 /* ── 기본 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
-.stApp { background-color: #F2F2F0; }
+.stApp { background-color: #EEF4F0; }
 #MainMenu, footer, header { visibility: hidden; }
 [data-testid="collapsedControl"] { display: none !important; }
 section[data-testid="stSidebar"] { display: none !important; }
@@ -52,9 +52,11 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
     padding: 0 28px; height: 56px;
-    background: #fff;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(8px);
     border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    box-shadow: 0 2px 12px rgba(27,77,46,.08);
+    border: 1px solid rgba(27,77,46,.07);
     margin: 16px 0 0;
 }
 .navbar-logo { color: #1B4D2E; font-size: 18px; font-weight: 900; letter-spacing: -0.3px; }
@@ -516,48 +518,60 @@ def render_home():
     }
     /* ── HOT ISSUE 카드 ── */
     .hot-card-v2 {
-        background: #fff;
+        background: rgba(255,255,255,.85);
+        backdrop-filter: blur(8px);
         border-radius: 20px;
         padding: 22px 22px 8px;
-        box-shadow: 0 2px 12px rgba(0,0,0,.06);
-        border: 1px solid #EBEBEB;
+        box-shadow: 0 2px 16px rgba(27,77,46,.07);
+        border: 1px solid rgba(27,77,46,.08);
         height: 100%;
     }
     /* ── 탄소 카드 ── */
     .carbon-card-v2 {
-        background: linear-gradient(135deg, #1B4D2E 0%, #2D7A4F 100%);
+        background: linear-gradient(145deg, #1a3d26 0%, #1B4D2E 50%, #2a6640 100%);
         border-radius: 20px;
         padding: 28px 24px;
-        box-shadow: 0 4px 20px rgba(27,77,46,.2);
+        box-shadow: 0 8px 32px rgba(27,77,46,.22), 0 2px 0 rgba(255,255,255,.1) inset;
+        border: 1px solid rgba(255,255,255,.08);
         height: 100%;
         position: relative;
         overflow: hidden;
     }
+    .carbon-card-v2::before {
+        content: "";
+        position: absolute; right: -20px; top: -20px;
+        width: 120px; height: 120px;
+        background: radial-gradient(circle, rgba(255,255,255,.07) 0%, transparent 70%);
+        border-radius: 50%;
+    }
     .carbon-card-v2::after {
         content: "🌿";
         position: absolute; right: 16px; bottom: 12px;
-        font-size: 64px; opacity: .15;
+        font-size: 64px; opacity: .12;
     }
     /* ── 실수 카드 ── */
     .mistake-card-v2 {
-        background: #fff;
-        border-radius: 14px;
-        padding: 16px 14px;
-        box-shadow: 0 1px 6px rgba(0,0,0,.06);
-        border: 1px solid #F0F0EE;
+        background: rgba(255,255,255,.85);
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        padding: 18px 16px;
+        box-shadow: 0 2px 12px rgba(27,77,46,.06);
+        border: 1px solid rgba(27,77,46,.07);
         margin-bottom: 8px;
-        transition: box-shadow .15s, transform .15s;
+        transition: box-shadow .2s, transform .2s, border-color .2s;
+        height: 90px;
     }
     .mistake-card-v2:hover {
-        box-shadow: 0 4px 16px rgba(27,77,46,.12);
-        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(27,77,46,.12);
+        transform: translateY(-3px);
+        border-color: rgba(27,77,46,.15);
     }
     .rank-badge {
-        display: inline-block;
-        background: #E8F5E9; color: #1B4D2E;
-        border-radius: 6px; padding: 2px 7px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: #E8F5E9; color: #2D6A4F;
+        border-radius: 8px; padding: 3px 8px;
         font-size: 11px; font-weight: 800;
-        margin-bottom: 8px;
+        margin-bottom: 8px; letter-spacing: .3px;
     }
     .rank-badge-top { background: #1B4D2E; color: #fff; }
     /* ── 검색창 컬럼 패딩 완전 제거 ── */
