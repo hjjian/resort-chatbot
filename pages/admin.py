@@ -278,7 +278,7 @@ else:
 # ══════════════════════════════════════════════
 st.markdown('<div class="section-title">🗂️ 품목 데이터 편집 (items.json)</div>', unsafe_allow_html=True)
 
-ITEMS_PATH = Path(__file__).parent / "data" / "items.json"
+ITEMS_PATH = Path(__file__).parent.parent / "data" / "items.json"
 
 def load_items_raw():
     with open(ITEMS_PATH, encoding="utf-8") as f:
