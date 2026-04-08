@@ -639,21 +639,34 @@ def render_home():
 
     st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
-    # 태그 HTML 중앙 정렬
-    tag_buttons_html = ""
-    for i, tag in enumerate(top4):
-        tag_buttons_html += (
-            f'<span style="background:#fff;border:1px solid rgba(0,0,0,.1);'
-            f'border-radius:999px;padding:6px 16px;font-size:12px;font-weight:500;'
-            f'color:#444;white-space:nowrap;display:inline-block;">{tag}</span>'
-        )
-    st.markdown(
-        '<div style="display:flex;justify-content:center;align-items:center;'
-        'gap:8px;flex-wrap:wrap;">'
-        '<span style="font-size:12px;color:#999;font-weight:500;white-space:nowrap;margin-right:4px;">인기 검색어</span>'
-        + tag_buttons_html + '</div>',
-        unsafe_allow_html=True
+    # 태그 — components.html로 클릭 지원
+    import streamlit.components.v1 as components
+    btn_style = "background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:999px;padding:6px 16px;font-size:12px;font-weight:500;color:#444;white-space:nowrap;cursor:pointer;font-family:inherit;transition:background .15s,color .15s;"
+    tag_btns_html = "".join([
+        "<button class=\"tag-btn\" data-tag=\"{t}\" style=\"{s}\">{t}</button>".format(t=tag, s=btn_style)
+        for tag in top4
+    ])
+    clicked = components.html(
+        """
+        <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;font-family:'Noto Sans KR',sans-serif;">
+          <span style="font-size:12px;color:#999;font-weight:500;white-space:nowrap;margin-right:4px;">인기 검색어</span>
+          """ + tag_btns_html + """
+        </div>
+        <script>
+        document.querySelectorAll('.tag-btn').forEach(function(b){
+          b.addEventListener('mouseover',function(){this.style.background='#1a1a1a';this.style.color='#fff';});
+          b.addEventListener('mouseout',function(){this.style.background='#fff';this.style.color='#444';});
+          b.addEventListener('click',function(){
+            window.parent.postMessage({isStreamlitMessage:true,type:'streamlit:setComponentValue',value:this.dataset.tag},'*');
+          });
+        });
+        </script>
+        """,
+        height=52,
     )
+    if clicked:
+        st.session_state._tag_query = clicked
+        st.rerun()
 
 
 
