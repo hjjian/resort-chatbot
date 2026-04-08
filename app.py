@@ -708,6 +708,7 @@ def render_home():
     num_str = carbon_str.replace(' kg', '')
 
     st.markdown(f"""
+    <div style="max-width:720px;margin:0 auto;">
     <div style="background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
                 border-radius:20px;padding:32px 40px;
                 display:flex;align-items:center;justify-content:space-between;
@@ -732,6 +733,7 @@ def render_home():
         </div>
         <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;">월간 목표 달성률 84%</div>
       </div>
+    </div>
     </div>
     """, unsafe_allow_html=True)
 
