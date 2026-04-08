@@ -477,117 +477,80 @@ def render_navbar():
 # 화면 1 — 홈
 # ══════════════════════════════════════════════
 def render_home():
-    # 전역 버튼 오버라이드 완전 초기화
     st.markdown("""
     <style>
-    /* 홈화면 전용 — 태그버튼 연초록 */
-    .home-page .stButton > button {
-        background: #EEF7F1 !important;
-        color: #1B4D2E !important;
-        border: 1.5px solid #B2DFBC !important;
-        border-radius: 999px !important;
-        padding: 8px 20px !important;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        height: auto !important;
-        width: auto !important;
-        box-shadow: none !important;
-        transform: none !important;
-        transition: all .15s !important;
+    /* 검색버튼 강제 override */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+        background: #1B4D2E !important; color: #fff !important;
+        border: none !important; border-radius: 10px !important;
+        height: 44px !important; padding: 0 22px !important;
+        font-size: 14px !important; font-weight: 700 !important;
+        box-shadow: none !important; transform: none !important;
+        width: auto !important; white-space: nowrap !important;
     }
-    .home-page .stButton > button:hover {
-        background: #1B4D2E !important;
-        color: #fff !important;
-        border-color: #1B4D2E !important;
-        transform: none !important;
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
+        background: #163D24 !important; transform: none !important;
     }
-    /* 검색버튼만 진한 초록 */
-    .search-btn-wrap .stButton > button {
-        background: #1B4D2E !important;
-        color: #fff !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 0 24px !important;
-        height: 48px !important;
-        font-size: 14px !important;
-        font-weight: 700 !important;
-        box-shadow: none !important;
-        transform: none !important;
-        width: auto !important;
+    /* 검색창 카드 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        background: #fff !important; border-radius: 12px !important;
+        box-shadow: 0 2px 12px rgba(27,77,46,.08) !important;
+        border: 1px solid rgba(27,77,46,.07) !important;
+        padding: 5px 5px 5px 18px !important;
+        gap: 0 !important; margin: 0 !important;
+        align-items: center !important; flex-wrap: nowrap !important;
     }
-    .search-btn-wrap .stButton > button:hover {
-        background: #163D24 !important;
-        transform: none !important;
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
+        flex: 0 0 auto !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 10px 4px !important;
+        font-size: 15px !important; color: #111 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    /* 태그 버튼 — 검색창 HAS 선택자 밖에 있는 버튼들 */
+    div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
+        background: #F0F7F2 !important; color: #1B4D2E !important;
+        border: 1.5px solid #B8DBBF !important; border-radius: 999px !important;
+        padding: 7px 16px !important; font-size: 13px !important; font-weight: 600 !important;
+        height: auto !important; width: auto !important;
+        box-shadow: none !important; transform: none !important;
+        white-space: nowrap !important;
+    }
+    div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button:hover {
+        background: #1B4D2E !important; color: #fff !important;
+        border-color: #1B4D2E !important; transform: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
     render_navbar()
-
-    # 홈 전체 컨테이너
-    st.markdown('<div class="home-page">', unsafe_allow_html=True)
-    st.markdown("<div style='height:36px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
     col_left, col_right = st.columns([5, 3], gap="large")
 
     with col_left:
         st.markdown("""
-        <div style="padding-right: 16px;">
-          <div style="font-size:48px; font-weight:900; line-height:1.15; color:#1a3a2a;
-                      letter-spacing:-2px; margin-bottom:14px;
-                      font-family:'Playfair Display','Noto Sans KR',serif;">
-            무엇이든 물어보세요.<br>지구의 내일을 위해.
-          </div>
-          <div style="font-size:14px; color:#7a9a80; line-height:1.8; margin-bottom:36px;">
-            버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>
-            정확한 가이드를 통해 자원 순환에 동참해 주세요.
-          </div>
+        <div style="font-size:46px;font-weight:900;line-height:1.18;color:#1a3a2a;
+                    letter-spacing:-1.5px;margin-bottom:12px;
+                    font-family:'Playfair Display','Noto Sans KR',serif;">
+          무엇이든 물어보세요.<br>지구의 내일을 위해.
         </div>
-        """, unsafe_allow_html=True)
-
-        # 검색창
-        st.markdown("""
-        <style>
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-            background: #fff !important;
-            border-radius: 14px !important;
-            box-shadow: 0 2px 16px rgba(27,77,46,.08) !important;
-            border: 1px solid rgba(27,77,46,.08) !important;
-            padding: 6px 6px 6px 20px !important;
-            gap: 0 !important; margin: 0 !important;
-            align-items: center !important; flex-wrap: nowrap !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
-            flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
-            flex: 0 0 auto !important; padding: 0 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
-            border: none !important; box-shadow: none !important;
-            background: transparent !important; padding: 0 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
-            border: none !important; box-shadow: none !important;
-            background: transparent !important; padding: 10px 8px !important;
-            font-size: 15px !important; color: #111 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
-            border: none !important; box-shadow: none !important; outline: none !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-            background: #1B4D2E !important; color: #fff !important;
-            border: none !important; border-radius: 10px !important;
-            height: 44px !important; padding: 0 22px !important;
-            font-size: 14px !important; font-weight: 700 !important;
-            box-shadow: none !important; transform: none !important;
-            width: auto !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
-            background: #163D24 !important; transform: none !important;
-        }
-        </style>
+        <div style="font-size:14px;color:#7a9a80;line-height:1.8;margin-bottom:28px;">
+          버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>
+          정확한 가이드를 통해 자원 순환에 동참해 주세요.
+        </div>
         """, unsafe_allow_html=True)
 
         col_input, col_btn = st.columns([6, 1], gap="small")
@@ -612,7 +575,6 @@ def render_home():
             st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요.")
             st.session_state.state = "home"
 
-        # 트렌딩 태그
         usage_log = load_usage_log()
         if usage_log:
             from collections import Counter
@@ -626,7 +588,7 @@ def render_home():
         else:
             top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
-        st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
         st.markdown('<p style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#9aada0;margin:0 0 10px;">● TRENDING ITEMS</p>', unsafe_allow_html=True)
 
         tag_cols = st.columns(len(top5), gap="small")
@@ -638,39 +600,41 @@ def render_home():
 
     with col_right:
         carbon_factors = get_carbon_factors()
-        usage_log2     = load_usage_log()
-        carbon_val     = get_today_carbon(usage_log2, carbon_factors)
-        carbon_str     = format_carbon(carbon_val)
+        usage_log2 = load_usage_log()
+        carbon_val = get_today_carbon(usage_log2, carbon_factors)
+        carbon_str = format_carbon(carbon_val)
+        num_str = carbon_str.replace(' kg', '')
         st.markdown(f"""
-        <div style="background:#fff; border-radius:20px; padding:28px 24px;
-                    box-shadow:0 2px 20px rgba(27,77,46,.09);
-                    border:1px solid rgba(27,77,46,.07); margin-top:8px;">
+        <div style="background:#fff;border-radius:20px;padding:28px 24px;
+                    box-shadow:0 2px 20px rgba(27,77,46,.08);
+                    border:1px solid rgba(27,77,46,.07);">
           <div style="width:40px;height:40px;border-radius:10px;background:#1B4D2E;
                       display:flex;align-items:center;justify-content:center;
-                      font-size:18px;margin-bottom:20px;">🌿</div>
-          <div style="font-size:12px;color:#9aada0;margin-bottom:6px;">오늘 여러분이 줄인 탄소발자국</div>
-          <div style="font-size:40px;font-weight:900;color:#1B4D2E;letter-spacing:-1.5px;
-                      font-family:'DM Sans',sans-serif;line-height:1;margin-bottom:20px;">
-            {carbon_str.replace(' kg','')}
+                      font-size:18px;margin-bottom:18px;">🌿</div>
+          <div style="font-size:12px;color:#9aada0;margin-bottom:6px;">
+            오늘 여러분이 줄인 탄소발자국
+          </div>
+          <div style="font-size:42px;font-weight:900;color:#1B4D2E;letter-spacing:-1.5px;
+                      font-family:'DM Sans',sans-serif;line-height:1;margin-bottom:6px;">
+            {num_str}
             <span style="font-size:18px;font-weight:600;color:#7aaa82;margin-left:4px;">kg</span>
           </div>
-          <div style="height:1px;background:rgba(27,77,46,.07);margin-bottom:16px;"></div>
-          <div style="font-size:12px;color:#9aada0;line-height:1.7;font-style:italic;">
+          <div style="height:1px;background:rgba(27,77,46,.07);margin:16px 0;"></div>
+          <div style="font-size:12px;color:#9aada0;line-height:1.75;font-style:italic;">
             "작은 실천이 모여 거대한 숲을 이룹니다.<br>
             오늘도 Re:Sort와 함께 지구를 지켜주셔서 감사합니다."
           </div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown("<div style='height:48px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
 
     # ── 자주 틀리는 실수 Top 10 ──
     st.markdown("""
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
       <span style="font-size:17px;font-weight:700;color:#1a3a2a;">자주 틀리는 실수 Top 10</span>
-      <span style="font-size:11px;color:#2D6A4F;background:#E8F5E9;border-radius:20px;
-                   padding:3px 10px;font-weight:700;">주의</span>
+      <span style="font-size:11px;color:#2D6A4F;background:#E8F5E9;
+                   border-radius:20px;padding:3px 10px;font-weight:700;">주의</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -697,15 +661,15 @@ def render_home():
     for i, mistake in enumerate(top_mistakes[:10]):
         with cols[i % 5]:
             is_top3 = i < 3
+            badge_bg = "#1B4D2E" if is_top3 else "#E8F5E9"
+            badge_color = "#fff" if is_top3 else "#2D6A4F"
             st.markdown(f"""
             <div style="background:#fff;border-radius:14px;padding:16px 14px;
                         box-shadow:0 1px 8px rgba(27,77,46,.06);
                         border:1px solid rgba(27,77,46,.07);
-                        margin-bottom:8px;height:88px;
-                        transition:all .2s;">
+                        margin-bottom:8px;min-height:84px;">
               <div style="display:inline-flex;align-items:center;justify-content:center;
-                          background:{'#1B4D2E' if is_top3 else '#E8F5E9'};
-                          color:{'#fff' if is_top3 else '#2D6A4F'};
+                          background:{badge_bg};color:{badge_color};
                           border-radius:6px;padding:2px 8px;
                           font-size:11px;font-weight:800;margin-bottom:8px;">
                 {i+1:02d}
@@ -719,11 +683,13 @@ def render_home():
     # ── 푸터 ──
     st.markdown("""
     <div style="margin-top:64px;padding-top:28px;border-top:1px solid rgba(27,77,46,.08);
-                display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;">
+                display:flex;justify-content:space-between;align-items:flex-start;
+                flex-wrap:wrap;gap:24px;">
       <div>
         <div style="font-size:16px;font-weight:900;color:#1B4D2E;margin-bottom:6px;">Re:Sort</div>
         <div style="font-size:12px;color:#AAA;line-height:1.7;">
-          공공 데이터 기반의 지능형 분리배출 가이드 시스템.<br>환경을 위한 당신의 노력을 응원합니다.
+          공공 데이터 기반의 지능형 분리배출 가이드 시스템.<br>
+          환경을 위한 당신의 노력을 응원합니다.
         </div>
       </div>
       <div style="display:flex;gap:40px;font-size:12px;color:#AAA;">
@@ -743,9 +709,6 @@ def render_home():
     """, unsafe_allow_html=True)
 
 
-# ══════════════════════════════════════════════
-# 화면 2 — 질문
-# ══════════════════════════════════════════════
 def render_questioning():
     current_q = st.session_state.current_q
 
