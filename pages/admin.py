@@ -419,6 +419,24 @@ with tab_list:
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='font-size:15px; font-weight:700; color:#222; margin-bottom:8px;'>🔀 extra_questions 편집</div>", unsafe_allow_html=True)
     st.markdown("<div style='font-size:13px; color:#888; margin-bottom:12px;'>extra_questions가 있는 항목을 선택해서 JSON으로 직접 편집할 수 있어요.</div>", unsafe_allow_html=True)
+    st.markdown("""
+<div style='background:#F6F8F6; border-radius:10px; padding:14px 18px; font-size:12px; color:#555; margin-bottom:16px; line-height:1.8;'>
+<b>📌 형식 예시</b><br>
+<pre style='margin:8px 0 0; font-size:11px; color:#333;'>[
+  {
+    "id": "EQ1",
+    "question": "질문 내용",
+    "yes": { "next": "category_tree" },
+    "no":  { "result": "일반쓰레기", "reason": "이유 설명" }
+  }
+]</pre>
+<br>
+<b>yes / no 값으로 쓸 수 있는 옵션:</b><br>
+• <code>{"next": "category_tree"}</code> — decision_tree로 넘어감<br>
+• <code>{"result": "결과", "reason": "이유"}</code> — 바로 결과 출력<br>
+• <code>{"next": "EQ2"}</code> — 다음 extra 질문으로 이동 (EQ2가 있을 때)
+</div>
+""", unsafe_allow_html=True)
 
     eq_items = [i for i in items_list if i.get("extra_questions")]
     all_items_for_eq = items_list
