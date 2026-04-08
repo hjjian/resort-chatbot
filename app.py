@@ -715,6 +715,15 @@ def render_home():
         border-color: #1B4D2E !important;
         transform: none !important;
     }
+    @media (max-width: 768px) {
+        div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+            padding: 0 16px !important;
+            font-size: 16px !important;
+            height: 40px !important;
+            min-width: 44px !important;
+            width: 44px !important;
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -726,7 +735,7 @@ def render_home():
             label_visibility="collapsed", key="home_input",
         )
     with col_btn:
-        search_btn = st.button("검색 →", use_container_width=False, key="home_search_btn")
+        search_btn = st.button("→", use_container_width=False, key="home_search_btn")
 
     if search_btn and query:
         run_search(query)
@@ -828,6 +837,29 @@ def render_home():
         </style>
         """, unsafe_allow_html=True)
 
+        # 모바일: 2열 × 3행, 데스크탑: 5열 1행
+        st.markdown("""
+        <style>
+        @media (max-width: 768px) {
+            div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"]
+            [data-testid="stHorizontalBlock"] {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+                flex-wrap: wrap !important;
+            }
+            div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"]
+            [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+                width: 100% !important;
+                flex: none !important;
+            }
+            div[data-testid="column"]:first-child .stButton > button {
+                width: 100% !important;
+                text-align: center !important;
+            }
+        }
+        </style>
+        """, unsafe_allow_html=True)
         tag_cols = st.columns(len(top5))
         for i, tag in enumerate(top5):
             with tag_cols[i]:
