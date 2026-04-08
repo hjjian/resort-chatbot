@@ -550,12 +550,21 @@ def render_home():
         margin-bottom: 8px;
     }
     .rank-badge-top { background: #1B4D2E; color: #fff; }
-    /* ── 검색창 컬럼 패딩 ── */
+    /* ── 검색창 컬럼 패딩 완전 제거 ── */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
         gap: 8px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
-        padding-left: 0 !important; padding-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    /* stHorizontalBlock 자체 여백 제거 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div {
+        gap: 8px !important;
     }
     </style>
     """, unsafe_allow_html=True)
