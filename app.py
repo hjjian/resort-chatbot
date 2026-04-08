@@ -511,7 +511,7 @@ def render_home():
         font-family: 'Playfair Display', 'Noto Sans KR', serif;
     }
     .home-sub {
-        font-size: 14px; color: #6b8c76; line-height: 1.8; margin-bottom: 32px;
+        font-size: 14px; color: #6b8c76; line-height: 1.8; margin-bottom: 0;
     }
     /* ── 오른쪽 탄소 카드 ── */
     .home-right { flex: 0 0 280px; }
@@ -611,19 +611,20 @@ def render_home():
         background: #163D24 !important;
     }
     /* ── 태그 버튼 ── */
+    /* 태그 버튼 — 전역 .stButton override보다 강하게 */
+    div[data-testid="column"]:first-child div[data-testid="stVerticalBlock"] .stButton > button,
     div[data-testid="column"]:first-child .stButton > button {
         background: #F4FAF6 !important; color: #2D6A4F !important;
         border-radius: 999px !important; padding: 8px 20px !important;
         font-size: 13px !important; font-weight: 600 !important;
         height: auto !important; width: auto !important;
         border: 1.5px solid #C8E6C9 !important;
-        box-shadow: none !important;
-        transform: none !important;
+        box-shadow: none !important; transform: none !important;
     }
+    div[data-testid="column"]:first-child div[data-testid="stVerticalBlock"] .stButton > button:hover,
     div[data-testid="column"]:first-child .stButton > button:hover {
         background: #E8F5E9 !important; color: #1B4D2E !important;
-        border-color: #1B4D2E !important;
-        transform: none !important;
+        border-color: #A5D6A7 !important; transform: none !important;
     }
     /* ── 실수 카드 ── */
     .mistake-card-v2 {
@@ -656,7 +657,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
     render_navbar()
-    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
     # ── 메인 2컬럼 레이아웃 ──
     col_left, col_right = st.columns([3, 1.8], gap="large")
@@ -664,10 +665,9 @@ def render_home():
     with col_left:
         # 제목
         st.markdown("""
-        <div style="height:20px;"></div>
         <div class="home-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
         <div class="home-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
-        <div style="height:24px;"></div>
+        <div style="height:32px;"></div>
         """, unsafe_allow_html=True)
 
         # 검색창
@@ -707,7 +707,7 @@ def render_home():
         else:
             top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
-        st.markdown('<div class="trending-label">● TRENDING ITEMS</div>', unsafe_allow_html=True)
+        st.markdown('<div style="height:8px;"></div><div class="trending-label">● TRENDING ITEMS</div><div style="height:10px;"></div>', unsafe_allow_html=True)
         tag_cols = st.columns(len(top5), gap="small")
         for i, tag in enumerate(top5):
             with tag_cols[i]:
