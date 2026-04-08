@@ -40,7 +40,7 @@ section[data-testid="stSidebar"] { display: none !important; }
 /* ── 콘텐츠 최대 너비 ── */
 .block-container {
     max-width: 1080px !important;
-    padding: 0 32px 60px !important;
+    padding: 0 56px 60px !important;
     margin: 0 auto !important;
 }
 
@@ -723,13 +723,11 @@ def render_home():
         st.markdown(f"""
         <div class="carbon-new">
           <div class="carbon-icon">🌿</div>
-          <div class="carbon-live-badge">LIVE IMPACT</div>
           <div class="carbon-label">오늘 여러분이 줄인 탄소발자국</div>
-          <div>
+          <div style="margin: 8px 0 20px;">
             <span class="carbon-num" style="font-size:36px;">{carbon_str.replace(' kg','')}</span>
             <span class="carbon-unit" style="font-size:16px;">kg</span>
           </div>
-          <div class="carbon-photo">🌱</div>
           <div class="carbon-quote">"작은 실천이 모여 거대한 숲을 이룹니다.<br>오늘도 Re:Sort와 함께 지구를 지켜주셔서 감사합니다."</div>
         </div>
         """, unsafe_allow_html=True)
