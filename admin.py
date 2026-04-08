@@ -4,6 +4,8 @@ streamlit run admin.py 또는 멀티페이지: pages/admin.py
 """
 
 import json
+import base64
+import requests
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
@@ -280,8 +282,40 @@ def load_items_raw():
         return json.load(f)
 
 def save_items_raw(data):
+    """로컬 저장 + GitHub API로 push (Streamlit Cloud 환경)"""
+    content_str = json.dumps(data, ensure_ascii=False, indent=2)
+
+    # 로컬에도 저장 (로컬 실행 시 반영)
     with open(ITEMS_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write(content_str)
+
+    # GitHub API로 push
+    try:
+        token = st.secrets.get("GITHUB_TOKEN", "")
+        repo  = st.secrets.get("GITHUB_REPO", "")
+        if not token or not repo:
+            return  # secrets 없으면 로컬 저장만
+
+        api_url = f"https://api.github.com/repos/{repo}/contents/data/items.json"
+        headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
+
+        # 현재 파일의 sha 가져오기 (업데이트에 필요)
+        res = requests.get(api_url, headers=headers)
+        sha = res.json().get("sha", "") if res.status_code == 200 else ""
+
+        # 파일 업데이트
+        payload = {
+            "message": "admin: items.json 업데이트",
+            "content": base64.b64encode(content_str.encode("utf-8")).decode("utf-8"),
+            "sha": sha,
+        }
+        put_res = requests.put(api_url, headers=headers, json=payload)
+        if put_res.status_code in (200, 201):
+            st.toast("✅ GitHub에 저장되었습니다!", icon="🎉")
+        else:
+            st.warning(f"GitHub 저장 실패: {put_res.status_code}")
+    except Exception as e:
+        st.warning(f"GitHub 연동 오류: {e}")
 
 def items_to_df(items):
     rows = []
