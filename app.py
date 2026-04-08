@@ -510,22 +510,35 @@ def render_home():
     .home-hero-title .accent { color: #0E5A38; }
 
     .search-shell {
-        max-width: 760px;
+        max-width: 960px;
         margin: 0 auto;
+        width: 100%;
+    }
+
+    .search-row-wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        width: 100%;
     }
 
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) {
         align-items: center !important;
-        gap: 12px !important;
+        gap: 20px !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"] {
         padding: 0 !important;
+        width: 100% !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:first-child {
-        flex: 1 1 auto !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
-        flex: 0 0 auto !important;
+        flex: 0 0 220px !important;
+        width: 220px !important;
+        min-width: 220px !important;
     }
 
     /* 검색 입력 박스 */
@@ -617,6 +630,12 @@ def render_home():
         }
         div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) {
             gap: 10px !important;
+            flex-wrap: wrap !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+            min-width: 100% !important;
         }
         div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input {
             height: 54px !important;
@@ -626,6 +645,7 @@ def render_home():
         div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button {
             height: 54px !important;
             min-width: 96px !important;
+            width: 100% !important;
             font-size: 15px !important;
             padding: 0 22px !important;
         }
@@ -644,18 +664,18 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    _, center_col, _ = st.columns([1.2, 4.8, 1.2])
-    with center_col:
-        col_input, col_btn = st.columns([5.2, 1.2], gap="small")
-        with col_input:
-            query = st.text_input(
-                "검색어 입력",
-                placeholder="어떤 품목을 버리시나요?",
-                label_visibility="collapsed",
-                key="home_input",
-            )
-        with col_btn:
-            search_btn = st.button("검색", key="home_search_btn", use_container_width=True)
+    st.markdown('<div class="search-row-wrap">', unsafe_allow_html=True)
+    col_input, col_btn = st.columns([5.5, 1.35], gap="medium")
+    with col_input:
+        query = st.text_input(
+            "검색어 입력",
+            placeholder="어떤 품목을 버리시나요?",
+            label_visibility="collapsed",
+            key="home_input",
+        )
+    with col_btn:
+        search_btn = st.button("검색", key="home_search_btn", use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if search_btn and query:
         run_search(query)
