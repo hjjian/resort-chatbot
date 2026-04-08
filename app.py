@@ -629,60 +629,63 @@ def render_home():
     # ── 인기 태그 버튼 (중앙 정렬) ──
     st.markdown("""
     <style>
-    .tag-row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    /* 태그 버튼 컨테이너: 중앙 정렬 */
-    div[data-testid="stHorizontalBlock"].tag-block {
-        justify-content: center !important;
-    }
-    /* 태그 버튼 공통 스타일 */
-    [data-testid="stHorizontalBlock"] [data-testid="stButton"] button {
+    /* 태그 버튼 전용 — form 밖 stHorizontalBlock */
+    div.tag-section .stButton > button {
+        background: #fff !important;
+        color: #444 !important;
+        border: 1.5px solid rgba(0,0,0,.1) !important;
+        border-radius: 999px !important;
+        padding: 6px 18px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        height: auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,.05) !important;
+        transform: none !important;
         white-space: nowrap !important;
+    }
+    div.tag-section .stButton > button:hover {
+        background: #1a1a1a !important;
+        color: #fff !important;
+        border-color: #1a1a1a !important;
+    }
+    div.tag-section [data-testid="stHorizontalBlock"] {
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-wrap: nowrap !important;
+    }
+    div.tag-section [data-testid="column"] {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    div.tag-section [data-testid="column"] > [data-testid="stVerticalBlock"] {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # 중앙 정렬을 위해 3열 레이아웃 사용 (가운데 열에 태그 배치)
-    _, tag_center, _ = st.columns([1, 6, 1])
-    with tag_center:
-        tag_cols = st.columns(len(top4) + 1)
-        tag_cols[0].markdown(
-            "<div style='font-size:12px;color:#999;font-weight:500;padding-top:8px;text-align:right;'>인기 검색어</div>",
-            unsafe_allow_html=True
-        )
-        for i, tag in enumerate(top4):
-            with tag_cols[i + 1]:
-                st.markdown("""
-                <style>
-                /* 인기태그 버튼 */
-                div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
-                    background: #fff !important;
-                    color: #444 !important;
-                    border: 1.5px solid rgba(0,0,0,.1) !important;
-                    border-radius: 999px !important;
-                    padding: 6px 16px !important;
-                    font-size: 12px !important;
-                    font-weight: 500 !important;
-                    height: auto !important;
-                    box-shadow: 0 1px 4px rgba(0,0,0,.05) !important;
-                    transform: none !important;
-                    width: 100% !important;
-                }
-                div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button:hover {
-                    background: #1a1a1a !important;
-                    color: #fff !important;
-                    border-color: #1a1a1a !important;
-                }
-                </style>
-                """, unsafe_allow_html=True)
-                if st.button(tag, key=f"tag_btn_{tag}"):
-                    run_search(tag)
-                    st.rerun()
+    st.markdown("<div class='tag-section'>", unsafe_allow_html=True)
+    tag_cols = st.columns([0.8] + [1] * len(top4) + [0.8])
+    tag_cols[0].markdown(
+        "<div style='font-size:12px;color:#999;font-weight:500;padding-top:7px;text-align:right;white-space:nowrap;'>인기 검색어</div>",
+        unsafe_allow_html=True
+    )
+    for i, tag in enumerate(top4):
+        with tag_cols[i + 1]:
+            if st.button(tag, key=f"tag_btn_{tag}"):
+                run_search(tag)
+                st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 
