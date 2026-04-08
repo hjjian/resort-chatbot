@@ -448,124 +448,140 @@ def render_navbar():
 def render_home():
     st.markdown("""
     <style>
-    /* ── 홈 전용 태그 버튼 ── */
-    div[data-testid="stHorizontalBlock"] .stButton > button {
-        background: #F0F0EE !important; color: #333 !important;
-        border-radius: 20px !important; padding: 6px 14px !important;
-        font-size: 13px !important; font-weight: 500 !important;
-        height: auto !important; width: auto !important;
-        box-shadow: none !important; transform: none !important;
-    }
-    div[data-testid="stHorizontalBlock"] .stButton > button:hover {
-        background: #E2E2E0 !important; transform: none !important;
-    }
-    /* ── 히어로 배경 ── */
+    /* ── 히어로 ── */
     .hero-wrap {
-        background: linear-gradient(135deg, #1B4D2E 0%, #2D7A4F 60%, #3A9B62 100%);
-        border-radius: 24px;
-        padding: 52px 48px 44px;
-        margin: 0 0 28px;
+        background: linear-gradient(135deg, #163D24 0%, #1B4D2E 45%, #2D7A4F 100%);
+        border-radius: 28px;
+        padding: 56px 52px 48px;
+        margin: 12px 0 0;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 8px 32px rgba(27,77,46,.22);
+        box-shadow: 0 12px 40px rgba(27,77,46,.28);
     }
     .hero-wrap::before {
         content: "♻";
-        position: absolute; right: -20px; top: -20px;
-        font-size: 220px; opacity: .06; line-height: 1;
+        position: absolute; right: 40px; top: 20px;
+        font-size: 260px; opacity: .05; line-height: 1;
+        pointer-events: none; color: #fff;
+    }
+    .hero-wrap::after {
+        content: "";
+        position: absolute; left: -60px; bottom: -60px;
+        width: 240px; height: 240px;
+        background: rgba(255,255,255,.04);
+        border-radius: 50%;
         pointer-events: none;
     }
     .hero-title {
-        font-size: 42px; font-weight: 900; line-height: 1.2;
-        color: #fff; margin-bottom: 10px; letter-spacing: -0.5px;
+        font-size: 44px; font-weight: 900; line-height: 1.2;
+        color: #fff; margin-bottom: 12px; letter-spacing: -1px;
         font-family: 'Playfair Display', 'Noto Sans KR', serif;
+        text-shadow: 0 2px 12px rgba(0,0,0,.15);
     }
     .hero-sub {
-        font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 32px;
+        font-size: 14px; color: rgba(255,255,255,.65);
+        line-height: 1.8; margin-bottom: 0;
     }
-    /* ── 검색창 (히어로 안) ── */
-    .hero-wrap .stTextInput input {
-        border-radius: 12px !important; border: none !important;
-        background: rgba(255,255,255,.95) !important;
-        padding: 14px 20px !important; font-size: 15px !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,.12) !important;
-        color: #111 !important;
+    /* ── 검색창 카드 ── */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,.09);
+        padding: 7px 7px 7px 22px !important;
+        gap: 0 !important; margin: 0 !important;
+        align-items: center !important; flex-wrap: nowrap !important;
     }
-    .hero-wrap .stTextInput input:focus {
-        box-shadow: 0 0 0 3px rgba(255,255,255,.4) !important;
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
     }
-    .hero-wrap .stButton > button {
-        background: #fff !important; color: #1B4D2E !important;
-        border-radius: 12px !important; font-weight: 700 !important;
-        font-size: 14px !important; height: 51px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,.1) !important;
-        transform: none !important;
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
+        flex: 0 0 auto !important; width: auto !important; padding: 0 !important;
     }
-    .hero-wrap .stButton > button:hover {
-        background: #F0F7F2 !important; transform: none !important;
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
     }
-    /* ── HOT ISSUE 카드 ── */
-    .hot-card-v2 {
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important;
+        padding: 10px 8px !important; font-size: 15px !important; color: #111 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+        background: #1B4D2E !important; color: #fff !important;
+        border-radius: 12px !important; height: 44px !important;
+        font-size: 14px !important; font-weight: 700 !important;
+        padding: 0 28px !important; white-space: nowrap !important;
+        box-shadow: none !important; transform: none !important; width: auto !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
+        background: #163D24 !important; transform: none !important;
+    }
+    /* ── HOT ISSUE 컬럼 전체 카드화 ── */
+    div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"] {
         background: #fff;
         border-radius: 20px;
-        padding: 22px 22px 8px;
-        box-shadow: 0 2px 12px rgba(0,0,0,.06);
-        border: 1px solid #EBEBEB;
-        height: 100%;
+        padding: 22px 22px 18px !important;
+        box-shadow: 0 2px 16px rgba(0,0,0,.06);
+        border: 1px solid #F0F0EE;
+    }
+    /* ── HOT ISSUE 태그 버튼 ── */
+    div[data-testid="column"]:first-child .stButton > button {
+        background: #F0F7F2 !important; color: #1B4D2E !important;
+        border-radius: 20px !important; padding: 7px 16px !important;
+        font-size: 13px !important; font-weight: 600 !important;
+        height: auto !important; width: auto !important;
+        box-shadow: none !important; transform: none !important;
+        border: 1.5px solid #C8E6C9 !important;
+    }
+    div[data-testid="column"]:first-child .stButton > button:hover {
+        background: #E2EDE4 !important; transform: translateY(-1px) !important;
+        box-shadow: 0 2px 8px rgba(27,77,46,.1) !important;
     }
     /* ── 탄소 카드 ── */
     .carbon-card-v2 {
-        background: linear-gradient(135deg, #1B4D2E 0%, #2D7A4F 100%);
+        background: linear-gradient(145deg, #163D24 0%, #1B4D2E 50%, #266B3E 100%);
         border-radius: 20px;
-        padding: 28px 24px;
-        box-shadow: 0 4px 20px rgba(27,77,46,.2);
+        padding: 28px 28px 24px;
+        box-shadow: 0 8px 28px rgba(27,77,46,.25);
         height: 100%;
         position: relative;
         overflow: hidden;
     }
-    .carbon-card-v2::after {
-        content: "🌿";
-        position: absolute; right: 16px; bottom: 12px;
-        font-size: 64px; opacity: .15;
+    .carbon-card-v2::before {
+        content: "";
+        position: absolute; right: -30px; top: -30px;
+        width: 160px; height: 160px;
+        background: rgba(255,255,255,.05);
+        border-radius: 50%;
     }
     /* ── 실수 카드 ── */
     .mistake-card-v2 {
         background: #fff;
-        border-radius: 14px;
-        padding: 16px 14px;
-        box-shadow: 0 1px 6px rgba(0,0,0,.06);
+        border-radius: 16px;
+        padding: 18px 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
         border: 1px solid #F0F0EE;
-        margin-bottom: 8px;
-        transition: box-shadow .15s, transform .15s;
+        margin-bottom: 10px;
+        transition: box-shadow .2s, transform .2s;
+        height: 90px;
     }
     .mistake-card-v2:hover {
-        box-shadow: 0 4px 16px rgba(27,77,46,.12);
-        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(27,77,46,.12);
+        transform: translateY(-3px);
+        border-color: #C8E6C9;
     }
     .rank-badge {
-        display: inline-block;
+        display: inline-flex; align-items: center; justify-content: center;
         background: #E8F5E9; color: #1B4D2E;
-        border-radius: 6px; padding: 2px 7px;
+        border-radius: 8px; padding: 3px 8px;
         font-size: 11px; font-weight: 800;
-        margin-bottom: 8px;
+        margin-bottom: 10px; letter-spacing: .5px;
     }
     .rank-badge-top { background: #1B4D2E; color: #fff; }
-    /* ── 검색창 컬럼 패딩 완전 제거 ── */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-        gap: 8px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    /* stHorizontalBlock 자체 여백 제거 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div {
-        gap: 8px !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -616,20 +632,20 @@ def render_home():
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
         border: none !important; box-shadow: none !important; outline: none !important;
     }
-    /* 검색 버튼 */
+    /* 검색 버튼 — ghost */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-        background: #1B4D2E !important; color: #fff !important;
+        background: transparent !important; color: #1B4D2E !important;
         border-radius: 999px !important; height: 42px !important;
         font-size: 14px !important; font-weight: 700 !important;
         padding: 0 28px !important; white-space: nowrap !important;
-        box-shadow: 0 2px 10px rgba(27,77,46,.25) !important;
-        transform: none !important; width: auto !important;
-        letter-spacing: .3px !important;
+        border: 2px solid #1B4D2E !important;
+        box-shadow: none !important; transform: none !important;
+        width: auto !important; letter-spacing: .3px !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
-        background: #163D24 !important;
-        box-shadow: 0 4px 16px rgba(27,77,46,.35) !important;
+        background: #1B4D2E !important; color: #fff !important;
         transform: translateY(-1px) !important;
+        box-shadow: 0 4px 16px rgba(27,77,46,.2) !important;
     }
     </style>
     """, unsafe_allow_html=True)
