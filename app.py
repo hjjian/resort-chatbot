@@ -348,7 +348,7 @@ def append_usage_log(user_input, matched_item, final_result, llm_used=False):
 # 헬퍼: 검색 실행
 # ──────────────────────────────────────────────
 def run_search(query: str):
-    if query is None:
+    if not query or not isinstance(query, str):
         return
     query = query.strip()
     if not query:
@@ -638,37 +638,31 @@ def render_home():
 
     st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
-    # 태그 — components.html로 클릭 지원
-    import streamlit.components.v1 as components
-    btn_style = "background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:999px;padding:6px 16px;font-size:12px;font-weight:500;color:#444;white-space:nowrap;cursor:pointer;font-family:inherit;transition:background .15s,color .15s;"
-    tag_btns_html = "".join([
-        "<button class=\"tag-btn\" data-tag=\"{t}\" style=\"{s}\">{t}</button>".format(t=tag, s=btn_style)
-        for tag in top4
-    ])
-    clicked = components.html(
-        """
-        <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:12px;color:#999;font-weight:500;white-space:nowrap;margin-right:4px;">인기 검색어</span>
-          """ + tag_btns_html + """
-        </div>
-        <script>
-        document.querySelectorAll('.tag-btn').forEach(function(b){
-          b.addEventListener('mouseover',function(){this.style.background='#1a1a1a';this.style.color='#fff';});
-          b.addEventListener('mouseout',function(){this.style.background='#fff';this.style.color='#444';});
-          b.addEventListener('click',function(){
-            window.parent.postMessage({isStreamlitMessage:true,type:'streamlit:setComponentValue',value:this.dataset.tag},'*');
-          });
-        });
-        </script>
-        """,
-        height=52,
-    )
-    if clicked and clicked != st.session_state.get("_last_tag_clicked"):
-        st.session_state._last_tag_clicked = clicked
-        run_search(clicked)
-        st.rerun()
-    elif not clicked:
-        st.session_state._last_tag_clicked = None
+    # 태그 — st.button으로 구현
+    st.markdown("""
+    <style>
+    div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+        background: #fff !important;
+        border: 1.5px solid rgba(0,0,0,.1) !important;
+        border-radius: 999px !important;
+        padding: 4px 16px !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        color: #444 !important;
+    }
+    div[data-testid="stHorizontalBlock"] button[kind="secondary"]:hover {
+        background: #1a1a1a !important;
+        color: #fff !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    tag_cols = st.columns([1] + [1.2] * len(top4) + [1])
+    tag_cols[0].markdown("<span style='font-size:12px;color:#999;font-weight:500;line-height:2.2;'>인기 검색어</span>", unsafe_allow_html=True)
+    for i, tag in enumerate(top4):
+        if tag_cols[i + 1].button(tag, key=f"tag_btn_{tag}"):
+            run_search(tag)
+            st.rerun()
 
 
 
