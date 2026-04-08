@@ -571,60 +571,75 @@ def render_home():
 
     render_navbar()
 
-    # ── 히어로 ──
+    # ── 히어로 (검색창 포함) ──
     st.markdown("""
     <div class="hero-wrap">
       <div class="hero-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
       <div class="hero-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
     </div>
     <style>
-    /* 검색창을 히어로 카드 너비에 맞춤 */
+    /* 검색 행 전체 카드 스타일 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
         background: #fff;
         border-radius: 14px;
-        padding: 8px 8px 8px 16px !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,.08);
+        box-shadow: 0 2px 16px rgba(0,0,0,.08);
+        padding: 6px 6px 6px 20px !important;
         gap: 0 !important;
         margin: 0 !important;
         align-items: center !important;
+        flex-wrap: nowrap !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
+    /* 입력 컬럼: 최대한 넓게 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
         padding: 0 !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        padding: 8px 4px !important;
-        font-size: 15px !important;
+    /* 버튼 컬럼: 내용 너비만큼만 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        padding: 0 !important;
     }
+    /* 입력창 내부 border/shadow 제거 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important;
+        padding: 10px 8px !important; font-size: 15px !important;
+        color: #111 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    /* 검색 버튼 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-        background: #1B4D2E !important;
-        color: #fff !important;
-        border-radius: 10px !important;
-        height: 44px !important;
-        font-size: 14px !important;
-        font-weight: 700 !important;
-        box-shadow: none !important;
-        transform: none !important;
-        white-space: nowrap !important;
+        background: #1B4D2E !important; color: #fff !important;
+        border-radius: 10px !important; height: 42px !important;
+        font-size: 14px !important; font-weight: 700 !important;
+        padding: 0 24px !important; white-space: nowrap !important;
+        box-shadow: none !important; transform: none !important;
+        width: auto !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
-        background: #163D24 !important;
-        transform: none !important;
+        background: #163D24 !important; transform: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
     # 검색창
-    col_input, col_btn = st.columns([6, 1], gap="small")
+    col_input, col_btn = st.columns([8, 1], gap="small")
     with col_input:
         query = st.text_input(
             "품목 검색", placeholder="예: 배달 음식 용기, 폐건전지, 우유팩",
             label_visibility="collapsed", key="home_input",
         )
     with col_btn:
-        search_btn = st.button("검색 →", use_container_width=True, key="home_search_btn")
+        search_btn = st.button("검색 →", use_container_width=False, key="home_search_btn")
 
     if search_btn and query:
         run_search(query)
