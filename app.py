@@ -348,6 +348,8 @@ def append_usage_log(user_input, matched_item, final_result, llm_used=False):
 # 헬퍼: 검색 실행
 # ──────────────────────────────────────────────
 def run_search(query: str):
+    if query is None:
+        return
     query = query.strip()
     if not query:
         return
