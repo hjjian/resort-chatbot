@@ -637,16 +637,37 @@ def render_home():
     else:
         top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
-    st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
-    _, col_t, _ = st.columns([0.3, 5, 0.3])
-    with col_t:
-        # 태그를 inline-flex로 자연스러운 너비로
-        tag_cols = st.columns(len(top4) + 1, gap="small")
-        with tag_cols[0]:
-            st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:9px;text-align:right;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
+    st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+
+    # 태그 HTML 중앙 정렬
+    tag_buttons_html = ""
+    for i, tag in enumerate(top4):
+        tag_buttons_html += (
+            f'<span style="background:#fff;border:1px solid rgba(0,0,0,.1);'
+            f'border-radius:999px;padding:6px 16px;font-size:12px;font-weight:500;'
+            f'color:#444;white-space:nowrap;display:inline-block;">{tag}</span>'
+        )
+    st.markdown(
+        '<div style="display:flex;justify-content:center;align-items:center;'
+        'gap:8px;flex-wrap:wrap;">'
+        '<span style="font-size:12px;color:#999;font-weight:500;white-space:nowrap;margin-right:4px;">인기 검색어</span>'
+        + tag_buttons_html + '</div>',
+        unsafe_allow_html=True
+    )
+
+    # hidden 버튼들 (클릭 이벤트용) — 화면에 안 보이게
+    st.markdown("""
+    <style>
+    div[data-testid="stHorizontalBlock"].tag-hidden-row {
+        position: absolute; opacity: 0; pointer-events: none; height: 0; overflow: hidden;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    with st.container():
+        tag_cols = st.columns(len(top4), gap="small")
         for i, tag in enumerate(top4):
-            with tag_cols[i + 1]:
-                if st.button(tag, key=f"tag_{i}", use_container_width=False):
+            with tag_cols[i]:
+                if st.button(tag, key=f"tag_{i}"):
                     st.session_state._tag_query = tag
                     st.rerun()
 
