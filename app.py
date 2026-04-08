@@ -429,7 +429,13 @@ def render_navbar():
     st.markdown("""
     <div class="navbar">
       <span class="navbar-logo">Re:Sort</span>
-      <span style="font-size:13px; color:#999;">♻️ 올바른 분리배출 가이드</span>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="font-size:13px; color:#999;">♻️ 올바른 분리배출 가이드</span>
+        <a href="/admin" target="_self"
+           style="font-size:12px; color:#1B4D2E; background:#E8F5E9;
+                  border-radius:20px; padding:4px 12px; text-decoration:none;
+                  font-weight:600;">⚙️ 관리자</a>
+      </div>
     </div>
     <div style="height:28px;"></div>
     """, unsafe_allow_html=True)
