@@ -498,194 +498,97 @@ def render_navbar():
 def render_home():
     st.markdown("""
     <style>
-    /* ── 홈 전용 태그 버튼 ── */
-    div[data-testid="stHorizontalBlock"] .stButton > button {
-        background: #F0F0EE !important; color: #333 !important;
-        border-radius: 20px !important; padding: 6px 14px !important;
-        font-size: 13px !important; font-weight: 500 !important;
-        height: auto !important; width: auto !important;
-        box-shadow: none !important; transform: none !important;
+    /* ── 홈 전체 ── */
+    .home-wrap {
+        display: flex; gap: 32px; align-items: flex-start;
+        padding: 40px 0 0;
     }
-    div[data-testid="stHorizontalBlock"] .stButton > button:hover {
-        background: #E2E2E0 !important; transform: none !important;
-    }
-    /* ── 히어로 배경 ── */
-    .hero-wrap {
-        background: linear-gradient(160deg, #f0f7f2 0%, #e8f5ed 40%, #ddf0e6 100%);
-        border-radius: 28px;
-        padding: 56px 52px 52px;
-        margin: 12px 0 20px;
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-            0 2px 0px rgba(255,255,255,.9) inset,
-            0 -2px 0px rgba(27,77,46,.06) inset,
-            0 8px 40px rgba(27,77,46,.08);
-        border: 1px solid rgba(27,77,46,.08);
-    }
-    /* 상단 왼쪽 밝은 하이라이트 */
-    .hero-wrap::before {
-        content: "";
-        position: absolute; left: 0; top: 0;
-        width: 100%; height: 50%;
-        background: linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 100%);
-        border-radius: 28px 28px 0 0;
-        pointer-events: none;
-    }
-    /* 오른쪽 배경 장식 — 재활용 SVG */
-    .hero-wrap::after {
-        content: "";
-        position: absolute; right: 48px; top: 50%;
-        transform: translateY(-50%);
-        width: 220px; height: 220px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B4D2E' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 19H4.815a1.83 1.83 0 0 1-1.57-2.163l2.5-12C5.54 3.68 6.16 3 7 3h10a2 2 0 0 1 2 2v4'/%3E%3Cpath d='M7 19h6m4 0h2'/%3E%3Cpath d='M19 19v-6a2 2 0 0 0-2-2h-3'/%3E%3Cpath d='m17 13 2 2 2-2'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-size: contain;
-        opacity: 0.07;
-        pointer-events: none;
-    }
-    .hero-tag {
-        display: inline-block;
-        background: rgba(27,77,46,.08);
-        color: #1B4D2E;
-        border-radius: 999px;
-        padding: 4px 14px;
-        font-size: 12px; font-weight: 700;
-        letter-spacing: .8px;
-        margin-bottom: 20px;
-    }
-    .hero-title {
-        font-size: 46px; font-weight: 900; line-height: 1.15;
-        color: #1B4D2E; margin-bottom: 14px; letter-spacing: -1.5px;
+    /* ── 왼쪽 히어로 ── */
+    .home-left { flex: 1 1 0; min-width: 0; }
+    .home-title {
+        font-size: 52px; font-weight: 900; line-height: 1.1;
+        color: #1a3a2a; letter-spacing: -2px; margin-bottom: 16px;
         font-family: 'Playfair Display', 'Noto Sans KR', serif;
-        text-shadow: 0 2px 0 rgba(255,255,255,.6);
     }
-    .hero-sub {
-        font-size: 14px; color: #5a7a65;
-        line-height: 1.8; margin-bottom: 0;
+    .home-sub {
+        font-size: 14px; color: #6b8c76; line-height: 1.8; margin-bottom: 32px;
     }
-    /* ── HOT ISSUE 카드 ── */
-    .hot-card-v2 {
-        background: rgba(255,255,255,.85);
-        backdrop-filter: blur(8px);
-        border-radius: 20px;
-        padding: 22px 22px 8px;
-        box-shadow: 0 2px 16px rgba(27,77,46,.07);
-        border: 1px solid rgba(27,77,46,.08);
-        height: 100%;
-    }
-    /* ── 탄소 카드 ── */
-    .carbon-card-v2 {
-        background: linear-gradient(145deg, #1a3d26 0%, #1B4D2E 50%, #2a6640 100%);
-        border-radius: 20px;
-        padding: 28px 24px;
-        box-shadow: 0 8px 32px rgba(27,77,46,.22), 0 2px 0 rgba(255,255,255,.1) inset;
-        border: 1px solid rgba(255,255,255,.08);
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-    }
-    .carbon-card-v2::before {
-        content: "";
-        position: absolute; right: -20px; top: -20px;
-        width: 120px; height: 120px;
-        background: radial-gradient(circle, rgba(255,255,255,.07) 0%, transparent 70%);
-        border-radius: 50%;
-    }
-    .carbon-card-v2::after {
-        content: "🌿";
-        position: absolute; right: 16px; bottom: 12px;
-        font-size: 64px; opacity: .12;
-    }
-    /* ── 실수 카드 ── */
-    .mistake-card-v2 {
-        background: rgba(255,255,255,.85);
-        backdrop-filter: blur(8px);
-        border-radius: 16px;
-        padding: 18px 16px;
-        box-shadow: 0 2px 12px rgba(27,77,46,.06);
-        border: 1px solid rgba(27,77,46,.07);
-        margin-bottom: 8px;
-        transition: box-shadow .2s, transform .2s, border-color .2s;
-        height: 90px;
-    }
-    .mistake-card-v2:hover {
-        box-shadow: 0 6px 20px rgba(27,77,46,.12);
-        transform: translateY(-3px);
-        border-color: rgba(27,77,46,.15);
-    }
-    .rank-badge {
-        display: inline-flex; align-items: center; justify-content: center;
-        background: #E8F5E9; color: #2D6A4F;
-        border-radius: 8px; padding: 3px 8px;
-        font-size: 11px; font-weight: 800;
-        margin-bottom: 8px; letter-spacing: .3px;
-    }
-    .rank-badge-top { background: #1B4D2E; color: #fff; }
-    /* ── 검색창 컬럼 패딩 완전 제거 ── */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-        gap: 8px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    /* stHorizontalBlock 자체 여백 제거 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div {
-        gap: 8px !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    render_navbar()
-
-    # ── 히어로 (검색창 포함) ──
-    st.markdown("""
-    <div class="hero-wrap">
-      <div class="hero-tag">♻ RE:SORT — 분리배출 가이드</div>
-      <div class="hero-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
-      <div class="hero-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
-    </div>
-    <style>
-    /* 검색 행 전체 카드 스타일 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+    /* ── 오른쪽 탄소 카드 ── */
+    .home-right { flex: 0 0 280px; }
+    .carbon-new {
         background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 2px 16px rgba(0,0,0,.08);
-        padding: 6px 6px 6px 12px !important;
-        gap: 0 !important;
-        margin: 0 !important;
-        align-items: center !important;
-        flex-wrap: nowrap !important;
+        border-radius: 24px;
+        padding: 28px 24px 20px;
+        box-shadow: 0 4px 24px rgba(27,77,46,.10);
+        border: 1px solid rgba(27,77,46,.07);
+        position: relative; overflow: hidden;
+    }
+    .carbon-icon {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: #1B4D2E;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; margin-bottom: 16px;
+    }
+    .carbon-live-badge {
+        position: absolute; top: 24px; right: 20px;
+        font-size: 10px; font-weight: 700; letter-spacing: 1px;
+        color: #2D6A4F; background: #E8F5E9;
+        border-radius: 999px; padding: 3px 10px;
+    }
+    .carbon-label {
+        font-size: 12px; color: #9aada0; margin-bottom: 4px;
+    }
+    .carbon-num {
+        font-size: 48px; font-weight: 900; color: #1B4D2E;
+        letter-spacing: -2px; line-height: 1;
+        font-family: 'DM Sans', sans-serif;
+    }
+    .carbon-unit { font-size: 20px; font-weight: 600; color: #5a8a6a; margin-left: 4px; }
+    .carbon-photo {
+        width: 100%; height: 120px; object-fit: cover;
+        border-radius: 14px; margin-top: 18px; margin-bottom: 14px;
+        background: linear-gradient(135deg, #2d7a4f, #1B4D2E);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 40px;
+    }
+    .carbon-quote {
+        font-size: 12px; color: #7a9a82; line-height: 1.7; font-style: italic;
+    }
+    /* ── 검색창 ── */
+    .search-wrap {
+        display: flex; align-items: center;
+        background: #fff; border-radius: 14px;
+        box-shadow: 0 2px 16px rgba(0,0,0,.07);
+        padding: 6px 6px 6px 16px;
+        margin-bottom: 20px;
+        gap: 0;
+    }
+    /* ── 트렌딩 태그 라벨 ── */
+    .trending-label {
+        font-size: 11px; font-weight: 700; letter-spacing: 1px;
+        color: #9aada0; margin-bottom: 10px;
+    }
+    /* ── 검색창 Streamlit 오버라이드 ── */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        background: #fff; border-radius: 14px;
+        box-shadow: 0 2px 16px rgba(0,0,0,.07);
+        padding: 6px 6px 6px 16px !important;
+        gap: 0 !important; margin: 0 0 20px !important;
+        align-items: center !important; flex-wrap: nowrap !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
         content: "";
-        display: block;
-        width: 18px; height: 18px;
-        flex-shrink: 0;
+        display: block; width: 16px; height: 16px; flex-shrink: 0;
         margin-right: 8px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%232D6A4F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-size: contain;
-        opacity: 0.6;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232D6A4F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-size: contain; opacity: 0.5;
     }
-    /* 입력 컬럼: 최대한 넓게 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        padding: 0 !important;
+        flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
     }
-    /* 버튼 컬럼: 내용 너비만큼만 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
-        flex: 0 0 auto !important;
-        width: auto !important;
-        padding: 0 !important;
+        flex: 0 0 auto !important; width: auto !important; padding: 0 !important;
     }
-    /* 입력창 내부 border/shadow 제거 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
         border: none !important; box-shadow: none !important;
@@ -694,86 +597,105 @@ def render_home():
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
         border: none !important; box-shadow: none !important;
         background: transparent !important;
-        padding: 10px 8px !important; font-size: 15px !important;
-        color: #111 !important;
+        padding: 10px 8px !important; font-size: 15px !important; color: #111 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
         border: none !important; box-shadow: none !important; outline: none !important;
     }
-    /* 검색 버튼 — ghost */
+    /* ── 검색 버튼 ── */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-        background: transparent !important; color: #2D6A4F !important;
-        border-radius: 999px !important; height: 40px !important;
-        font-size: 14px !important; font-weight: 600 !important;
-        padding: 0 24px !important; white-space: nowrap !important;
-        border: 1.5px solid #A8D5B5 !important;
-        box-shadow: none !important; transform: none !important;
-        width: auto !important; letter-spacing: .2px !important;
+        background: #1B4D2E !important; color: #fff !important;
+        border-radius: 10px !important; height: 40px !important;
+        font-size: 14px !important; font-weight: 700 !important;
+        padding: 0 20px !important; white-space: nowrap !important;
+        border: none !important; box-shadow: none !important;
+        transform: none !important; width: auto !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
-        background: #F0F7F2 !important; color: #1B4D2E !important;
-        border-color: #1B4D2E !important;
+        background: #163D24 !important;
+    }
+    /* ── 태그 버튼 ── */
+    div[data-testid="column"]:first-child .stButton > button {
+        background: #fff !important; color: #2D6A4F !important;
+        border-radius: 999px !important; padding: 7px 18px !important;
+        font-size: 13px !important; font-weight: 500 !important;
+        height: auto !important; width: auto !important;
+        border: 1px solid rgba(27,77,46,.15) !important;
+        box-shadow: 0 1px 4px rgba(27,77,46,.06) !important;
         transform: none !important;
     }
+    div[data-testid="column"]:first-child .stButton > button:hover {
+        background: #1B4D2E !important; color: #fff !important;
+        border-color: #1B4D2E !important;
+        transform: translateY(-1px) !important;
+    }
+    /* ── 실수 카드 ── */
+    .mistake-card-v2 {
+        background: #fff; border-radius: 16px; padding: 18px 16px;
+        box-shadow: 0 2px 10px rgba(27,77,46,.06);
+        border: 1px solid rgba(27,77,46,.07);
+        margin-bottom: 8px; transition: all .2s; height: 90px;
+    }
+    .mistake-card-v2:hover {
+        box-shadow: 0 6px 20px rgba(27,77,46,.12);
+        transform: translateY(-3px); border-color: rgba(27,77,46,.15);
+    }
+    .rank-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        background: #E8F5E9; color: #2D6A4F;
+        border-radius: 8px; padding: 3px 8px;
+        font-size: 11px; font-weight: 800; margin-bottom: 8px;
+    }
+    .rank-badge-top { background: #1B4D2E; color: #fff; }
+    /* ── 모바일 반응형 ── */
     @media (max-width: 768px) {
+        .home-right { flex: 0 0 100% !important; }
+        .home-title { font-size: 32px !important; letter-spacing: -1px !important; }
+        .carbon-num { font-size: 36px !important; }
         div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-            padding: 0 16px !important;
-            font-size: 16px !important;
-            height: 40px !important;
-            min-width: 44px !important;
-            width: 44px !important;
+            padding: 0 14px !important;
         }
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # 검색창
-    col_input, col_btn = st.columns([8, 1], gap="small")
-    with col_input:
-        query = st.text_input(
-            "품목 검색", placeholder="예: 배달 음식 용기, 폐건전지, 우유팩",
-            label_visibility="collapsed", key="home_input",
-        )
-    with col_btn:
-        search_btn = st.button("→", use_container_width=False, key="home_search_btn")
+    render_navbar()
+    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
 
-    if search_btn and query:
-        run_search(query)
-        st.rerun()
+    # ── 메인 2컬럼 레이아웃 ──
+    col_left, col_right = st.columns([3, 1.5], gap="large")
 
-    if st.session_state.get("_tag_query"):
-        run_search(st.session_state._tag_query)
-        st.session_state._tag_query = None
-        st.rerun()
+    with col_left:
+        # 제목
+        st.markdown("""
+        <div class="home-title">무엇이든<br>물어보세요.<br>지구의 내일을<br>위해.</div>
+        <div class="home-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
+        """, unsafe_allow_html=True)
 
-    if st.session_state.state == "no_match":
-        st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요. 다른 표현으로 검색해보세요.")
-        st.session_state.state = "home"
+        # 검색창
+        col_input, col_btn = st.columns([6, 1], gap="small")
+        with col_input:
+            query = st.text_input(
+                "품목 검색", placeholder="예: 치킨 박스, 배달 용기, 우유 팩...",
+                label_visibility="collapsed", key="home_input",
+            )
+        with col_btn:
+            search_btn = st.button("Search", use_container_width=False, key="home_search_btn")
 
-    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
+        if search_btn and query:
+            run_search(query)
+            st.rerun()
 
-    # ── HOT ISSUE + 탄소 카드 ──
-    # 모바일에서 세로 배치
-    st.markdown("""
-    <style>
-    @media (max-width: 768px) {
-        /* HOT ISSUE + 탄소 카드 세로 배치 */
-        section[data-testid="stMain"] [data-testid="stHorizontalBlock"]:has(.carbon-card-v2) {
-            flex-direction: column !important;
-        }
-        section[data-testid="stMain"] [data-testid="stHorizontalBlock"]:has(.carbon-card-v2) > [data-testid="column"] {
-            width: 100% !important; flex: 0 0 100% !important;
-        }
-        /* 실수 카드 2열 */
-        section[data-testid="stMain"] .mistake-card-v2 {
-            height: auto !important;
-        }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    col_hot, col_carbon = st.columns([3, 2], gap="medium")
+        if st.session_state.get("_tag_query"):
+            run_search(st.session_state._tag_query)
+            st.session_state._tag_query = None
+            st.rerun()
 
-    with col_hot:
+        if st.session_state.state == "no_match":
+            st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요.")
+            st.session_state.state = "home"
+
+        # 트렌딩 태그
         usage_log = load_usage_log()
         if usage_log:
             from collections import Counter
@@ -787,107 +709,40 @@ def render_home():
         else:
             top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
-        # 카드 전체를 CSS border로 감싸기
-        st.markdown("""
-        <style>
-        /* HOT ISSUE 카드 — 헤더 + 태그 전체 감싸기 */
-        div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"] {
-            background: #fff;
-            border-radius: 20px;
-            padding: 20px 20px 16px !important;
-            box-shadow: 0 2px 12px rgba(0,0,0,.06);
-            border: 1px solid #EBEBEB;
-        }
-        /* 태그 버튼 스타일 */
-        div[data-testid="column"]:first-child .stButton > button {
-            background: #F0F7F2 !important; color: #1B4D2E !important;
-            border-radius: 20px !important; padding: 6px 14px !important;
-            font-size: 13px !important; font-weight: 600 !important;
-            height: auto !important; width: auto !important;
-            box-shadow: none !important; transform: none !important;
-            border: 1px solid #D4EDD8 !important;
-        }
-        div[data-testid="column"]:first-child .stButton > button:hover {
-            background: #E2EDE4 !important; transform: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="hot-badge">HOT ISSUE</div>
-        <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:14px;">
-          지금 가장 많이 찾아보는 품목
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <style>
-        /* 모바일: 태그 버튼 행 wrap */
-        @media (max-width: 768px) {
-            div[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] {
-                flex-wrap: wrap !important;
-                gap: 6px !important;
-            }
-            div[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-                flex: 0 0 auto !important;
-                width: auto !important;
-                min-width: 0 !important;
-            }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-        # 모바일: 2열 × 3행, 데스크탑: 5열 1행
-        st.markdown("""
-        <style>
-        @media (max-width: 768px) {
-            div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"]
-            [data-testid="stHorizontalBlock"] {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 8px !important;
-                flex-wrap: wrap !important;
-            }
-            div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"]
-            [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-                width: 100% !important;
-                flex: none !important;
-            }
-            div[data-testid="column"]:first-child .stButton > button {
-                width: 100% !important;
-                text-align: center !important;
-            }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        tag_cols = st.columns(len(top5))
+        st.markdown('<div class="trending-label">● TRENDING ITEMS</div>', unsafe_allow_html=True)
+        tag_cols = st.columns(len(top5), gap="small")
         for i, tag in enumerate(top5):
             with tag_cols[i]:
                 if st.button(tag, key=f"tag_{i}"):
                     st.session_state._tag_query = tag
                     st.rerun()
 
-    with col_carbon:
+    with col_right:
         carbon_factors = get_carbon_factors()
         usage_log2     = load_usage_log()
         carbon_val     = get_today_carbon(usage_log2, carbon_factors)
         carbon_str     = format_carbon(carbon_val)
         st.markdown(f"""
-        <div class="carbon-card-v2">
-          <div style="font-size:11px; color:rgba(255,255,255,.65); letter-spacing:.8px; margin-bottom:4px;">TODAY'S IMPACT</div>
-          <div style="font-size:13px; color:rgba(255,255,255,.8); margin-bottom:2px;">오늘 여러분이 줄인 탄소발자국</div>
-          <div class="carbon-value" style="font-size:44px;">{carbon_str}</div>
-          <div style="font-size:12px; color:rgba(255,255,255,.55); margin-top:4px;">우리의 분리배출로 아낀 탄소량</div>
+        <div class="carbon-new">
+          <div class="carbon-icon">🌿</div>
+          <div class="carbon-live-badge">LIVE IMPACT</div>
+          <div class="carbon-label">오늘 여러분이 줄인 탄소발자국</div>
+          <div>
+            <span class="carbon-num">{carbon_str.replace(' kg','')}</span>
+            <span class="carbon-unit">kg</span>
+          </div>
+          <div class="carbon-photo">🌱</div>
+          <div class="carbon-quote">"작은 실천이 모여 거대한 숲을 이룹니다.<br>오늘도 Re:Sort와 함께 지구를 지켜주셔서 감사합니다."</div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:48px;'></div>", unsafe_allow_html=True)
 
     # ── 자주 틀리는 실수 Top 10 ──
     st.markdown("""
-    <div style="margin:36px 0 16px; display:flex; align-items:center; gap:10px;">
-      <span style="font-size:17px; font-weight:700; color:#111;">자주 틀리는 실수 Top 10</span>
-      <span style="font-size:12px; color:#1B4D2E; background:#E8F5E9; border-radius:20px; padding:3px 10px; font-weight:600;">주의</span>
+    <div style="margin:0 0 16px; display:flex; align-items:center; gap:10px;">
+      <span style="font-size:17px; font-weight:700; color:#1a3a2a;">자주 틀리는 실수 Top 10</span>
+      <span style="font-size:11px; color:#2D6A4F; background:#E8F5E9; border-radius:20px; padding:3px 10px; font-weight:700;">주의</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -910,19 +765,6 @@ def render_home():
             "일반 쓰레기봉투에 배터리 배출", "스프레이 캔 가스 미제거",
         ]
 
-    st.markdown("""
-    <style>
-    @media (max-width: 768px) {
-        /* 실수 카드 컨테이너 2열 grid */
-        div.mistake-grid-wrap [data-testid="stHorizontalBlock"] {
-            flex-wrap: wrap !important;
-        }
-        div.mistake-grid-wrap [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-            flex: 0 0 48% !important; min-width: 0 !important;
-        }
-    }
-    </style>
-    """, unsafe_allow_html=True)
     cols = st.columns(5, gap="small")
     for i, mistake in enumerate(top_mistakes[:10]):
         with cols[i % 5]:
@@ -936,8 +778,8 @@ def render_home():
 
     # ── 푸터 ──
     st.markdown("""
-    <div style="margin-top:64px; padding-top:28px; border-top:1px solid #E5E5E3;
-                display:flex; justify-content:space-between; align-items:flex-start;">
+    <div style="margin-top:64px; padding-top:28px; border-top:1px solid rgba(27,77,46,.1);
+                display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px;">
       <div>
         <div style="font-size:16px; font-weight:900; color:#1B4D2E; margin-bottom:6px;">Re:Sort</div>
         <div style="font-size:12px; color:#AAA; line-height:1.7;">
