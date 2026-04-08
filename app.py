@@ -673,25 +673,19 @@ def render_home():
         else:
             top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
+        # 카드 전체를 CSS border로 감싸기
         st.markdown("""
-        <div class="hot-card-v2">
-          <div class="hot-badge">HOT ISSUE</div>
-          <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:16px;">
-            지금 가장 많이 찾아보는 품목
-          </div>
-        </div>
         <style>
-        /* 태그 버튼 행을 카드처럼 감싸기 */
-        div.hot-tag-wrap {
+        /* HOT ISSUE 카드 — 헤더 + 태그 전체 감싸기 */
+        div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"] {
             background: #fff;
-            border-radius: 0 0 20px 20px;
-            padding: 0 16px 16px;
-            margin-top: -4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,.06);
+            border-radius: 20px;
+            padding: 20px 20px 16px !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
             border: 1px solid #EBEBEB;
-            border-top: none;
         }
-        div.hot-tag-wrap .stButton > button {
+        /* 태그 버튼 스타일 */
+        div[data-testid="column"]:first-child .stButton > button {
             background: #F0F7F2 !important; color: #1B4D2E !important;
             border-radius: 20px !important; padding: 6px 14px !important;
             font-size: 13px !important; font-weight: 600 !important;
@@ -699,22 +693,25 @@ def render_home():
             box-shadow: none !important; transform: none !important;
             border: 1px solid #D4EDD8 !important;
         }
-        div.hot-tag-wrap .stButton > button:hover {
+        div[data-testid="column"]:first-child .stButton > button:hover {
             background: #E2EDE4 !important; transform: none !important;
         }
         </style>
         """, unsafe_allow_html=True)
 
-        # 태그 버튼을 카드 안에 감싸기
-        with st.container():
-            st.markdown('<div class="hot-tag-wrap">', unsafe_allow_html=True)
-            tag_cols = st.columns(len(top5))
-            for i, tag in enumerate(top5):
-                with tag_cols[i]:
-                    if st.button(tag, key=f"tag_{i}"):
-                        st.session_state._tag_query = tag
-                        st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="hot-badge">HOT ISSUE</div>
+        <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:14px;">
+          지금 가장 많이 찾아보는 품목
+        </div>
+        """, unsafe_allow_html=True)
+
+        tag_cols = st.columns(len(top5))
+        for i, tag in enumerate(top5):
+            with tag_cols[i]:
+                if st.button(tag, key=f"tag_{i}"):
+                    st.session_state._tag_query = tag
+                    st.rerun()
 
     with col_carbon:
         carbon_factors = get_carbon_factors()
