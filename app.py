@@ -33,8 +33,9 @@ st.markdown("""
 *, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
 .stApp { background-color: #F2F2F0; }
-#MainMenu, footer { visibility: hidden; }
-[data-testid="collapsedControl"] { visibility: visible !important; }
+#MainMenu, footer, header { visibility: hidden; }
+[data-testid="collapsedControl"] { display: none !important; }
+section[data-testid="stSidebar"] { display: none !important; }
 
 /* ── 콘텐츠 최대 너비 ── */
 .block-container {
