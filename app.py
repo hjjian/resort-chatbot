@@ -498,19 +498,29 @@ def render_home():
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
         background: #fff !important;
         border-radius: 999px !important;
-        box-shadow: 0 4px 24px rgba(0,0,0,.08) !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.09) !important;
         border: 1.5px solid rgba(0,0,0,.07) !important;
         padding: 6px 6px 6px 24px !important;
-        gap: 0 !important; margin: 0 auto !important;
-        align-items: center !important; flex-wrap: nowrap !important;
-        max-width: 600px !important;
+        gap: 0 !important;
+        margin: 0 auto !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
         display: flex !important;
+        width: 100% !important;
+        max-width: 600px !important;
+        box-sizing: border-box !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
         flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
+        background: transparent !important; box-shadow: none !important; border: none !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
         flex: 0 0 auto !important; padding: 0 !important;
+        background: transparent !important; box-shadow: none !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) div[data-testid="column"] > div {
+        background: transparent !important; box-shadow: none !important;
+        border: none !important; padding: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
@@ -535,10 +545,6 @@ def render_home():
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
         background: #333 !important; transform: none !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) div[data-testid="column"] > div {
-        background: transparent !important; box-shadow: none !important;
-        border: none !important; padding: 0 !important;
     }
     /* Streamlit 기본 검색 아이콘 숨기기 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] svg {
