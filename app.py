@@ -661,6 +661,14 @@ def render_home():
 
     # ── 메인 2컬럼 레이아웃 ──
     col_left, col_right = st.columns([3, 1.8], gap="large")
+    st.markdown("""
+    <style>
+    /* 메인 두 컬럼 간격 강제 확장 */
+    section[data-testid="stMain"] > div > div > div > div[data-testid="stHorizontalBlock"]:first-of-type {
+        gap: 48px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     with col_left:
         # 제목
