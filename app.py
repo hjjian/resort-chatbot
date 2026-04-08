@@ -62,14 +62,6 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
         font-size: 36px !important;
         letter-spacing: -1px !important;
     }
-    /* form 검색창 모바일 */
-    [data-testid="stForm"] {
-        max-width: 100% !important;
-    }
-    [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
-        padding: 0 16px !important;
-        font-size: 13px !important;
-    }
     /* 탄소 카드 모바일: flex 세로 배치 */
     .carbon-inner {
         flex-direction: column !important;
@@ -524,7 +516,7 @@ def render_home():
     # ── 검색창 (st.form — 단일 레이어) ──
     st.markdown("""
     <style>
-    /* form 컨테이너 */
+    /* ── 검색 form 전체 ── */
     [data-testid="stForm"] {
         border: none !important;
         box-shadow: none !important;
@@ -533,35 +525,34 @@ def render_home():
         max-width: 580px !important;
         margin: 0 auto !important;
     }
-    /* pill 래퍼 */
+    /* pill 래퍼 (데스크탑) */
     [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
         background: #fff !important;
         border-radius: 999px !important;
         border: 1.5px solid rgba(0,0,0,.09) !important;
         box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-        padding: 4px 6px 4px 8px !important;
+        padding: 4px 6px 4px 16px !important;
         gap: 0 !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
+        overflow: visible !important;
     }
-    [data-testid="stForm"] [data-testid="column"] {
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-    }
+    /* column 투명화 */
+    [data-testid="stForm"] [data-testid="column"],
     [data-testid="stForm"] [data-testid="column"] > [data-testid="stVerticalBlock"] {
         background: transparent !important;
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
     }
-    /* input */
+    /* input 스타일 */
     [data-testid="stForm"] .stTextInput input {
-        border: none !important; box-shadow: none !important;
+        border: none !important;
+        box-shadow: none !important;
         background: transparent !important;
-        padding: 12px 16px !important;
-        font-size: 15px !important; color: #222 !important;
+        padding: 12px 8px !important;
+        font-size: 15px !important;
+        color: #222 !important;
         border-radius: 0 !important;
     }
     [data-testid="stForm"] .stTextInput input::placeholder { color: #bbb !important; }
@@ -573,55 +564,62 @@ def render_home():
         border: none !important; box-shadow: none !important;
         background: transparent !important; padding: 0 !important;
     }
-    /* 검색 submit 버튼 */
-    [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
-        background: #1B4D2E !important; color: #fff !important;
-        border: none !important; border-radius: 999px !important;
-        height: 46px !important; padding: 0 28px !important;
-        font-size: 15px !important; font-weight: 700 !important;
-        white-space: nowrap !important; box-shadow: none !important;
-        transform: none !important; width: 100% !important;
+    /* 검색 버튼 (데스크탑) */
+    [data-testid="stForm"] button[kind="primaryFormSubmit"],
+    [data-testid="stForm"] button[type="submit"],
+    [data-testid="stForm"] .stButton > button,
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] button {
+        background: #1B4D2E !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 999px !important;
+        height: 44px !important;
+        padding: 0 28px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        box-shadow: none !important;
+        transform: none !important;
+        width: auto !important;
+        min-width: 80px !important;
     }
-    [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button:hover {
+    [data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
+    [data-testid="stForm"] button[type="submit"]:hover,
+    [data-testid="stForm"] .stButton > button:hover,
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] button:hover {
         background: #163D24 !important;
     }
-    /* pill 래퍼 overflow 허용 */
-    [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
-        overflow: visible !important;
-    }
+    /* ── 모바일 ── */
     @media (max-width: 768px) {
         [data-testid="stForm"] {
             max-width: 100% !important;
         }
-        /* 모바일: 입력창+버튼 세로 배치 */
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
             flex-direction: column !important;
             border-radius: 16px !important;
-            padding: 8px !important;
+            padding: 10px !important;
             gap: 8px !important;
             align-items: stretch !important;
         }
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-            width: 100% !important;
             flex: 1 1 100% !important;
+            width: 100% !important;
             min-width: 100% !important;
         }
         [data-testid="stForm"] .stTextInput input {
-            padding: 12px 16px !important;
-            font-size: 15px !important;
+            padding: 10px 8px !important;
         }
-        [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
+        [data-testid="stForm"] button[kind="primaryFormSubmit"],
+        [data-testid="stForm"] button[type="submit"],
+        [data-testid="stForm"] .stButton > button,
+        [data-testid="stForm"] [data-testid="stFormSubmitButton"] button {
             width: 100% !important;
             height: 46px !important;
             padding: 0 !important;
-            font-size: 15px !important;
             border-radius: 10px !important;
-        }
-        [data-testid="stForm"] [data-testid="stFormSubmitButton"],
-        [data-testid="stForm"] [data-testid="stFormSubmitButton"] > div {
-            width: 100% !important;
-            display: flex !important;
-            justify-content: center !important;
+            font-size: 15px !important;
+            display: block !important;
+            margin: 0 auto !important;
         }
     }
     </style>
