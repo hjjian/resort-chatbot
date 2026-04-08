@@ -48,6 +48,54 @@ section[data-testid="stSidebar"] { display: none !important; }
 .block-container > div:first-child { padding-top: 0 !important; }
 div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 
+/* ── 모바일 반응형 ── */
+@media (max-width: 768px) {
+    .block-container {
+        padding: 0 16px 40px !important;
+    }
+    .navbar {
+        padding: 0 16px !important;
+        margin: 8px 0 0 !important;
+    }
+    .hero-wrap {
+        padding: 32px 24px 28px !important;
+        border-radius: 20px !important;
+        margin: 8px 0 0 !important;
+    }
+    .hero-title {
+        font-size: 28px !important;
+        letter-spacing: -0.5px !important;
+    }
+    .hero-sub {
+        font-size: 13px !important;
+    }
+    .hero-tag {
+        font-size: 11px !important;
+        margin-bottom: 12px !important;
+    }
+    /* 검색창 버튼 모바일에서 잘리지 않게 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        padding: 6px 6px 6px 12px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+        padding: 0 14px !important;
+        font-size: 13px !important;
+    }
+    /* HOT ISSUE + 탄소 카드 모바일: 세로 배치 */
+    .carbon-card-v2 {
+        padding: 20px 18px !important;
+        border-radius: 16px !important;
+    }
+    .carbon-value {
+        font-size: 32px !important;
+    }
+    /* 실수 카드 모바일: 2열 */
+    .mistake-card-v2 {
+        height: auto !important;
+        min-height: 70px !important;
+    }
+}
+
 /* ── 네비게이션바 ── */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
@@ -696,6 +744,24 @@ def render_home():
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
     # ── HOT ISSUE + 탄소 카드 ──
+    # 모바일에서 세로 배치
+    st.markdown("""
+    <style>
+    @media (max-width: 768px) {
+        /* HOT ISSUE + 탄소 카드 세로 배치 */
+        section[data-testid="stMain"] [data-testid="stHorizontalBlock"]:has(.carbon-card-v2) {
+            flex-direction: column !important;
+        }
+        section[data-testid="stMain"] [data-testid="stHorizontalBlock"]:has(.carbon-card-v2) > [data-testid="column"] {
+            width: 100% !important; flex: 0 0 100% !important;
+        }
+        /* 실수 카드 2열 */
+        section[data-testid="stMain"] .mistake-card-v2 {
+            height: auto !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
     col_hot, col_carbon = st.columns([3, 2], gap="medium")
 
     with col_hot:
@@ -743,6 +809,23 @@ def render_home():
         <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:14px;">
           지금 가장 많이 찾아보는 품목
         </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <style>
+        /* 모바일: 태그 버튼 행 wrap */
+        @media (max-width: 768px) {
+            div[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] {
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+            }
+            div[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                min-width: 0 !important;
+            }
+        }
+        </style>
         """, unsafe_allow_html=True)
 
         tag_cols = st.columns(len(top5))
@@ -795,6 +878,19 @@ def render_home():
             "일반 쓰레기봉투에 배터리 배출", "스프레이 캔 가스 미제거",
         ]
 
+    st.markdown("""
+    <style>
+    @media (max-width: 768px) {
+        /* 실수 카드 컨테이너 2열 grid */
+        div.mistake-grid-wrap [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+        }
+        div.mistake-grid-wrap [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+            flex: 0 0 48% !important; min-width: 0 !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
     cols = st.columns(5, gap="small")
     for i, mistake in enumerate(top_mistakes[:10]):
         with cols[i % 5]:
