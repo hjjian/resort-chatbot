@@ -481,19 +481,13 @@ def render_home():
     # ── 검색창 ──
     st.markdown("""
     <style>
-    /* 검색 행: 컬럼 좌우 패딩 제거 → 밑 섹션과 가로 폭 일치 */
-    [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="column"] {
+    /* 검색창 컬럼 패딩 완전 제거 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        gap: 8px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
         padding-left: 0 !important;
         padding-right: 0 !important;
-    }
-    [data-testid="stHorizontalBlock"]:first-of-type > [data-testid="column"]:first-child {
-        padding-right: 10px !important;
-    }
-    /* 검색 버튼 컬럼: input과 수직 정렬 */
-    [data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:last-child {
-        display: flex !important;
-        align-items: flex-end !important;
-        padding-left: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
