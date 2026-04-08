@@ -12,6 +12,9 @@ from datetime import datetime, date
 from collections import Counter
 from pathlib import Path
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from carbon import load_usage_log
 
 # ──────────────────────────────────────────────
