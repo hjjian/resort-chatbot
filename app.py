@@ -494,159 +494,129 @@ def render_home():
     <style>
     .stApp { background-color: #F5F5F3 !important; }
 
-    /* 홈 화면 검색 영역 전용 */
-    .home-hero-wrap {
-        text-align: center;
-        padding: 56px 0 24px;
+    /* 홈 화면 타이포 */
+    .home-hero {
+        text-align:center;
+        padding: 56px 0 28px;
     }
     .home-hero-title {
-        font-size: 58px;
+        font-size: clamp(42px, 5vw, 76px);
         font-weight: 900;
-        line-height: 1.12;
-        color: #1a1a1a;
+        line-height: 1.08;
         letter-spacing: -2px;
+        color: #171717;
         margin: 0;
     }
-    .home-hero-title .accent { color: #0E5A38; }
-
-    .search-shell {
-        max-width: 960px;
-        margin: 0 auto;
-        width: 100%;
+    .home-hero-title .accent {
+        color: #2D6840;
+        display: inline-block;
     }
 
-    .search-row-wrap {
-        max-width: 960px;
-        margin: 0 auto;
-        width: 100%;
-    }
-
-    div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) {
-        align-items: center !important;
-        gap: 20px !important;
-        flex-wrap: nowrap !important;
-        width: 100% !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"] {
-        padding: 0 !important;
-        width: 100% !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:first-child {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
-        flex: 0 0 220px !important;
-        width: 220px !important;
-        min-width: 220px !important;
-    }
-
-    /* 검색 입력 박스 */
-    div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) > div,
-    div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) > div > div {
+    /* 검색 입력/버튼 */
+    div[data-testid="stTextInput"] > div,
+    div[data-testid="stTextInput"] > div > div {
+        background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        background: transparent !important;
         padding: 0 !important;
     }
-    div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input {
-        height: 64px !important;
+    div[data-testid="stTextInput"] input {
+        height: 74px !important;
         border-radius: 999px !important;
-        border: 1px solid #E9E9E4 !important;
+        border: 2px solid #ECEBE7 !important;
         background: #FFFFFF !important;
-        box-shadow: 0 4px 16px rgba(0,0,0,.04) !important;
-        font-size: 17px !important;
+        padding: 0 30px !important;
+        font-size: 28px !important;
         color: #222 !important;
-        padding: 0 26px !important;
+        box-shadow: none !important;
     }
-    div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input::placeholder {
-        color: #B5B5AF !important;
+    div[data-testid="stTextInput"] input::placeholder {
+        color: #B7B4AF !important;
         opacity: 1 !important;
     }
-    div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input:focus {
-        border: 1.5px solid #0E5A38 !important;
-        box-shadow: 0 0 0 4px rgba(14,90,56,.08) !important;
+    div[data-testid="stTextInput"] input:focus {
+        border-color: #D7D6D1 !important;
+        box-shadow: none !important;
         outline: none !important;
     }
 
-    /* 검색 버튼 */
-    div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button {
-        height: 64px !important;
-        min-width: 124px !important;
-        border-radius: 999px !important;
-        background: #0E5A38 !important;
-        color: #fff !important;
+    .stForm {
         border: none !important;
-        padding: 0 34px !important;
-        font-size: 18px !important;
-        font-weight: 700 !important;
-        box-shadow: none !important;
-        margin-top: 0 !important;
-        white-space: nowrap !important;
+        padding: 0 !important;
+        background: transparent !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button:hover {
-        background: #0A482D !important;
+
+    div[data-testid="stForm"] .stButton > button {
+        width: 100% !important;
+        height: 74px !important;
+        border-radius: 999px !important;
+        border: none !important;
+        background: #2F6B42 !important;
+        color: white !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        padding: 0 24px !important;
+        box-shadow: none !important;
+    }
+    div[data-testid="stForm"] .stButton > button:hover {
+        background: #285B38 !important;
         transform: none !important;
     }
 
     /* 태그 버튼 */
-    .hot-tags-label {
-        font-size: 15px;
-        color: #444;
-        font-weight: 500;
+    .home-tag-label {
+        font-size: 18px;
+        color: #4A4A4A;
+        font-weight: 700;
+        line-height: 60px;
         white-space: nowrap;
-        padding-top: 10px;
     }
-    div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) {
+    .home-tags-row div[data-testid="stHorizontalBlock"] {
         justify-content: center !important;
-        gap: 10px !important;
-        flex-wrap: wrap !important;
+        gap: 18px !important;
     }
-    div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) .stButton > button {
-        background: #E6E6E3 !important;
-        color: #333 !important;
+    .home-tags-row .stButton > button {
+        background: #E6E5E2 !important;
+        color: #3A3A3A !important;
         border: none !important;
         border-radius: 999px !important;
-        padding: 9px 18px !important;
-        font-size: 14px !important;
+        height: 58px !important;
+        padding: 0 34px !important;
+        font-size: 20px !important;
         font-weight: 600 !important;
-        width: auto !important;
-        height: auto !important;
         box-shadow: none !important;
         white-space: nowrap !important;
     }
-    div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) .stButton > button:hover {
-        background: #D8D8D4 !important;
-        color: #111 !important;
+    .home-tags-row .stButton > button:hover {
+        background: #DAD8D3 !important;
+        color: #2A2A2A !important;
         transform: none !important;
     }
 
-    @media (max-width: 768px) {
-        .home-hero-wrap { padding: 36px 0 16px; }
+    @media (max-width: 900px) {
+        .home-hero { padding: 36px 0 18px; }
         .home-hero-title {
-            font-size: 36px;
-            line-height: 1.2;
-            letter-spacing: -1px;
+            font-size: 38px !important;
+            letter-spacing: -1px !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) {
-            gap: 10px !important;
-            flex-wrap: wrap !important;
+        div[data-testid="stTextInput"] input {
+            height: 58px !important;
+            font-size: 18px !important;
+            padding: 0 20px !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
-            flex: 1 1 100% !important;
-            width: 100% !important;
-            min-width: 100% !important;
+        div[data-testid="stForm"] .stButton > button {
+            height: 58px !important;
+            font-size: 20px !important;
         }
-        div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input {
-            height: 54px !important;
-            font-size: 15px !important;
-            padding: 0 18px !important;
+        .home-tag-label {
+            font-size: 16px !important;
+            line-height: 42px !important;
+            text-align: center !important;
+            margin-bottom: 8px !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button {
-            height: 54px !important;
-            min-width: 96px !important;
-            width: 100% !important;
-            font-size: 15px !important;
+        .home-tags-row .stButton > button {
+            height: 44px !important;
+            font-size: 16px !important;
             padding: 0 22px !important;
         }
     }
@@ -656,26 +626,26 @@ def render_home():
     render_navbar()
 
     st.markdown("""
-    <div class="home-hero-wrap">
-      <div class="home-hero-title">
+    <div class="home-hero">
+      <h1 class="home-hero-title">
         지속 가능한 미래를 위한<br>
         <span class="accent">똑똑한 분리배출</span>
-      </div>
+      </h1>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="search-row-wrap">', unsafe_allow_html=True)
-    col_input, col_btn = st.columns([5.5, 1.35], gap="medium")
-    with col_input:
-        query = st.text_input(
-            "검색어 입력",
-            placeholder="어떤 품목을 버리시나요?",
-            label_visibility="collapsed",
-            key="home_input",
-        )
-    with col_btn:
-        search_btn = st.button("검색", key="home_search_btn", use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # 검색창: 전체 폭이 아니라 가운데에 적당한 폭으로 배치
+    outer_left, outer_mid, outer_right = st.columns([1.2, 8, 1.2])
+    with outer_mid:
+        with st.form("home_search_form", clear_on_submit=False):
+            input_col, button_col = st.columns([5.4, 1.6], gap="medium")
+            with input_col:
+                query = st.text_input(
+                    "검색", placeholder="어떤 품목을 버리시나요?",
+                    label_visibility="collapsed", key="home_input",
+                )
+            with button_col:
+                search_btn = st.form_submit_button("검색")
 
     if search_btn and query:
         run_search(query)
@@ -685,7 +655,7 @@ def render_home():
         st.session_state._tag_query = None
         st.rerun()
     if st.session_state.state == "no_match":
-        _, col_w, _ = st.columns([1, 4, 1])
+        _, col_w, _ = st.columns([1.2, 8, 1.2])
         with col_w:
             st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요.")
         st.session_state.state = "home"
@@ -703,17 +673,19 @@ def render_home():
     else:
         top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
-    st.markdown("<div style='height:18px;'></div>", unsafe_allow_html=True)
-    _, col_tags_center, _ = st.columns([0.7, 5, 0.7])
-    with col_tags_center:
-        tag_label, *tag_cols_list = st.columns([1.1] + [1]*len(top4), gap="small")
-        with tag_label:
-            st.markdown('<p class="hot-tags-label">인기 검색어</p>', unsafe_allow_html=True)
-        for i, tag in enumerate(top4):
-            with tag_cols_list[i]:
+    st.markdown("<div style='height:22px;'></div>", unsafe_allow_html=True)
+    _, tags_mid, _ = st.columns([0.7, 9, 0.7])
+    with tags_mid:
+        st.markdown('<div class="home-tags-row">', unsafe_allow_html=True)
+        label_col, tag1, tag2, tag3, tag4 = st.columns([1.6, 1.5, 1.5, 1.5, 1.2], gap="medium")
+        with label_col:
+            st.markdown('<div class="home-tag-label">인기 검색어</div>', unsafe_allow_html=True)
+        for i, (col, tag) in enumerate(zip([tag1, tag2, tag3, tag4], top4)):
+            with col:
                 if st.button(tag, key=f"tag_{i}"):
                     st.session_state._tag_query = tag
                     st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
@@ -750,91 +722,6 @@ def render_home():
           <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
         </div>
         <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;">월간 목표 달성률 84%</div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
-
-    # ── 자주 틀리는 실수 Top 10 ──
-    st.markdown("""
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;">
-      <div>
-        <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px;">자주 틀리는 실수 Top 10</div>
-        <div style="font-size:13px;color:#999;margin-top:4px;">가장 많은 사용자들이 헷갈려 하는 분리배출 사례</div>
-      </div>
-      <div style="font-size:13px;color:#1B4D2E;font-weight:600;cursor:pointer;">View All ›</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    if usage_log:
-        from collections import Counter
-        mistakes = [
-            e["user_input"] for e in usage_log
-            if e.get("final_result") == "일반쓰레기" and e.get("user_input")
-        ]
-        top_mistakes = [item for item, _ in Counter(mistakes).most_common(10)]
-    else:
-        top_mistakes = []
-
-    if not top_mistakes:
-        top_mistakes = [
-            "씻지 않은 음식 용기", "라벨 붙은 페트병",
-            "코팅된 종이 전단지", "깨진 유리 조각",
-            "영수증·감열지", "색상 있는 스티로폼",
-            "뚜껑 분리 안 한 페트병", "음식물 묻은 캔",
-            "일반 쓰레기봉투에 배터리 배출", "스프레이 캔 가스 미제거",
-        ]
-
-    icons = ["🍕","☕","🧊","📄","🧾","🎨","🍶","🥫","🔋","💨"]
-    descs = [
-        "종이가 아닌 종량제봉투로 버려야 합니다.",
-        "몸체는 종이, 뚜껑은 플라스틱으로 분리하세요.",
-        "고흡수성 시 백은 전용 수거함에 배출하세요.",
-        "비닐 코팅된 종이는 재활용이 불가능합니다.",
-        "감열지는 재활용 불가, 일반쓰레기로 배출하세요.",
-        "유색 스티로폼은 재활용이 불가능합니다.",
-        "뚜껑을 분리 후 각각 배출하세요.",
-        "음식물을 깨끗이 씻어서 배출하세요.",
-        "약국이나 보건소의 전용 수거함을 이용하세요.",
-        "가스를 완전히 제거 후 배출하세요.",
-    ]
-
-    st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
-    cols = st.columns(5, gap="small")
-    for i, mistake in enumerate(top_mistakes[:10]):
-        with cols[i % 5]:
-            is_top3 = i < 3
-            num_bg = "#1a1a1a" if is_top3 else "#f0f0ee"
-            num_color = "#fff" if is_top3 else "#666"
-            icon = icons[i] if i < len(icons) else "♻️"
-            desc = descs[i] if i < len(descs) else ""
-            st.markdown(f"""
-            <div style="background:#fff;border-radius:16px;padding:20px 18px;
-                        box-shadow:0 1px 8px rgba(0,0,0,.06);
-                        border:1px solid rgba(0,0,0,.06);
-                        margin-bottom:10px;min-height:140px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                <div style="background:{num_bg};color:{num_color};
-                            border-radius:8px;padding:3px 8px;
-                            font-size:11px;font-weight:800;">{i+1:02d}</div>
-                <div style="font-size:22px;">{icon}</div>
-              </div>
-              <div style="font-size:14px;font-weight:700;color:#1a1a1a;
-                          margin-bottom:6px;word-break:keep-all;">{mistake}</div>
-              <div style="font-size:11px;color:#999;line-height:1.5;word-break:keep-all;">{desc}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <div style="margin-top:80px;padding:28px 0;
-                border-top:1px solid rgba(0,0,0,.07);
-                display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-      <div style="font-size:12px;color:#999;">© 2025 Re:Sort. The Digital Arboretum.</div>
-      <div style="display:flex;gap:24px;font-size:12px;color:#999;">
-        <span style="cursor:pointer;">Privacy</span>
-        <span style="cursor:pointer;">Terms</span>
-        <span style="cursor:pointer;">Contact</span>
       </div>
     </div>
     """, unsafe_allow_html=True)
