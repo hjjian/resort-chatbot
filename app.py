@@ -516,7 +516,7 @@ def render_home():
     }
 
     .search-row-wrap {
-        max-width: 960px;
+        max-width: 760px;
         margin: 0 auto;
         width: 100%;
     }
@@ -536,9 +536,9 @@ def render_home():
         min-width: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
-        flex: 0 0 220px !important;
-        width: 220px !important;
-        min-width: 220px !important;
+        flex: 0 0 170px !important;
+        width: 170px !important;
+        min-width: 170px !important;
     }
 
     /* 검색 입력 박스 */
@@ -572,7 +572,7 @@ def render_home():
     /* 검색 버튼 */
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button {
         height: 64px !important;
-        min-width: 124px !important;
+        min-width: 170px !important;
         border-radius: 999px !important;
         background: #0E5A38 !important;
         color: #fff !important;
@@ -665,7 +665,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="search-row-wrap">', unsafe_allow_html=True)
-    col_input, col_btn = st.columns([5.5, 1.35], gap="medium")
+    col_input, col_btn = st.columns([6.2, 1.4], gap="medium")
     with col_input:
         query = st.text_input(
             "검색어 입력",
