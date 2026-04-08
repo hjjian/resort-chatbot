@@ -13,3 +13,4 @@ venv/
 # Project specific
 data/usage_log.json
 *.Zone.Identifier
+*:Zone.Identifier
