@@ -506,8 +506,8 @@ def render_home():
     /* ── 왼쪽 히어로 ── */
     .home-left { flex: 1 1 0; min-width: 0; }
     .home-title {
-        font-size: 52px; font-weight: 900; line-height: 1.1;
-        color: #1a3a2a; letter-spacing: -2px; margin-bottom: 16px;
+        font-size: 44px; font-weight: 900; line-height: 1.2;
+        color: #1a3a2a; letter-spacing: -1.5px; margin-bottom: 12px;
         font-family: 'Playfair Display', 'Noto Sans KR', serif;
     }
     .home-sub {
@@ -616,18 +616,18 @@ def render_home():
     }
     /* ── 태그 버튼 ── */
     div[data-testid="column"]:first-child .stButton > button {
-        background: #fff !important; color: #2D6A4F !important;
-        border-radius: 999px !important; padding: 7px 18px !important;
-        font-size: 13px !important; font-weight: 500 !important;
+        background: #F4FAF6 !important; color: #2D6A4F !important;
+        border-radius: 999px !important; padding: 8px 20px !important;
+        font-size: 13px !important; font-weight: 600 !important;
         height: auto !important; width: auto !important;
-        border: 1px solid rgba(27,77,46,.15) !important;
-        box-shadow: 0 1px 4px rgba(27,77,46,.06) !important;
+        border: 1.5px solid #C8E6C9 !important;
+        box-shadow: none !important;
         transform: none !important;
     }
     div[data-testid="column"]:first-child .stButton > button:hover {
-        background: #1B4D2E !important; color: #fff !important;
+        background: #E8F5E9 !important; color: #1B4D2E !important;
         border-color: #1B4D2E !important;
-        transform: translateY(-1px) !important;
+        transform: none !important;
     }
     /* ── 실수 카드 ── */
     .mistake-card-v2 {
@@ -660,15 +660,15 @@ def render_home():
     """, unsafe_allow_html=True)
 
     render_navbar()
-    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
     # ── 메인 2컬럼 레이아웃 ──
-    col_left, col_right = st.columns([3, 1.5], gap="large")
+    col_left, col_right = st.columns([3, 1.8], gap="large")
 
     with col_left:
         # 제목
         st.markdown("""
-        <div class="home-title">무엇이든<br>물어보세요.<br>지구의 내일을<br>위해.</div>
+        <div class="home-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
         <div class="home-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
         """, unsafe_allow_html=True)
 
