@@ -495,16 +495,40 @@ def render_home():
     /* ── 전역 리셋 ── */
     .stApp { background-color: #F5F5F3 !important; }
         /* 검색 버튼 스타일 */
-    div[data-testid="stTextInput"] + div .stButton > button {
+    /* 검색창 input 스타일 */
+    div[data-testid="column"]:has(div[data-testid="stTextInput"]) > div[data-testid="stVerticalBlock"] {
+        background: transparent !important; box-shadow: none !important;
+        border: none !important; padding: 0 !important;
+    }
+    div[data-testid="stTextInput"] > div {
+        background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important;
+    }
+    div[data-testid="stTextInput"] > div > div {
+        background: #fff !important; border-radius: 14px !important;
+        border: 1.5px solid rgba(0,0,0,.1) !important;
+        box-shadow: 0 2px 16px rgba(0,0,0,.07) !important;
+        padding: 0 16px !important; height: 56px !important;
+    }
+    div[data-testid="stTextInput"] input {
+        background: transparent !important; border: none !important;
+        box-shadow: none !important; font-size: 15px !important;
+        color: #222 !important; height: 54px !important; padding: 0 !important;
+    }
+    div[data-testid="stTextInput"] input::placeholder { color: #bbb !important; }
+    div[data-testid="stTextInput"] input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    /* 검색 버튼 */
+    div[data-testid="column"]:has(div[data-testid="stTextInput"]) .stButton > button {
         background: #1a1a1a !important; color: #fff !important;
-        border: none !important; border-radius: 999px !important;
-        height: 48px !important; padding: 0 32px !important;
+        border: none !important; border-radius: 14px !important;
+        height: 52px !important; padding: 0 32px !important;
         font-size: 15px !important; font-weight: 700 !important;
         box-shadow: none !important; transform: none !important;
         white-space: nowrap !important; width: auto !important;
-        display: block !important; margin: 8px auto 0 !important;
+        margin-top: 8px !important;
     }
-    div[data-testid="stTextInput"] + div .stButton > button:hover {
+    div[data-testid="column"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
         background: #333 !important; transform: none !important;
     }
     /* 컬럼 흰박스 제거 */
@@ -601,68 +625,17 @@ def render_home():
     """, unsafe_allow_html=True)
 
     # ── 검색창 (가운데 정렬) ──
-    st.markdown("""
-    <style>
-    /* 검색창 전용 - 단독 input */
-    div[data-testid="stTextInput"] > div > div {
-        border-radius: 14px !important;
-        background: #fff !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,.08) !important;
-        border: 1.5px solid rgba(0,0,0,.08) !important;
-        padding: 4px 8px 4px 20px !important;
-        height: 56px !important;
-    }
-    div[data-testid="stTextInput"] > div {
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-    }
-    div[data-testid="stTextInput"] input {
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        font-size: 15px !important;
-        color: #222 !important;
-        height: 48px !important;
-        padding: 0 8px !important;
-    }
-    div[data-testid="stTextInput"] input:focus {
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
-    }
-    div[data-testid="stTextInput"] input::placeholder {
-        color: #bbb !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     _, col_search, _ = st.columns([1, 4, 1])
     with col_search:
-        st.markdown("""
-        <style>
-        div[data-testid="stTextInput"] > div > div::before {
-            content: "";
-            display: inline-block; width: 18px; height: 18px; flex-shrink: 0;
-            margin-right: 4px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23aaa' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-size: contain;
-        }
-        </style>
-        """, unsafe_allow_html=True)
         query = st.text_input(
             "검색", placeholder="어떤 품목을 버리시나요?",
             label_visibility="collapsed", key="home_input",
         )
-        _, cb, _ = st.columns([1, 2, 1])
-        with cb:
-            search_btn = st.button("검색 →", use_container_width=True, key="home_search_btn")
+        search_btn = st.button("검색 →", key="home_search_btn")
 
     if search_btn and query:
         run_search(query)
         st.rerun()
-    if query and st.session_state.get("home_input") and not search_btn:
-        pass  # Enter 지원
     if st.session_state.get("_tag_query"):
         run_search(st.session_state._tag_query)
         st.session_state._tag_query = None
