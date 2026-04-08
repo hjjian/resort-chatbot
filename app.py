@@ -526,35 +526,16 @@ def render_home():
     # ── 검색창 (st.form — 단일 레이어) ──
     st.markdown("""
     <style>
-    /* form 테두리/배경 제거 */
+    /* form 컨테이너 */
     [data-testid="stForm"] {
         border: none !important;
         box-shadow: none !important;
         background: transparent !important;
         padding: 0 !important;
-        max-width: 600px !important;
+        max-width: 580px !important;
         margin: 0 auto !important;
     }
-    /* 검색 input */
-    [data-testid="stForm"] .stTextInput input {
-        border-radius: 999px !important;
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        padding: 14px 20px !important;
-        font-size: 15px !important;
-        color: #222 !important;
-    }
-    [data-testid="stForm"] .stTextInput input::placeholder { color: #bbb !important; }
-    [data-testid="stForm"] .stTextInput input:focus {
-        border: none !important; box-shadow: none !important; outline: none !important;
-    }
-    [data-testid="stForm"] [data-testid="stTextInput"] > div,
-    [data-testid="stForm"] [data-testid="stTextInput"] > div > div {
-        border: none !important; box-shadow: none !important;
-        background: transparent !important; padding: 0 !important;
-    }
-    /* 검색창 전체 pill 래퍼 */
+    /* pill 래퍼 */
     [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
         background: #fff !important;
         border-radius: 999px !important;
@@ -565,7 +546,7 @@ def render_home():
         align-items: center !important;
         flex-wrap: nowrap !important;
     }
-    [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+    [data-testid="stForm"] [data-testid="column"] {
         background: transparent !important;
         box-shadow: none !important;
         border: none !important;
@@ -577,8 +558,25 @@ def render_home():
         border: none !important;
         padding: 0 !important;
     }
-    /* 제출 버튼 */
-    [data-testid="stForm"] .stButton > button {
+    /* input */
+    [data-testid="stForm"] .stTextInput input {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important;
+        padding: 12px 16px !important;
+        font-size: 15px !important; color: #222 !important;
+        border-radius: 0 !important;
+    }
+    [data-testid="stForm"] .stTextInput input::placeholder { color: #bbb !important; }
+    [data-testid="stForm"] .stTextInput input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    [data-testid="stForm"] [data-testid="stTextInput"] > div,
+    [data-testid="stForm"] [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
+    }
+    /* 검색 submit 버튼 */
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
         background: #1B4D2E !important; color: #fff !important;
         border: none !important; border-radius: 999px !important;
         height: 46px !important; padding: 0 28px !important;
@@ -586,7 +584,9 @@ def render_home():
         white-space: nowrap !important; box-shadow: none !important;
         transform: none !important; width: 100% !important;
     }
-    [data-testid="stForm"] .stButton > button:hover { background: #163D24 !important; }
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button:hover {
+        background: #163D24 !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -603,6 +603,15 @@ def render_home():
     if search_btn and query:
         run_search(query)
         st.rerun()
+
+    # query param으로 태그 클릭 처리
+    params = st.query_params
+    if "q" in params:
+        tag_query = params["q"]
+        st.query_params.clear()
+        if tag_query and isinstance(tag_query, str):
+            run_search(tag_query)
+            st.rerun()
 
     if st.session_state.state == "no_match":
         _, cw, _ = st.columns([0.3, 5, 0.3])
@@ -627,65 +636,24 @@ def render_home():
     st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
 
     # ── 인기 태그 버튼 (중앙 정렬) ──
-    st.markdown("""
-    <style>
-    /* 태그 버튼 전용 — form 밖 stHorizontalBlock */
-    div.tag-section .stButton > button {
-        background: #fff !important;
-        color: #444 !important;
-        border: 1.5px solid rgba(0,0,0,.1) !important;
-        border-radius: 999px !important;
-        padding: 6px 18px !important;
-        font-size: 13px !important;
-        font-weight: 500 !important;
-        height: auto !important;
-        width: auto !important;
-        min-width: 0 !important;
-        box-shadow: 0 1px 4px rgba(0,0,0,.05) !important;
-        transform: none !important;
-        white-space: nowrap !important;
-    }
-    div.tag-section .stButton > button:hover {
-        background: #1a1a1a !important;
-        color: #fff !important;
-        border-color: #1a1a1a !important;
-    }
-    div.tag-section [data-testid="stHorizontalBlock"] {
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 8px !important;
-        flex-wrap: nowrap !important;
-    }
-    div.tag-section [data-testid="column"] {
-        flex: 0 0 auto !important;
-        width: auto !important;
-        min-width: 0 !important;
-        padding: 0 !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
-    div.tag-section [data-testid="column"] > [data-testid="stVerticalBlock"] {
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-    }
-    </style>
+    tag_html = "".join([
+        f'<a href="?q={tag}" target="_self" style="'
+        f'display:inline-block;background:#fff;color:#444;'
+        f'border:1.5px solid rgba(0,0,0,.1);border-radius:999px;'
+        f'padding:7px 18px;font-size:13px;font-weight:500;'
+        f'text-decoration:none;white-space:nowrap;'
+        f'box-shadow:0 1px 4px rgba(0,0,0,.06);'
+        f'transition:background .15s,color .15s;'
+        f'">{tag}</a>'
+        for tag in top4
+    ])
+    st.markdown(f"""
+    <div style="display:flex;justify-content:center;align-items:center;
+                gap:8px;flex-wrap:wrap;margin-top:4px;">
+      <span style="font-size:12px;color:#999;font-weight:500;white-space:nowrap;">인기 검색어</span>
+      {tag_html}
+    </div>
     """, unsafe_allow_html=True)
-
-    st.markdown("<div class='tag-section'>", unsafe_allow_html=True)
-    tag_cols = st.columns([0.8] + [1] * len(top4) + [0.8])
-    tag_cols[0].markdown(
-        "<div style='font-size:12px;color:#999;font-weight:500;padding-top:7px;text-align:right;white-space:nowrap;'>인기 검색어</div>",
-        unsafe_allow_html=True
-    )
-    for i, tag in enumerate(top4):
-        with tag_cols[i + 1]:
-            if st.button(tag, key=f"tag_btn_{tag}"):
-                run_search(tag)
-                st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 
