@@ -498,7 +498,7 @@ def render_home():
     col_input, col_btn = st.columns([6, 1], gap="small")
     with col_input:
         query = st.text_input(
-            "", placeholder="예: 배달 음식 용기, 폐건전지, 우유팩",
+            "품목 검색", placeholder="예: 배달 음식 용기, 폐건전지, 우유팩",
             label_visibility="collapsed", key="home_input",
         )
     with col_btn:
