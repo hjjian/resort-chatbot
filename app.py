@@ -590,11 +590,15 @@ def render_home():
         flex-wrap: nowrap !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
-        content: "🔍";
-        font-size: 15px;
-        padding-right: 4px;
+        content: "";
+        display: block;
+        width: 18px; height: 18px;
         flex-shrink: 0;
-        opacity: 0.45;
+        margin-right: 8px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%232D6A4F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+        opacity: 0.6;
     }
     /* 입력 컬럼: 최대한 넓게 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
