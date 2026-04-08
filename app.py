@@ -593,13 +593,28 @@ def render_home():
         [data-testid="stForm"] {
             max-width: 100% !important;
         }
+        /* 모바일: 입력창+버튼 세로 배치 */
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
-            padding-right: 4px !important;
+            flex-direction: column !important;
+            border-radius: 16px !important;
+            padding: 8px !important;
+            gap: 8px !important;
+            align-items: stretch !important;
+        }
+        [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+        }
+        [data-testid="stForm"] .stTextInput input {
+            padding: 12px 16px !important;
+            font-size: 15px !important;
         }
         [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
-            padding: 0 14px !important;
-            font-size: 13px !important;
-            height: 42px !important;
+            width: 100% !important;
+            height: 46px !important;
+            padding: 0 !important;
+            font-size: 15px !important;
+            border-radius: 10px !important;
         }
     }
     </style>
