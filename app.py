@@ -494,6 +494,13 @@ def render_home():
     <style>
     /* ── 전역 리셋 ── */
     .stApp { background-color: #F5F5F3 !important; }
+    /* Streamlit 기본 검색 아이콘 숨기기 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] svg {
+        display: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] [data-baseweb="input"]::before {
+        display: none !important;
+    }
     /* 컬럼 흰박스 제거 */
     div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
         background: transparent !important;
@@ -516,11 +523,7 @@ def render_home():
         max-width: 600px !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
-        content: "";
-        display: block; width: 16px; height: 16px; flex-shrink: 0;
-        margin-right: 10px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-        background-repeat: no-repeat; background-size: contain;
+        content: none !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
         flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
