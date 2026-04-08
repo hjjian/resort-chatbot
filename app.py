@@ -511,19 +511,36 @@ def render_home():
 
 
     /* ── 검색창 ── */
+    /* 검색창 단독 스타일 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-        background: #fff !important;
-        border-radius: 999px !important;
-        box-shadow: 0 4px 24px rgba(0,0,0,.09) !important;
-        border: 1.5px solid rgba(0,0,0,.06) !important;
-        padding: 6px 6px 6px 20px !important;
-        gap: 0 !important;
-        margin: 0 auto !important;
-        align-items: center !important; flex-wrap: nowrap !important;
-        max-width: 600px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
-        content: none !important;
+    /* 단일 텍스트 입력 스타일 */
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] input {
+        border-radius: 999px !important;
+        border: 1.5px solid rgba(0,0,0,.08) !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.08) !important;
+        padding: 16px 24px !important;
+        font-size: 16px !important;
+        background: #fff !important;
+        color: #333 !important;
+        height: 60px !important;
+    }
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] input:focus {
+        border-color: #1a1a1a !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.12) !important;
+        outline: none !important;
+    }
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] > div,
+    div[data-testid="stVerticalBlock"] [data-testid="stTextInput"] > div > div {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
         flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
@@ -547,17 +564,7 @@ def render_home():
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
         border: none !important; box-shadow: none !important; outline: none !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-        background: #1a1a1a !important; color: #fff !important;
-        border: none !important; border-radius: 999px !important;
-        height: 42px !important; padding: 0 24px !important;
-        font-size: 14px !important; font-weight: 700 !important;
-        box-shadow: none !important; transform: none !important; width: auto !important;
-        white-space: nowrap !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
-        background: #333 !important; transform: none !important;
-    }
+
     /* ── 태그 버튼 ── */
     div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
         background: #fff !important; color: #1a1a1a !important;
@@ -590,14 +597,38 @@ def render_home():
     # ── 검색창 (가운데 정렬) ──
     col1, col_mid, col2 = st.columns([0.5, 5, 0.5])
     with col_mid:
-        col_input, col_btn = st.columns([5, 1], gap="small")
-        with col_input:
-            query = st.text_input(
-                "검색", placeholder="어떤 품목을 버리시나요?",
-                label_visibility="collapsed", key="home_input",
-            )
-        with col_btn:
-            search_btn = st.button("검색 →", use_container_width=True, key="home_search_btn")
+        st.markdown("""
+        <style>
+        /* 검색창 wrapper relative */
+        div[data-testid="column"]:nth-child(2) > div > div {
+            position: relative !important;
+        }
+        /* 검색 버튼을 입력창 오른쪽 안쪽에 */
+        div[data-testid="column"]:nth-child(2) .stButton {
+            position: absolute !important;
+            right: 6px !important; top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 10 !important;
+            margin: 0 !important;
+        }
+        div[data-testid="column"]:nth-child(2) .stButton > button {
+            background: #1a1a1a !important; color: #fff !important;
+            border: none !important; border-radius: 999px !important;
+            height: 48px !important; padding: 0 24px !important;
+            font-size: 14px !important; font-weight: 700 !important;
+            box-shadow: none !important; white-space: nowrap !important;
+            transform: none !important; width: auto !important;
+        }
+        div[data-testid="column"]:nth-child(2) .stButton > button:hover {
+            background: #333 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        query = st.text_input(
+            "검색", placeholder="🔍  어떤 품목을 버리시나요?",
+            label_visibility="collapsed", key="home_input",
+        )
+        search_btn = st.button("검색 →", key="home_search_btn")
 
     if search_btn and query:
         run_search(query)
