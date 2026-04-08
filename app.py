@@ -32,7 +32,8 @@ st.markdown("""
 /* ── 기본 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
-.stApp { background-color: #EEF4F0; }
+html, body { overflow-x: hidden !important; max-width: 100vw !important; }
+.stApp { background-color: #EEF4F0; overflow-x: hidden !important; }
 #MainMenu, footer, header { visibility: hidden; }
 [data-testid="collapsedControl"] { display: none !important; }
 section[data-testid="stSidebar"] { display: none !important; }
@@ -42,6 +43,7 @@ section[data-testid="stSidebar"] { display: none !important; }
     max-width: 1080px !important;
     padding: 0 48px 60px !important;
     margin: 0 auto !important;
+    overflow-x: hidden !important;
 }
 
 /* Streamlit 기본 상단 여백 제거 */
@@ -52,47 +54,43 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 @media (max-width: 768px) {
     .block-container {
         padding: 0 16px 40px !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
-    .navbar {
+    /* 히어로 타이틀 모바일 크기 */
+    .hero-title-wrap div {
+        font-size: 36px !important;
+        letter-spacing: -1px !important;
+    }
+    /* form 검색창 모바일 */
+    [data-testid="stForm"] {
+        max-width: 100% !important;
+    }
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
         padding: 0 16px !important;
-        margin: 8px 0 0 !important;
-    }
-    .hero-wrap {
-        padding: 32px 24px 28px !important;
-        border-radius: 20px !important;
-        margin: 8px 0 0 !important;
-    }
-    .hero-title {
-        font-size: 28px !important;
-        letter-spacing: -0.5px !important;
-    }
-    .hero-sub {
         font-size: 13px !important;
     }
-    .hero-tag {
-        font-size: 11px !important;
-        margin-bottom: 12px !important;
+    /* 탄소 카드 모바일: flex 세로 배치 */
+    .carbon-inner {
+        flex-direction: column !important;
+        gap: 16px !important;
     }
-    /* 검색창 버튼 모바일에서 잘리지 않게 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-        padding: 6px 6px 6px 12px !important;
+    .carbon-inner > div:last-child {
+        text-align: left !important;
+        width: 100% !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
-        padding: 0 14px !important;
-        font-size: 13px !important;
-    }
-    /* HOT ISSUE + 탄소 카드 모바일: 세로 배치 */
-    .carbon-card-v2 {
-        padding: 20px 18px !important;
-        border-radius: 16px !important;
-    }
-    .carbon-value {
-        font-size: 32px !important;
+    .carbon-inner > div:last-child > div:nth-child(2) {
+        width: 100% !important;
     }
     /* 실수 카드 모바일: 2열 */
     .mistake-card-v2 {
         height: auto !important;
         min-height: 70px !important;
+    }
+    /* 모든 column이 화면 밖으로 나가지 않게 */
+    [data-testid="column"] {
+        min-width: 0 !important;
+        overflow: hidden !important;
     }
 }
 
@@ -514,7 +512,7 @@ def render_home():
 
     # ── 히어로 제목 ──
     st.markdown("""
-    <div style="text-align:center;margin-bottom:40px;">
+    <div class="hero-title-wrap" style="text-align:center;margin-bottom:40px;">
       <div style="font-size:52px;font-weight:900;line-height:1.15;color:#1a1a1a;
                   letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
         지속 가능한 미래를 위한<br>
@@ -686,8 +684,8 @@ def render_home():
     <div style="max-width:720px;margin:0 auto;">
     <div style="background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
                 border-radius:20px;padding:32px 40px;
-                display:flex;align-items:center;justify-content:space-between;
-                flex-wrap:wrap;gap:24px;box-shadow:0 8px 32px rgba(27,77,46,.2);">
+                box-shadow:0 8px 32px rgba(27,77,46,.2);">
+      <div class="carbon-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;">
       <div>
         <div style="display:inline-flex;align-items:center;gap:6px;
                     background:rgba(255,255,255,.15);border-radius:999px;
@@ -707,6 +705,7 @@ def render_home():
           <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
         </div>
         <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;">월간 목표 달성률 84%</div>
+      </div>
       </div>
     </div>
     </div>
@@ -758,6 +757,20 @@ def render_home():
         "가스를 완전히 제거 후 배출하세요.",
     ]
 
+    st.markdown("""
+    <style>
+    @media (max-width: 768px) {
+        /* 실수 카드 5열 → 2열로 */
+        [data-testid="stHorizontalBlock"]:has(.mistake-card) {
+            flex-wrap: wrap !important;
+        }
+        [data-testid="stHorizontalBlock"]:has(.mistake-card) > [data-testid="column"] {
+            flex: 0 0 48% !important;
+            min-width: 0 !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
     cols = st.columns(5, gap="small")
     for i, mistake in enumerate(top_mistakes[:10]):
         with cols[i % 5]:
