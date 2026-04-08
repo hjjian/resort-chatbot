@@ -532,6 +532,7 @@ def render_home():
         box-shadow: none !important; transform: none !important;
         white-space: nowrap !important;
     }
+<<<<<<< HEAD
     div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button:hover {
         background: #1B4D2E !important; color: #fff !important;
         border-color: #1B4D2E !important; transform: none !important;
@@ -541,6 +542,20 @@ def render_home():
 
     render_navbar()
     st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
+=======
+    </style>
+    """, unsafe_allow_html=True)
+
+    # 검색창
+    col_input, col_btn = st.columns([8, 1], gap="small")
+    with col_input:
+        query = st.text_input(
+            "품목 검색", placeholder="예: 배달 음식 용기, 폐건전지, 우유팩",
+            label_visibility="collapsed", key="home_input",
+        )
+    with col_btn:
+        search_btn = st.button("검색 →", use_container_width=False, key="home_search_btn")
+>>>>>>> parent of 6c60d5d (Update app.py)
 
     col_left, col_right = st.columns([5, 3], gap="large")
 
@@ -595,7 +610,35 @@ def render_home():
         st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
         st.markdown('<p style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#9aada0;margin:0 0 10px;">● TRENDING ITEMS</p>', unsafe_allow_html=True)
 
+<<<<<<< HEAD
         tag_cols = st.columns(len(top5), gap="small")
+=======
+        st.markdown("""
+        <div class="hot-badge">HOT ISSUE</div>
+        <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:14px;">
+          지금 가장 많이 찾아보는 품목
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <style>
+        /* 모바일: 태그 버튼 행 wrap */
+        @media (max-width: 768px) {
+            div[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] {
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+            }
+            div[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                min-width: 0 !important;
+            }
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        tag_cols = st.columns(len(top5))
+>>>>>>> parent of 6c60d5d (Update app.py)
         for i, tag in enumerate(top5):
             with tag_cols[i]:
                 if st.button(tag, key=f"tag_{i}"):
