@@ -601,7 +601,7 @@ def render_home():
     </style>
     """, unsafe_allow_html=True)
 
-    _, col_s, _ = st.columns([0.3, 5, 0.3])
+    _, col_s, _ = st.columns([1, 4, 1])
     with col_s:
         col_input, col_btn = st.columns([6, 1], gap="small")
         with col_input:
@@ -636,33 +636,65 @@ def render_home():
     else:
         top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
-    st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
-    # 태그 — st.button으로 구현
+    # ── 인기 태그 버튼 (중앙 정렬) ──
     st.markdown("""
     <style>
-    div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
-        background: #fff !important;
-        border: 1.5px solid rgba(0,0,0,.1) !important;
-        border-radius: 999px !important;
-        padding: 4px 16px !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
-        color: #444 !important;
+    .tag-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
     }
-    div[data-testid="stHorizontalBlock"] button[kind="secondary"]:hover {
-        background: #1a1a1a !important;
-        color: #fff !important;
+    /* 태그 버튼 컨테이너: 중앙 정렬 */
+    div[data-testid="stHorizontalBlock"].tag-block {
+        justify-content: center !important;
+    }
+    /* 태그 버튼 공통 스타일 */
+    [data-testid="stHorizontalBlock"] [data-testid="stButton"] button {
+        white-space: nowrap !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    tag_cols = st.columns([1] + [1.2] * len(top4) + [1])
-    tag_cols[0].markdown("<span style='font-size:12px;color:#999;font-weight:500;line-height:2.2;'>인기 검색어</span>", unsafe_allow_html=True)
-    for i, tag in enumerate(top4):
-        if tag_cols[i + 1].button(tag, key=f"tag_btn_{tag}"):
-            run_search(tag)
-            st.rerun()
+    # 중앙 정렬을 위해 3열 레이아웃 사용 (가운데 열에 태그 배치)
+    _, tag_center, _ = st.columns([1, 6, 1])
+    with tag_center:
+        tag_cols = st.columns(len(top4) + 1)
+        tag_cols[0].markdown(
+            "<div style='font-size:12px;color:#999;font-weight:500;padding-top:8px;text-align:right;'>인기 검색어</div>",
+            unsafe_allow_html=True
+        )
+        for i, tag in enumerate(top4):
+            with tag_cols[i + 1]:
+                st.markdown("""
+                <style>
+                /* 인기태그 버튼 */
+                div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
+                    background: #fff !important;
+                    color: #444 !important;
+                    border: 1.5px solid rgba(0,0,0,.1) !important;
+                    border-radius: 999px !important;
+                    padding: 6px 16px !important;
+                    font-size: 12px !important;
+                    font-weight: 500 !important;
+                    height: auto !important;
+                    box-shadow: 0 1px 4px rgba(0,0,0,.05) !important;
+                    transform: none !important;
+                    width: 100% !important;
+                }
+                div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button:hover {
+                    background: #1a1a1a !important;
+                    color: #fff !important;
+                    border-color: #1a1a1a !important;
+                }
+                </style>
+                """, unsafe_allow_html=True)
+                if st.button(tag, key=f"tag_btn_{tag}"):
+                    run_search(tag)
+                    st.rerun()
 
 
 
