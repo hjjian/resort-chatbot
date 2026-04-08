@@ -585,11 +585,28 @@ def render_home():
     [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button:hover {
         background: #163D24 !important;
     }
+    /* pill 래퍼 overflow 허용 */
+    [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
+        overflow: visible !important;
+    }
+    @media (max-width: 768px) {
+        [data-testid="stForm"] {
+            max-width: 100% !important;
+        }
+        [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
+            padding-right: 4px !important;
+        }
+        [data-testid="stForm"] [data-testid="stFormSubmitButton"] > button {
+            padding: 0 14px !important;
+            font-size: 13px !important;
+            height: 42px !important;
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 
     with st.form(key="search_form", clear_on_submit=False):
-        col_input, col_btn = st.columns([5, 1], gap="small")
+        col_input, col_btn = st.columns([4, 1], gap="small")
         with col_input:
             query = st.text_input(
                 "검색", placeholder="어떤 품목을 버리시나요?",
