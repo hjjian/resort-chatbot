@@ -696,91 +696,75 @@ def render_home():
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
     # ── HOT ISSUE + 탄소 카드 ──
-    usage_log = load_usage_log()
-    if usage_log:
-        from collections import Counter
-        from datetime import date
-        today = date.today().isoformat()
-        today_inputs = [
-            e["user_input"] for e in usage_log
-            if e.get("timestamp", "").startswith(today) and e.get("user_input")
-        ]
-        top5 = [item for item, _ in Counter(today_inputs).most_common(5)]
-    else:
-        top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
+    col_hot, col_carbon = st.columns([3, 2], gap="medium")
 
-    carbon_factors = get_carbon_factors()
-    carbon_val     = get_today_carbon(usage_log, carbon_factors)
-    carbon_str     = format_carbon(carbon_val)
+    with col_hot:
+        usage_log = load_usage_log()
+        if usage_log:
+            from collections import Counter
+            from datetime import date
+            today = date.today().isoformat()
+            today_inputs = [
+                e["user_input"] for e in usage_log
+                if e.get("timestamp", "").startswith(today) and e.get("user_input")
+            ]
+            top5 = [item for item, _ in Counter(today_inputs).most_common(5)]
+        else:
+            top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
-    # 탄소 카드 (상단 오른쪽 작은 카드)
-    col_l, col_r = st.columns([5, 2], gap="medium")
-    with col_r:
-        st.markdown(f"""
-        <div class="carbon-card-v2" style="padding:20px 20px;">
-          <div style="font-size:10px; color:rgba(255,255,255,.6); letter-spacing:.8px; margin-bottom:2px;">TODAY'S IMPACT</div>
-          <div style="font-size:12px; color:rgba(255,255,255,.75); margin-bottom:4px;">오늘 줄인 탄소발자국</div>
-          <div class="carbon-value" style="font-size:36px;">{carbon_str}</div>
+        # 카드 전체를 CSS border로 감싸기
+        st.markdown("""
+        <style>
+        /* HOT ISSUE 카드 — 헤더 + 태그 전체 감싸기 */
+        div[data-testid="column"]:first-child > div[data-testid="stVerticalBlock"] {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px 20px 16px !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            border: 1px solid #EBEBEB;
+        }
+        /* 태그 버튼 스타일 */
+        div[data-testid="column"]:first-child .stButton > button {
+            background: #F0F7F2 !important; color: #1B4D2E !important;
+            border-radius: 20px !important; padding: 6px 14px !important;
+            font-size: 13px !important; font-weight: 600 !important;
+            height: auto !important; width: auto !important;
+            box-shadow: none !important; transform: none !important;
+            border: 1px solid #D4EDD8 !important;
+        }
+        div[data-testid="column"]:first-child .stButton > button:hover {
+            background: #E2EDE4 !important; transform: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="hot-badge">HOT ISSUE</div>
+        <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:14px;">
+          지금 가장 많이 찾아보는 품목
         </div>
         """, unsafe_allow_html=True)
 
-    # HOT ISSUE — 가로로 넓게
-    st.markdown("""
-    <style>
-    .hot-section-wrap {
-        background: rgba(255,255,255,.85);
-        border-radius: 20px;
-        padding: 20px 24px 18px;
-        box-shadow: 0 2px 16px rgba(27,77,46,.07);
-        border: 1px solid rgba(27,77,46,.08);
-        margin-top: 12px;
-    }
-    .hot-section-header {
-        display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-    }
-    .hot-section-label {
-        font-size: 11px; font-weight: 700; letter-spacing: 1px;
-        color: #2D6A4F; background: rgba(27,77,46,.08);
-        border-radius: 999px; padding: 3px 10px;
-    }
-    .hot-section-title {
-        font-size: 14px; font-weight: 700; color: #1a3a2a;
-    }
-    /* 태그 버튼 */
-    .hot-section-wrap .stButton > button {
-        background: rgba(255,255,255,.9) !important; color: #1B4D2E !important;
-        border-radius: 999px !important; padding: 8px 20px !important;
-        font-size: 13px !important; font-weight: 600 !important;
-        height: auto !important; width: auto !important;
-        border: 1.5px solid rgba(27,77,46,.15) !important;
-        box-shadow: 0 1px 4px rgba(27,77,46,.06) !important;
-        transform: none !important;
-        transition: all .15s !important;
-    }
-    .hot-section-wrap .stButton > button:hover {
-        background: #1B4D2E !important; color: #fff !important;
-        border-color: #1B4D2E !important;
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 12px rgba(27,77,46,.18) !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+        tag_cols = st.columns(len(top5))
+        for i, tag in enumerate(top5):
+            with tag_cols[i]:
+                if st.button(tag, key=f"tag_{i}"):
+                    st.session_state._tag_query = tag
+                    st.rerun()
 
-    st.markdown("""
-    <div class="hot-section-wrap">
-      <div class="hot-section-header">
-        <span class="hot-section-label">🔥 HOT</span>
-        <span class="hot-section-title">지금 가장 많이 찾아보는 품목</span>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    tag_cols = st.columns(len(top5), gap="small")
-    for i, tag in enumerate(top5):
-        with tag_cols[i]:
-            if st.button(tag, key=f"tag_{i}"):
-                st.session_state._tag_query = tag
-                st.rerun()
+    with col_carbon:
+        carbon_factors = get_carbon_factors()
+        usage_log2     = load_usage_log()
+        carbon_val     = get_today_carbon(usage_log2, carbon_factors)
+        carbon_str     = format_carbon(carbon_val)
+        st.markdown(f"""
+        <div class="carbon-card-v2">
+          <div style="font-size:11px; color:rgba(255,255,255,.65); letter-spacing:.8px; margin-bottom:4px;">TODAY'S IMPACT</div>
+          <div style="font-size:13px; color:rgba(255,255,255,.8); margin-bottom:2px;">오늘 여러분이 줄인 탄소발자국</div>
+          <div class="carbon-value" style="font-size:44px;">{carbon_str}</div>
+          <div style="font-size:12px; color:rgba(255,255,255,.55); margin-top:4px;">우리의 분리배출로 아낀 탄소량</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
 
