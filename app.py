@@ -464,7 +464,7 @@ def render_home():
         background: linear-gradient(160deg, #f0f7f2 0%, #e8f5ed 40%, #ddf0e6 100%);
         border-radius: 28px;
         padding: 56px 52px 52px;
-        margin: 12px 0 0;
+        margin: 12px 0 20px;
         position: relative;
         overflow: hidden;
         box-shadow:
@@ -482,13 +482,16 @@ def render_home():
         border-radius: 28px 28px 0 0;
         pointer-events: none;
     }
-    /* 오른쪽 장식 원 */
+    /* 오른쪽 배경 장식 — 재활용 SVG */
     .hero-wrap::after {
         content: "";
-        position: absolute; right: -80px; top: -80px;
-        width: 320px; height: 320px;
-        background: radial-gradient(circle, rgba(27,77,46,.06) 0%, rgba(27,77,46,0) 70%);
-        border-radius: 50%;
+        position: absolute; right: 48px; top: 50%;
+        transform: translateY(-50%);
+        width: 220px; height: 220px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B4D2E' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 19H4.815a1.83 1.83 0 0 1-1.57-2.163l2.5-12C5.54 3.68 6.16 3 7 3h10a2 2 0 0 1 2 2v4'/%3E%3Cpath d='M7 19h6m4 0h2'/%3E%3Cpath d='M19 19v-6a2 2 0 0 0-2-2h-3'/%3E%3Cpath d='m17 13 2 2 2-2'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+        opacity: 0.07;
         pointer-events: none;
     }
     .hero-tag {
