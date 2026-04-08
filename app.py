@@ -426,19 +426,19 @@ def handle_answer(answer: bool):
 # 공통 네비게이션바
 # ──────────────────────────────────────────────
 def render_navbar():
-    st.markdown("""
-    <div class="navbar">
-      <span class="navbar-logo">Re:Sort</span>
-      <div style="display:flex; align-items:center; gap:20px;">
-        <span style="font-size:13px; color:#999;">♻️ 올바른 분리배출 가이드</span>
-        <a href="/admin" target="_self"
-           style="font-size:12px; color:#1B4D2E; background:#E8F5E9;
-                  border-radius:20px; padding:4px 12px; text-decoration:none;
-                  font-weight:600;">⚙️ 관리자</a>
-      </div>
-    </div>
-    <div style="height:28px;"></div>
-    """, unsafe_allow_html=True)
+    col_logo, col_right = st.columns([6, 1])
+    with col_logo:
+        st.markdown("""
+        <div class="navbar">
+          <span class="navbar-logo">Re:Sort</span>
+          <span style="font-size:13px; color:#999;">♻️ 올바른 분리배출 가이드</span>
+        </div>
+        <div style="height:28px;"></div>
+        """, unsafe_allow_html=True)
+    with col_right:
+        st.markdown("<div style='padding-top:14px;'>", unsafe_allow_html=True)
+        st.page_link("pages/admin.py", label="⚙️ 관리자", use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════
