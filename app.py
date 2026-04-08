@@ -781,7 +781,7 @@ def render_home():
     st.markdown("""
     <div style="margin-top:80px;padding:28px 0;border-top:1px solid rgba(0,0,0,.07);
                 display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-      <div style="font-size:12px;color:#999;">© 2025 Re:Sort. The Digital Arboretum.</div>
+      <div style="font-size:12px;color:#999;">© 2026 Re:Sort. 버릴래말래.</div>
       <div style="display:flex;gap:24px;font-size:12px;color:#999;">
         <span>Privacy</span><span>Terms</span><span>Contact</span>
       </div>
