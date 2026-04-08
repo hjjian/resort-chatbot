@@ -185,7 +185,7 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
     transform: none !important;
 }
 
-/* ── 기본 버튼 (초록) ── */
+/* ── 기본 버튼 (초록) — 질문/결과 화면용 ── */
 .stButton > button {
     background: #1B4D2E !important; color: #fff !important;
     border-radius: 10px !important; border: none !important;
@@ -195,6 +195,22 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 }
 .stButton > button:hover { background: #163D24 !important; transform: translateY(-1px); }
 .stButton > button:active { transform: translateY(0); }
+
+/* ── 홈 태그 버튼 — 연초록 pill (전역 초록 덮어쓰기) ── */
+[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] .stButton > button,
+[data-testid="column"]:first-child [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] .stButton > button {
+    background: #F4FAF6 !important; color: #2D6A4F !important;
+    border-radius: 999px !important; padding: 8px 18px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    border: 1.5px solid #C8E6C9 !important;
+    box-shadow: none !important; transform: none !important;
+    height: auto !important; width: auto !important;
+}
+[data-testid="column"]:first-child [data-testid="stHorizontalBlock"] .stButton > button:hover,
+[data-testid="column"]:first-child [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] .stButton > button:hover {
+    background: #E8F5E9 !important; color: #1B4D2E !important;
+    border-color: #A5D6A7 !important; transform: none !important;
+}
 
 /* ── 카드 ── */
 .card {
@@ -517,9 +533,9 @@ def render_home():
     .home-right { flex: 0 0 280px; }
     .carbon-new {
         background: #fff;
-        border-radius: 24px;
-        padding: 28px 24px 20px;
-        box-shadow: 0 4px 24px rgba(27,77,46,.10);
+        border-radius: 20px;
+        padding: 24px 22px;
+        box-shadow: 0 2px 16px rgba(27,77,46,.08);
         border: 1px solid rgba(27,77,46,.07);
         position: relative; overflow: hidden;
     }
@@ -657,10 +673,10 @@ def render_home():
     """, unsafe_allow_html=True)
 
     render_navbar()
-    st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
     # ── 메인 2컬럼 레이아웃 ──
-    col_left, col_right = st.columns([3, 1.8], gap="large")
+    col_left, col_right = st.columns([2.2, 1.4], gap="medium")
     st.markdown("""
     <style>
     /* 메인 두 컬럼 간격 강제 확장 */
