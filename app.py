@@ -51,9 +51,11 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 /* ── 네비게이션바 ── */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 0 32px; height: 60px;
-    background: #fff; border-bottom: 1px solid #E5E5E3;
-    margin: 0 -32px 0;
+    padding: 0 28px; height: 56px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    margin: 16px 0 0;
 }
 .navbar-logo { color: #1B4D2E; font-size: 18px; font-weight: 900; letter-spacing: -0.3px; }
 
