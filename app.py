@@ -615,9 +615,9 @@ def render_home():
     if search_btn and query:
         run_search(query)
         st.rerun()
-    if st.session_state.get("_tag_query"):
-        run_search(st.session_state._tag_query)
-        st.session_state._tag_query = None
+    _tag = st.session_state.pop("_tag_query", None)
+    if _tag and isinstance(_tag, str) and _tag.strip():
+        run_search(_tag)
         st.rerun()
     if st.session_state.state == "no_match":
         _, cw, _ = st.columns([0.3, 5, 0.3])
