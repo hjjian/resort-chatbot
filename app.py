@@ -521,56 +521,88 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    # ── 검색창 ──
-    _, col_s, _ = st.columns([1, 4, 1])
-    with col_s:
-        st.markdown("""
-        <style>
-        /* 검색창 흰 pill */
-        div[data-testid="stTextInput"] > div > div {
-            background: #fff !important;
-            border-radius: 999px !important;
-            border: 1.5px solid rgba(0,0,0,.09) !important;
-            box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-            padding: 0 20px !important;
-            height: 58px !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-        div[data-testid="stTextInput"] > div {
-            background: transparent !important;
-            border: none !important; box-shadow: none !important; padding: 0 !important;
-        }
-        div[data-testid="stTextInput"] input {
-            background: transparent !important; border: none !important;
-            box-shadow: none !important; font-size: 15px !important;
-            color: #222 !important; padding: 0 !important; height: 100% !important;
-        }
-        div[data-testid="stTextInput"] input::placeholder { color: #bbb !important; }
-        div[data-testid="stTextInput"] input:focus {
-            border: none !important; box-shadow: none !important; outline: none !important;
-        }
-        /* 검색 버튼 — 검색창 바로 아래 초록 pill */
-        div[data-testid="stTextInput"] ~ div .stButton > button {
-            background: #1B4D2E !important; color: #fff !important;
-            border: none !important; border-radius: 999px !important;
-            height: 48px !important; padding: 0 36px !important;
-            font-size: 15px !important; font-weight: 700 !important;
-            display: block !important; margin: 12px auto 0 !important;
-            width: fit-content !important; white-space: nowrap !important;
-            box-shadow: none !important; transform: none !important;
-        }
-        div[data-testid="stTextInput"] ~ div .stButton > button:hover {
-            background: #163D24 !important; transform: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+    # ── 검색창 + 버튼 (한 줄) ──
+    st.markdown("""
+    <style>
+    /* 검색창+버튼 행 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        background: #fff !important;
+        border-radius: 999px !important;
+        border: 1.5px solid rgba(0,0,0,.09) !important;
+        box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
+        padding: 5px 5px 5px 20px !important;
+        gap: 0 !important; margin: 0 auto !important;
+        align-items: center !important; flex-wrap: nowrap !important;
+        max-width: 640px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
+        background: transparent !important; box-shadow: none !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
+        flex: 0 0 auto !important; padding: 0 !important;
+        background: transparent !important; box-shadow: none !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+        background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 8px 4px !important;
+        font-size: 15px !important; color: #222 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input::placeholder { color: #bbb !important; }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    /* 검색 버튼 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+        background: #1B4D2E !important; color: #fff !important;
+        border: none !important; border-radius: 999px !important;
+        height: 44px !important; padding: 0 24px !important;
+        font-size: 14px !important; font-weight: 700 !important;
+        white-space: nowrap !important; box-shadow: none !important;
+        transform: none !important; width: auto !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
+        background: #163D24 !important; transform: none !important;
+    }
+    /* 검색창 돋보기 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
+        content: "";
+        display: block; width: 16px; height: 16px; flex-shrink: 0; margin-right: 4px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999' stroke-width='2.2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center/contain;
+    }
+    /* 태그 버튼 — 검색창 밖 */
+    div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
+        background: #fff !important; color: #333 !important;
+        border: 1.5px solid rgba(0,0,0,.12) !important; border-radius: 999px !important;
+        padding: 7px 16px !important; font-size: 13px !important; font-weight: 500 !important;
+        height: auto !important; width: auto !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,.05) !important; white-space: nowrap !important;
+        transform: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button:hover {
+        background: #1a1a1a !important; color: #fff !important; border-color: #1a1a1a !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-        query = st.text_input(
-            "검색", placeholder="어떤 품목을 버리시나요?",
-            label_visibility="collapsed", key="home_input",
-        )
-        search_btn = st.button("검색 →", key="home_search_btn")
+    _, col_s, _ = st.columns([0.3, 5, 0.3])
+    with col_s:
+        col_input, col_btn = st.columns([6, 1], gap="small")
+        with col_input:
+            query = st.text_input(
+                "검색", placeholder="어떤 품목을 버리시나요?",
+                label_visibility="collapsed", key="home_input",
+            )
+        with col_btn:
+            search_btn = st.button("검색", use_container_width=False, key="home_search_btn")
 
     if search_btn and query:
         run_search(query)
@@ -580,7 +612,7 @@ def render_home():
         st.session_state._tag_query = None
         st.rerun()
     if st.session_state.state == "no_match":
-        _, cw, _ = st.columns([1, 4, 1])
+        _, cw, _ = st.columns([0.3, 5, 0.3])
         with cw:
             st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요.")
         st.session_state.state = "home"
@@ -599,19 +631,17 @@ def render_home():
     else:
         top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
-    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
-    _, col_t, _ = st.columns([1, 4, 1])
+    st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
+    _, col_t, _ = st.columns([0.3, 5, 0.3])
     with col_t:
-        st.markdown('<div class="tag-area">', unsafe_allow_html=True)
-        tc_label, *tc_list = st.columns([1.4] + [1]*len(top4), gap="small")
+        tc_label, *tc_list = st.columns([1.2] + [1]*len(top4), gap="small")
         with tc_label:
-            st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:10px;text-align:right;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
+            st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:9px;text-align:right;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
         for i, tag in enumerate(top4):
             with tc_list[i]:
                 if st.button(tag, key=f"tag_{i}"):
                     st.session_state._tag_query = tag
                     st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<div style='height:48px;'></div>", unsafe_allow_html=True)
 
