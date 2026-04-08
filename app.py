@@ -615,10 +615,7 @@ def render_home():
     if search_btn and query:
         run_search(query)
         st.rerun()
-    _tag = st.session_state.pop("_tag_query", None)
-    if _tag and isinstance(_tag, str) and _tag.strip():
-        run_search(_tag)
-        st.rerun()
+
     if st.session_state.state == "no_match":
         _, cw, _ = st.columns([0.3, 5, 0.3])
         with cw:
@@ -666,9 +663,12 @@ def render_home():
         """,
         height=52,
     )
-    if clicked:
-        st.session_state._tag_query = clicked
+    if clicked and clicked != st.session_state.get("_last_tag_clicked"):
+        st.session_state._last_tag_clicked = clicked
+        run_search(clicked)
         st.rerun()
+    elif not clicked:
+        st.session_state._last_tag_clicked = None
 
 
 
