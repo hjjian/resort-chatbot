@@ -440,57 +440,130 @@ def render_navbar():
 # 화면 1 — 홈
 # ══════════════════════════════════════════════
 def render_home():
-    # 태그 버튼을 작은 회색 pill로 만드는 CSS (홈 전용 오버라이드)
     st.markdown("""
     <style>
-    /* 태그 버튼: 작은 회색 pill */
+    /* ── 홈 전용 태그 버튼 ── */
     div[data-testid="stHorizontalBlock"] .stButton > button {
-        background: #F0F0EE !important;
-        color: #333 !important;
-        border-radius: 20px !important;
-        padding: 6px 14px !important;
-        font-size: 13px !important;
-        font-weight: 500 !important;
-        height: auto !important;
-        width: auto !important;
-        box-shadow: none !important;
-        transform: none !important;
+        background: #F0F0EE !important; color: #333 !important;
+        border-radius: 20px !important; padding: 6px 14px !important;
+        font-size: 13px !important; font-weight: 500 !important;
+        height: auto !important; width: auto !important;
+        box-shadow: none !important; transform: none !important;
     }
     div[data-testid="stHorizontalBlock"] .stButton > button:hover {
-        background: #E2E2E0 !important;
+        background: #E2E2E0 !important; transform: none !important;
+    }
+    /* ── 히어로 배경 ── */
+    .hero-wrap {
+        background: linear-gradient(135deg, #1B4D2E 0%, #2D7A4F 60%, #3A9B62 100%);
+        border-radius: 24px;
+        padding: 52px 48px 44px;
+        margin: 0 0 28px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(27,77,46,.22);
+    }
+    .hero-wrap::before {
+        content: "♻";
+        position: absolute; right: -20px; top: -20px;
+        font-size: 220px; opacity: .06; line-height: 1;
+        pointer-events: none;
+    }
+    .hero-title {
+        font-size: 42px; font-weight: 900; line-height: 1.2;
+        color: #fff; margin-bottom: 10px; letter-spacing: -0.5px;
+    }
+    .hero-sub {
+        font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 32px;
+    }
+    /* ── 검색창 (히어로 안) ── */
+    .hero-wrap .stTextInput input {
+        border-radius: 12px !important; border: none !important;
+        background: rgba(255,255,255,.95) !important;
+        padding: 14px 20px !important; font-size: 15px !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,.12) !important;
+        color: #111 !important;
+    }
+    .hero-wrap .stTextInput input:focus {
+        box-shadow: 0 0 0 3px rgba(255,255,255,.4) !important;
+    }
+    .hero-wrap .stButton > button {
+        background: #fff !important; color: #1B4D2E !important;
+        border-radius: 12px !important; font-weight: 700 !important;
+        font-size: 14px !important; height: 51px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1) !important;
         transform: none !important;
+    }
+    .hero-wrap .stButton > button:hover {
+        background: #F0F7F2 !important; transform: none !important;
+    }
+    /* ── HOT ISSUE 카드 ── */
+    .hot-card-v2 {
+        background: #fff;
+        border-radius: 20px;
+        padding: 22px 22px 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        border: 1px solid #EBEBEB;
+        height: 100%;
+    }
+    /* ── 탄소 카드 ── */
+    .carbon-card-v2 {
+        background: linear-gradient(135deg, #1B4D2E 0%, #2D7A4F 100%);
+        border-radius: 20px;
+        padding: 28px 24px;
+        box-shadow: 0 4px 20px rgba(27,77,46,.2);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    .carbon-card-v2::after {
+        content: "🌿";
+        position: absolute; right: 16px; bottom: 12px;
+        font-size: 64px; opacity: .15;
+    }
+    /* ── 실수 카드 ── */
+    .mistake-card-v2 {
+        background: #fff;
+        border-radius: 14px;
+        padding: 16px 14px;
+        box-shadow: 0 1px 6px rgba(0,0,0,.06);
+        border: 1px solid #F0F0EE;
+        margin-bottom: 8px;
+        transition: box-shadow .15s, transform .15s;
+    }
+    .mistake-card-v2:hover {
+        box-shadow: 0 4px 16px rgba(27,77,46,.12);
+        transform: translateY(-2px);
+    }
+    .rank-badge {
+        display: inline-block;
+        background: #E8F5E9; color: #1B4D2E;
+        border-radius: 6px; padding: 2px 7px;
+        font-size: 11px; font-weight: 800;
+        margin-bottom: 8px;
+    }
+    .rank-badge-top { background: #1B4D2E; color: #fff; }
+    /* ── 검색창 컬럼 패딩 ── */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        gap: 8px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
+        padding-left: 0 !important; padding-right: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
     render_navbar()
 
-    # ── 히어로 ──
+    # ── 히어로 (검색창 포함) ──
     st.markdown("""
-    <div style="padding: 8px 0 32px;">
-      <div style="font-size:46px; font-weight:900; line-height:1.15; color:#1B4D2E; margin-bottom:12px;">
-        무엇이든 물어보세요.<br>지구의 내일을 위해.
-      </div>
-      <div style="font-size:14px; color:#777; line-height:1.7;">
-        버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>
-        정확한 가이드를 통해 자원 순환에 동참해 주세요.
-      </div>
+    <div class="hero-wrap">
+      <div class="hero-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
+      <div class="hero-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── 검색창 ──
-    st.markdown("""
-    <style>
-    /* 검색창 컬럼 패딩 완전 제거 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
-        gap: 8px !important;
-    }
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"] {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # 검색창을 히어로 아래에 배치 (Streamlit 위젯)
     col_input, col_btn = st.columns([6, 1], gap="small")
     with col_input:
         query = st.text_input(
@@ -513,7 +586,7 @@ def render_home():
         st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요. 다른 표현으로 검색해보세요.")
         st.session_state.state = "home"
 
-    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
     # ── HOT ISSUE + 탄소 카드 ──
     col_hot, col_carbon = st.columns([3, 2], gap="medium")
@@ -532,11 +605,10 @@ def render_home():
         else:
             top5 = ["플라스틱 컵", "치킨 상자", "영수증", "택배 박스", "우유팩"]
 
-        # 카드 상단: 흰 배경 + 위쪽 둥근 모서리 (태그 행과 테두리 공유)
         st.markdown("""
-        <div class="hot-card-top">
+        <div class="hot-card-v2">
           <div class="hot-badge">HOT ISSUE</div>
-          <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px;">
+          <div style="font-size:15px; font-weight:700; color:#111; margin-top:6px; margin-bottom:4px;">
             지금 가장 많이 찾아보는 품목
           </div>
         </div>
@@ -555,20 +627,21 @@ def render_home():
         carbon_val     = get_today_carbon(usage_log2, carbon_factors)
         carbon_str     = format_carbon(carbon_val)
         st.markdown(f"""
-        <div class="card-dark" style="min-height:160px;">
-          <div style="font-size:22px; margin-bottom:6px;">🌿</div>
-          <div style="font-size:12px; opacity:.75; margin-bottom:2px;">오늘 여러분이 줄인 탄소발자국</div>
-          <div class="carbon-value">{carbon_str}</div>
-          <div style="font-size:12px; opacity:.6;">우리의 분리배출로 아낀 탄소량</div>
+        <div class="carbon-card-v2">
+          <div style="font-size:11px; color:rgba(255,255,255,.65); letter-spacing:.8px; margin-bottom:4px;">TODAY'S IMPACT</div>
+          <div style="font-size:13px; color:rgba(255,255,255,.8); margin-bottom:2px;">오늘 여러분이 줄인 탄소발자국</div>
+          <div class="carbon-value" style="font-size:44px;">{carbon_str}</div>
+          <div style="font-size:12px; color:rgba(255,255,255,.55); margin-top:4px;">우리의 분리배출로 아낀 탄소량</div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
 
-    # ── 자주 틀리는 실수 Top ──
+    # ── 자주 틀리는 실수 Top 10 ──
     st.markdown("""
-    <div style="margin:36px 0 14px;">
+    <div style="margin:36px 0 16px; display:flex; align-items:center; gap:10px;">
       <span style="font-size:17px; font-weight:700; color:#111;">자주 틀리는 실수 Top 10</span>
+      <span style="font-size:12px; color:#1B4D2E; background:#E8F5E9; border-radius:20px; padding:3px 10px; font-weight:600;">주의</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -582,7 +655,6 @@ def render_home():
     else:
         top_mistakes = []
 
-    # 로그가 없거나 일반쓰레기 결과가 없으면 기본값 10개
     if not top_mistakes:
         top_mistakes = [
             "씻지 않은 음식 용기", "라벨 붙은 페트병",
@@ -592,23 +664,23 @@ def render_home():
             "일반 쓰레기봉투에 배터리 배출", "스프레이 캔 가스 미제거",
         ]
 
-    # 5열 × 2행으로 10개 표시, 카드 높이 고정
     cols = st.columns(5, gap="small")
     for i, mistake in enumerate(top_mistakes[:10]):
         with cols[i % 5]:
+            badge_class = "rank-badge rank-badge-top" if i < 3 else "rank-badge"
             st.markdown(f"""
-            <div class="mistake-card">
-              <div class="rank-num">{i+1:02d}</div>
-              <div class="mistake-text">{mistake}</div>
+            <div class="mistake-card-v2">
+              <div class="{badge_class}">{i+1:02d}</div>
+              <div style="font-size:13px; color:#333; line-height:1.4; word-break:keep-all;">{mistake}</div>
             </div>
             """, unsafe_allow_html=True)
 
     # ── 푸터 ──
     st.markdown("""
-    <div style="margin-top:60px; padding-top:28px; border-top:1px solid #E5E5E3;
+    <div style="margin-top:64px; padding-top:28px; border-top:1px solid #E5E5E3;
                 display:flex; justify-content:space-between; align-items:flex-start;">
       <div>
-        <div style="font-size:15px; font-weight:700; color:#1B4D2E; margin-bottom:6px;">Re:Sort</div>
+        <div style="font-size:16px; font-weight:900; color:#1B4D2E; margin-bottom:6px;">Re:Sort</div>
         <div style="font-size:12px; color:#AAA; line-height:1.7;">
           공공 데이터 기반의 지능형 분리배출 가이드 시스템.<br>환경을 위한 당신의 노력을 응원합니다.
         </div>
@@ -625,7 +697,7 @@ def render_home():
       </div>
     </div>
     <div style="margin-top:20px; font-size:11px; color:#CCC; padding-bottom:20px;">
-      © 2024 RE:SORT ARCHIVE PROJECT. ALL RIGHTS RESERVED.
+      © 2025 RE:SORT ARCHIVE PROJECT. ALL RIGHTS RESERVED.
     </div>
     """, unsafe_allow_html=True)
 
