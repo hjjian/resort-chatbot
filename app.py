@@ -580,11 +580,11 @@ def render_home():
     }
     /* 태그 버튼 — 검색창 밖 */
     div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
-        background: #fff !important; color: #333 !important;
-        border: 1.5px solid rgba(0,0,0,.12) !important; border-radius: 999px !important;
-        padding: 7px 16px !important; font-size: 13px !important; font-weight: 500 !important;
+        background: #fff !important; color: #555 !important;
+        border: 1px solid rgba(0,0,0,.1) !important; border-radius: 999px !important;
+        padding: 5px 14px !important; font-size: 12px !important; font-weight: 500 !important;
         height: auto !important; width: auto !important;
-        box-shadow: 0 1px 4px rgba(0,0,0,.05) !important; white-space: nowrap !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05) !important; white-space: nowrap !important;
         transform: none !important;
     }
     div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button:hover {
@@ -635,6 +635,7 @@ def render_home():
     _, col_t, _ = st.columns([0.3, 5, 0.3])
     with col_t:
         tc_label, *tc_list = st.columns([1.2] + [1]*len(top4), gap="small")
+        st.markdown('<style>div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])){gap:6px!important;}</style>', unsafe_allow_html=True)
         with tc_label:
             st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:9px;text-align:right;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
         for i, tag in enumerate(top4):
