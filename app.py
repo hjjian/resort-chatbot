@@ -489,59 +489,53 @@ def render_navbar():
     """, unsafe_allow_html=True)
 
 
+
 def render_home():
     st.markdown("""
     <style>
     .stApp { background-color: #F5F5F3 !important; }
 
-    /* 홈 화면 검색 영역 전용 */
     .home-hero-wrap {
         text-align: center;
-        padding: 56px 0 24px;
+        padding: 56px 0 14px;
     }
     .home-hero-title {
         font-size: 58px;
         font-weight: 900;
-        line-height: 1.12;
+        line-height: 1.08;
         color: #1a1a1a;
         letter-spacing: -2px;
         margin: 0;
     }
-    .home-hero-title .accent { color: #0E5A38; }
+    .home-hero-title .accent { color: #1E5B3A; }
 
-    .search-shell {
-        max-width: 960px;
-        margin: 0 auto;
-        width: 100%;
+    /* 검색창 전체를 가운데에 좁게 고정 */
+    .home-search-area {
+        max-width: 860px;
+        margin: 28px auto 0;
     }
 
-    .search-row-wrap {
-        max-width: 820px;
-        margin: 0 auto;
-        width: 100%;
-    }
-
+    /* 입력창 + 버튼 행 */
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) {
         align-items: center !important;
-        gap: 20px !important;
+        justify-content: center !important;
+        gap: 16px !important;
         flex-wrap: nowrap !important;
-        width: 100% !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"] {
         padding: 0 !important;
-        width: 100% !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:first-child {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
+        flex: 0 1 690px !important;
+        max-width: 690px !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
-        flex: 0 0 170px !important;
-        width: 170px !important;
-        min-width: 170px !important;
+        flex: 0 0 142px !important;
+        width: 142px !important;
+        min-width: 142px !important;
     }
 
-    /* 검색 입력 박스 */
+    /* 입력 바깥 래퍼 */
     div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) > div,
     div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) > div > div {
         border: none !important;
@@ -549,105 +543,135 @@ def render_home():
         background: transparent !important;
         padding: 0 !important;
     }
+
+    /* 입력창 */
     div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input {
-        height: 64px !important;
+        height: 70px !important;
         border-radius: 999px !important;
-        border: 1px solid #E9E9E4 !important;
-        background: #FFFFFF !important;
-        box-shadow: 0 4px 16px rgba(0,0,0,.04) !important;
+        border: 2px solid #D9DDD8 !important;
+        background: #FBFBFA !important;
+        box-shadow: none !important;
         font-size: 17px !important;
         color: #222 !important;
-        padding: 0 26px !important;
+        padding: 0 26px 0 70px !important;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%2381817B' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>");
+        background-repeat: no-repeat !important;
+        background-position: 24px center !important;
+        background-size: 24px 24px !important;
     }
     div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input::placeholder {
-        color: #B5B5AF !important;
+        color: #BEC2BC !important;
         opacity: 1 !important;
+        font-weight: 500 !important;
     }
     div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input:focus {
-        border: 1.5px solid #0E5A38 !important;
-        box-shadow: 0 0 0 4px rgba(14,90,56,.08) !important;
+        border: 2px solid #1E5B3A !important;
+        box-shadow: 0 0 0 4px rgba(30,91,58,.08) !important;
         outline: none !important;
     }
 
     /* 검색 버튼 */
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button {
-        height: 64px !important;
-        min-width: 170px !important;
+        height: 70px !important;
+        width: 142px !important;
+        min-width: 142px !important;
         border-radius: 999px !important;
-        background: #0E5A38 !important;
+        background: #24613E !important;
         color: #fff !important;
         border: none !important;
-        padding: 0 34px !important;
+        padding: 0 !important;
         font-size: 18px !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
         box-shadow: none !important;
-        margin-top: 0 !important;
         white-space: nowrap !important;
     }
     div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button:hover {
-        background: #0A482D !important;
+        background: #1D5234 !important;
         transform: none !important;
     }
 
-    /* 태그 버튼 */
-    .hot-tags-label {
-        font-size: 15px;
-        color: #444;
-        font-weight: 500;
-        white-space: nowrap;
-        padding-top: 10px;
+    /* 인기 검색어 */
+    .tags-wrap {
+        max-width: 700px;
+        margin: 22px auto 0;
     }
+    .hot-tags-label {
+        font-size: 14px;
+        color: #555;
+        font-weight: 600;
+        white-space: nowrap;
+        text-align: right;
+        padding-top: 8px;
+    }
+
+    /* 검색창 행이 아닌 가로 블록들 */
     div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) {
+        align-items: center !important;
         justify-content: center !important;
         gap: 10px !important;
         flex-wrap: wrap !important;
     }
+    div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) > div[data-testid="column"] {
+        padding: 0 !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+    }
     div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) .stButton > button {
-        background: #E6E6E3 !important;
-        color: #333 !important;
+        background: #E5E6E2 !important;
+        color: #424242 !important;
         border: none !important;
         border-radius: 999px !important;
-        padding: 9px 18px !important;
+        padding: 11px 22px !important;
         font-size: 14px !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
         width: auto !important;
         height: auto !important;
+        min-height: 0 !important;
         box-shadow: none !important;
         white-space: nowrap !important;
     }
     div[data-testid="stHorizontalBlock"]:not(:has(input[aria-label="검색어 입력"])) .stButton > button:hover {
-        background: #D8D8D4 !important;
-        color: #111 !important;
+        background: #DCDDDA !important;
+        color: #222 !important;
         transform: none !important;
     }
 
-    @media (max-width: 768px) {
-        .home-hero-wrap { padding: 36px 0 16px; }
+    @media (max-width: 900px) {
         .home-hero-title {
-            font-size: 36px;
-            line-height: 1.2;
-            letter-spacing: -1px;
+            font-size: 42px;
+            line-height: 1.15;
+            letter-spacing: -1.2px;
+        }
+        .home-search-area {
+            max-width: 100%;
+            margin-top: 22px;
         }
         div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) {
-            gap: 10px !important;
+            gap: 12px !important;
             flex-wrap: wrap !important;
         }
+        div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:first-child,
         div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) > div[data-testid="column"]:last-child {
             flex: 1 1 100% !important;
             width: 100% !important;
+            max-width: 100% !important;
             min-width: 100% !important;
         }
         div[data-testid="stTextInput"]:has(input[aria-label="검색어 입력"]) input {
-            height: 54px !important;
+            height: 58px !important;
             font-size: 15px !important;
-            padding: 0 18px !important;
+            padding: 0 18px 0 56px !important;
+            background-position: 18px center !important;
+            background-size: 20px 20px !important;
         }
         div[data-testid="stHorizontalBlock"]:has(input[aria-label="검색어 입력"]) .stButton > button {
-            height: 54px !important;
-            min-width: 96px !important;
+            height: 58px !important;
             width: 100% !important;
-            font-size: 15px !important;
-            padding: 0 22px !important;
+            min-width: 100% !important;
+            font-size: 16px !important;
+        }
+        .tags-wrap {
+            max-width: 100%;
         }
     }
     </style>
@@ -664,10 +688,10 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    outer_left, outer_center, outer_right = st.columns([1.2, 8.2, 1.2], gap="small")
-    with outer_center:
-        st.markdown('<div class="search-row-wrap">', unsafe_allow_html=True)
-        col_input, col_btn = st.columns([5.4, 1.25], gap="medium")
+    left, center, right = st.columns([1.1, 8.2, 1.1], gap="small")
+    with center:
+        st.markdown('<div class="home-search-area">', unsafe_allow_html=True)
+        col_input, col_btn = st.columns([6.0, 1.35], gap="small")
         with col_input:
             query = st.text_input(
                 "검색어 입력",
@@ -703,19 +727,22 @@ def render_home():
         ]
         top4 = [item for item, _ in Counter(today_inputs).most_common(4)]
     else:
-        top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
+        top4 = ["플라스틱컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
-    st.markdown("<div style='height:18px;'></div>", unsafe_allow_html=True)
-    _, col_tags_center, _ = st.columns([0.7, 5, 0.7])
-    with col_tags_center:
-        tag_label, *tag_cols_list = st.columns([1.1] + [1]*len(top4), gap="small")
-        with tag_label:
-            st.markdown('<p class="hot-tags-label">인기 검색어</p>', unsafe_allow_html=True)
-        for i, tag in enumerate(top4):
-            with tag_cols_list[i]:
+    center_left, tags_center, center_right = st.columns([1.5, 7, 1.5], gap="small")
+    with tags_center:
+        st.markdown('<div class="tags-wrap">', unsafe_allow_html=True)
+        label_col, c1, c2, c3, c4 = st.columns([1.2, 1, 1, 1, 1], gap="small")
+        with label_col:
+            st.markdown('<div class="hot-tags-label">인기 검색어</div>', unsafe_allow_html=True)
+        tags = top4[:4]
+        cols = [c1, c2, c3, c4]
+        for i, tag in enumerate(tags):
+            with cols[i]:
                 if st.button(tag, key=f"tag_{i}"):
                     st.session_state._tag_query = tag
                     st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
@@ -842,6 +869,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
 def render_questioning():
+
     current_q = st.session_state.current_q
 
     # 질문 화면 전용 CSS: YES(초록 대형) / NO(회색 대형) / 뒤로가기(작은 ghost)
