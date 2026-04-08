@@ -494,6 +494,18 @@ def render_home():
     <style>
     /* ── 전역 리셋 ── */
     .stApp { background-color: #F5F5F3 !important; }
+    /* 컬럼 흰박스 제거 */
+    div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"] {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
 
     /* ── 검색창 ── */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
