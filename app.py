@@ -501,23 +501,26 @@ def render_home():
         border: none !important;
         padding: 0 !important;
     }
-    div[data-testid="stHorizontalBlock"] {
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
+
 
     /* ── 검색창 ── */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
         background: #fff !important;
         border-radius: 999px !important;
-        box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-        border: 1px solid rgba(0,0,0,.07) !important;
-        padding: 8px 8px 8px 24px !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.09) !important;
+        border: 1.5px solid rgba(0,0,0,.06) !important;
+        padding: 6px 6px 6px 20px !important;
         gap: 0 !important;
         margin: 0 auto !important;
         align-items: center !important; flex-wrap: nowrap !important;
         max-width: 600px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
+        content: "";
+        display: block; width: 16px; height: 16px; flex-shrink: 0;
+        margin-right: 10px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-size: contain;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
         flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
@@ -584,14 +587,14 @@ def render_home():
     # ── 검색창 (가운데 정렬) ──
     col1, col_mid, col2 = st.columns([0.5, 5, 0.5])
     with col_mid:
-        col_input, col_btn = st.columns([6, 1], gap="small")
+        col_input, col_btn = st.columns([5, 1], gap="small")
         with col_input:
             query = st.text_input(
-                "검색", placeholder="🔍  어떤 품목을 버리시나요?",
+                "검색", placeholder="어떤 품목을 버리시나요?",
                 label_visibility="collapsed", key="home_input",
             )
         with col_btn:
-            search_btn = st.button("검색", use_container_width=False, key="home_search_btn")
+            search_btn = st.button("검색 →", use_container_width=True, key="home_search_btn")
 
     if search_btn and query:
         run_search(query)
