@@ -620,18 +620,34 @@ def render_home():
         st.session_state.state = "home"
 
     # ── 인기 태그 ──
+    DEFAULT_TAGS = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
     usage_log = load_usage_log()
     if usage_log:
         from collections import Counter
         from datetime import date
         today = date.today().isoformat()
+        # 오늘 top4
         today_inputs = [
             e["user_input"] for e in usage_log
             if e.get("timestamp", "").startswith(today) and e.get("user_input")
         ]
         top4 = [item for item, _ in Counter(today_inputs).most_common(4)]
+        # 오늘 데이터 4개 미만이면 전체 기간 top으로 채움
+        if len(top4) < 4:
+            all_inputs = [e["user_input"] for e in usage_log if e.get("user_input")]
+            for item, _ in Counter(all_inputs).most_common(20):
+                if item not in top4:
+                    top4.append(item)
+                if len(top4) == 4:
+                    break
+        # 그래도 부족하면 기본값으로 채움
+        for tag in DEFAULT_TAGS:
+            if len(top4) == 4:
+                break
+            if tag not in top4:
+                top4.append(tag)
     else:
-        top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
+        top4 = DEFAULT_TAGS
 
     st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
 
