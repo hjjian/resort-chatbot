@@ -33,7 +33,8 @@ st.markdown("""
 *, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
 .stApp { background-color: #F2F2F0; }
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
+[data-testid="collapsedControl"] { visibility: visible !important; }
 
 /* ── 콘텐츠 최대 너비 ── */
 .block-container {
