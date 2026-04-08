@@ -636,7 +636,7 @@ def render_home():
     else:
         top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
-    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
 
     # ── 인기 태그 버튼 (중앙 정렬) ──
     st.markdown("""
