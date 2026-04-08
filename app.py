@@ -583,11 +583,18 @@ def render_home():
         background: #fff;
         border-radius: 14px;
         box-shadow: 0 2px 16px rgba(0,0,0,.08);
-        padding: 6px 6px 6px 20px !important;
+        padding: 6px 6px 6px 12px !important;
         gap: 0 !important;
         margin: 0 !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
+        content: "🔍";
+        font-size: 15px;
+        padding-right: 4px;
+        flex-shrink: 0;
+        opacity: 0.45;
     }
     /* 입력 컬럼: 최대한 넓게 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
@@ -622,7 +629,7 @@ def render_home():
         border-radius: 999px !important; height: 40px !important;
         font-size: 14px !important; font-weight: 600 !important;
         padding: 0 24px !important; white-space: nowrap !important;
-        border: 1.5px solid #6BAF8A !important;
+        border: 1.5px solid #A8D5B5 !important;
         box-shadow: none !important; transform: none !important;
         width: auto !important; letter-spacing: .2px !important;
     }
