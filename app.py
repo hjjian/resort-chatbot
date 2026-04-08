@@ -44,6 +44,10 @@ section[data-testid="stSidebar"] { display: none !important; }
     margin: 0 auto !important;
 }
 
+/* Streamlit 기본 상단 여백 제거 */
+.block-container > div:first-child { padding-top: 0 !important; }
+div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
+
 /* ── 네비게이션바 ── */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
@@ -432,7 +436,7 @@ def render_navbar():
       <span class="navbar-logo">Re:Sort</span>
       <span style="font-size:13px; color:#999;">♻️ 올바른 분리배출 가이드</span>
     </div>
-    <div style="height:28px;"></div>
+    <div style="height:16px;"></div>
     """, unsafe_allow_html=True)
 
 
@@ -787,7 +791,7 @@ def render_questioning():
 
     # 처음으로 버튼 (ghost style)
     st.markdown("""
-    <div style="height:28px;"></div>
+    <div style="height:16px;"></div>
     <style>
     div[data-testid="stVerticalBlock"] > div:last-child .stButton > button {
         background: transparent !important;
