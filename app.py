@@ -502,9 +502,10 @@ def render_home():
         box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
         border: 1px solid rgba(0,0,0,.07) !important;
         padding: 8px 8px 8px 24px !important;
-        gap: 0 !important; margin: 0 !important;
+        gap: 0 !important;
+        margin: 0 auto !important;
         align-items: center !important; flex-wrap: nowrap !important;
-        max-width: 640px !important;
+        max-width: 600px !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
         flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
@@ -569,7 +570,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
     # ── 검색창 (가운데 정렬) ──
-    col1, col_mid, col2 = st.columns([1, 4, 1])
+    col1, col_mid, col2 = st.columns([0.5, 5, 0.5])
     with col_mid:
         col_input, col_btn = st.columns([6, 1], gap="small")
         with col_input:
@@ -606,12 +607,19 @@ def render_home():
         top4 = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
 
     st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
-    _, col_tags_center, _ = st.columns([1, 4, 1])
+    st.markdown("""
+    <style>
+    /* 태그 행 중앙 정렬 */
+    div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) {
+        justify-content: center !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    _, col_tags_center, _ = st.columns([0.5, 5, 0.5])
     with col_tags_center:
-        st.markdown('<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">', unsafe_allow_html=True)
         tag_label, *tag_cols_list = st.columns([1.2] + [1]*len(top4), gap="small")
         with tag_label:
-            st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:8px;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
+            st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:10px;white-space:nowrap;text-align:right;">인기 검색어</p>', unsafe_allow_html=True)
         for i, tag in enumerate(top4):
             with tag_cols_list[i]:
                 if st.button(tag, key=f"tag_{i}"):
