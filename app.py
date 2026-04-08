@@ -27,7 +27,7 @@ st.set_page_config(
 # ──────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;600;700&display=swap');
 
 /* ── 기본 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; }
@@ -260,7 +260,7 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 .step-text { font-size: 14px; color: #333; padding-top: 4px; line-height: 1.5; }
 
 /* ── 탄소 숫자 ── */
-.carbon-value { font-size: 42px; font-weight: 900; color: #fff; margin: 6px 0 4px; line-height: 1; }
+.carbon-value { font-size: 42px; font-weight: 700; color: #fff; margin: 6px 0 4px; line-height: 1; font-family: 'DM Sans', sans-serif; letter-spacing: -1px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -478,6 +478,7 @@ def render_home():
     .hero-title {
         font-size: 42px; font-weight: 900; line-height: 1.2;
         color: #fff; margin-bottom: 10px; letter-spacing: -0.5px;
+        font-family: 'Playfair Display', 'Noto Sans KR', serif;
     }
     .hero-sub {
         font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 32px;
