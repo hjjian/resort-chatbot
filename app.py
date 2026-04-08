@@ -572,13 +572,12 @@ def render_home():
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
         background: #163D24 !important; transform: none !important;
     }
-    /* 검색창 돋보기 */
-    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
-        content: "";
-        display: block; width: 16px; height: 16px; flex-shrink: 0; margin-right: 4px;
-        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999' stroke-width='2.2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center/contain;
-    }
+
     /* 태그 버튼 — 검색창 밖 */
+    div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) {
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+    }
     div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
         background: #fff !important; color: #555 !important;
         border: 1px solid rgba(0,0,0,.1) !important; border-radius: 999px !important;
@@ -635,7 +634,6 @@ def render_home():
     _, col_t, _ = st.columns([0.3, 5, 0.3])
     with col_t:
         tc_label, *tc_list = st.columns([1.2] + [1]*len(top4), gap="small")
-        st.markdown('<style>div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])){gap:6px!important;}</style>', unsafe_allow_html=True)
         with tc_label:
             st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:9px;text-align:right;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
         for i, tag in enumerate(top4):
