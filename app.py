@@ -655,21 +655,7 @@ def render_home():
         unsafe_allow_html=True
     )
 
-    # hidden 버튼들 (클릭 이벤트용) — 화면에 안 보이게
-    st.markdown("""
-    <style>
-    div[data-testid="stHorizontalBlock"].tag-hidden-row {
-        position: absolute; opacity: 0; pointer-events: none; height: 0; overflow: hidden;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    with st.container():
-        tag_cols = st.columns(len(top4), gap="small")
-        for i, tag in enumerate(top4):
-            with tag_cols[i]:
-                if st.button(tag, key=f"tag_{i}"):
-                    st.session_state._tag_query = tag
-                    st.rerun()
+
 
     st.markdown("<div style='height:48px;'></div>", unsafe_allow_html=True)
 
