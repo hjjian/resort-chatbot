@@ -415,6 +415,43 @@ with tab_list:
                 st.success(f"✅ {len(updated)}개 항목이 저장되었습니다!")
                 st.rerun()
 
+# ── extra_questions JSON 편집기 ──
+    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:15px; font-weight:700; color:#222; margin-bottom:8px;'>🔀 extra_questions 편집</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:13px; color:#888; margin-bottom:12px;'>extra_questions가 있는 항목을 선택해서 JSON으로 직접 편집할 수 있어요.</div>", unsafe_allow_html=True)
+
+    eq_items = [i for i in items_list if i.get("extra_questions")]
+    all_items_for_eq = items_list
+
+    eq_item_names = [f"{i['id']} — {i['name']}" for i in all_items_for_eq]
+    selected_eq_label = st.selectbox("항목 선택", eq_item_names, key="eq_selector")
+    selected_eq_id = selected_eq_label.split(" — ")[0]
+    selected_eq_item = next((i for i in all_items_for_eq if i["id"] == selected_eq_id), None)
+
+    if selected_eq_item:
+        current_eq = selected_eq_item.get("extra_questions") or []
+        eq_json_str = json.dumps(current_eq, ensure_ascii=False, indent=2)
+        edited_eq_str = st.text_area(
+            "extra_questions JSON",
+            value=eq_json_str,
+            height=300,
+            key="eq_editor",
+            help="JSON 형식으로 편집하세요. yes/no 각각 result+reason 또는 next 키를 가질 수 있어요."
+        )
+        if st.button("💾 extra_questions 저장", key="save_eq"):
+            try:
+                parsed_eq = json.loads(edited_eq_str)
+                for i, item in enumerate(items_data["items"]):
+                    if item["id"] == selected_eq_id:
+                        items_data["items"][i]["extra_questions"] = parsed_eq if parsed_eq else None
+                        break
+                save_items_raw(items_data)
+                st.cache_data.clear()
+                st.success(f"✅ '{selected_eq_item['name']}' extra_questions 저장 완료!")
+                st.rerun()
+            except json.JSONDecodeError as e:
+                st.error(f"❌ JSON 형식 오류: {e}")
+
 # ── 탭 2: 새 항목 추가 ──
 with tab_add:
     st.markdown("<div style='font-size:13px; color:#888; margin-bottom:16px;'>새로운 품목을 추가해요.</div>", unsafe_allow_html=True)
