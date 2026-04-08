@@ -524,10 +524,10 @@ def render_home():
         position: relative; overflow: hidden;
     }
     .carbon-icon {
-        width: 44px; height: 44px; border-radius: 12px;
+        width: 36px; height: 36px; border-radius: 10px;
         background: #1B4D2E;
         display: flex; align-items: center; justify-content: center;
-        font-size: 20px; margin-bottom: 16px;
+        font-size: 16px; margin-bottom: 12px;
     }
     .carbon-live-badge {
         position: absolute; top: 24px; right: 20px;
@@ -577,11 +577,7 @@ def render_home():
         align-items: center !important; flex-wrap: nowrap !important;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"])::before {
-        content: "";
-        display: block; width: 16px; height: 16px; flex-shrink: 0;
-        margin-right: 8px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232D6A4F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-        background-repeat: no-repeat; background-size: contain; opacity: 0.5;
+        content: none;
     }
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
         flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
@@ -668,12 +664,14 @@ def render_home():
     with col_left:
         # 제목
         st.markdown("""
+        <div style="height:20px;"></div>
         <div class="home-title">무엇이든 물어보세요.<br>지구의 내일을 위해.</div>
         <div class="home-sub">버리기 어려운 쓰레기, 어떻게 분리배출해야 할까요?<br>정확한 가이드를 통해 자원 순환에 동참해 주세요.</div>
+        <div style="height:24px;"></div>
         """, unsafe_allow_html=True)
 
         # 검색창
-        col_input, col_btn = st.columns([6, 1], gap="small")
+        col_input, col_btn = st.columns([5, 1], gap="small")
         with col_input:
             query = st.text_input(
                 "품목 검색", placeholder="예: 치킨 박스, 배달 용기, 우유 팩...",
@@ -728,8 +726,8 @@ def render_home():
           <div class="carbon-live-badge">LIVE IMPACT</div>
           <div class="carbon-label">오늘 여러분이 줄인 탄소발자국</div>
           <div>
-            <span class="carbon-num">{carbon_str.replace(' kg','')}</span>
-            <span class="carbon-unit">kg</span>
+            <span class="carbon-num" style="font-size:36px;">{carbon_str.replace(' kg','')}</span>
+            <span class="carbon-unit" style="font-size:16px;">kg</span>
           </div>
           <div class="carbon-photo">🌱</div>
           <div class="carbon-quote">"작은 실천이 모여 거대한 숲을 이룹니다.<br>오늘도 Re:Sort와 함께 지구를 지켜주셔서 감사합니다."</div>
