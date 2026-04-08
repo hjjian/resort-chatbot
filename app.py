@@ -494,6 +494,52 @@ def render_home():
     <style>
     /* ── 전역 리셋 ── */
     .stApp { background-color: #F5F5F3 !important; }
+    /* 검색창 pill 스타일 */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) {
+        background: #fff !important;
+        border-radius: 999px !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.08) !important;
+        border: 1.5px solid rgba(0,0,0,.07) !important;
+        padding: 6px 6px 6px 24px !important;
+        gap: 0 !important; margin: 0 auto !important;
+        align-items: center !important; flex-wrap: nowrap !important;
+        max-width: 600px !important;
+        display: flex !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important; min-width: 0 !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) > div[data-testid="column"]:last-child {
+        flex: 0 0 auto !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div,
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 10px 4px !important;
+        font-size: 15px !important; color: #333 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stTextInput input:focus {
+        border: none !important; box-shadow: none !important; outline: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button {
+        background: #1a1a1a !important; color: #fff !important;
+        border: none !important; border-radius: 999px !important;
+        height: 44px !important; padding: 0 24px !important;
+        font-size: 14px !important; font-weight: 700 !important;
+        box-shadow: none !important; transform: none !important;
+        width: auto !important; white-space: nowrap !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) .stButton > button:hover {
+        background: #333 !important; transform: none !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) div[data-testid="column"] > div {
+        background: transparent !important; box-shadow: none !important;
+        border: none !important; padding: 0 !important;
+    }
     /* Streamlit 기본 검색 아이콘 숨기기 */
     div[data-testid="stHorizontalBlock"]:has(div[data-testid="stTextInput"]) [data-testid="stTextInput"] svg {
         display: none !important;
