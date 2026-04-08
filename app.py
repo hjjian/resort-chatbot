@@ -575,8 +575,15 @@ def render_home():
 
     /* 태그 버튼 — 검색창 밖 */
     div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) {
-        gap: 6px !important;
+        gap: 8px !important;
         flex-wrap: nowrap !important;
+        align-items: center !important;
+    }
+    div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) > div[data-testid="column"] {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        padding: 0 !important;
     }
     div[data-testid="stHorizontalBlock"]:not(:has(div[data-testid="stTextInput"])) .stButton > button {
         background: #fff !important; color: #555 !important;
@@ -633,12 +640,13 @@ def render_home():
     st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
     _, col_t, _ = st.columns([0.3, 5, 0.3])
     with col_t:
-        tc_label, *tc_list = st.columns([1.2] + [1]*len(top4), gap="small")
-        with tc_label:
+        # 태그를 inline-flex로 자연스러운 너비로
+        tag_cols = st.columns(len(top4) + 1, gap="small")
+        with tag_cols[0]:
             st.markdown('<p style="font-size:12px;color:#999;font-weight:500;margin:0;padding-top:9px;text-align:right;white-space:nowrap;">인기 검색어</p>', unsafe_allow_html=True)
         for i, tag in enumerate(top4):
-            with tc_list[i]:
-                if st.button(tag, key=f"tag_{i}"):
+            with tag_cols[i + 1]:
+                if st.button(tag, key=f"tag_{i}", use_container_width=False):
                     st.session_state._tag_query = tag
                     st.rerun()
 
