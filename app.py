@@ -539,7 +539,7 @@ def render_home():
         border-radius: 999px !important;
         border: 1.5px solid rgba(0,0,0,.09) !important;
         box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-        padding: 4px 4px 4px 8px !important;
+        padding: 4px 6px 4px 8px !important;
         gap: 0 !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
@@ -617,7 +617,9 @@ def render_home():
             font-size: 15px !important;
             border-radius: 10px !important;
         }
-        [data-testid="stForm"] [data-testid="stFormSubmitButton"] {
+        [data-testid="stForm"] [data-testid="stFormSubmitButton"],
+        [data-testid="stForm"] [data-testid="stFormSubmitButton"] > div {
+            width: 100% !important;
             display: flex !important;
             justify-content: center !important;
         }
