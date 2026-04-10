@@ -33,6 +33,8 @@ st.markdown("""
 *, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] { font-family: 'Noto Sans KR', sans-serif; }
 html, body { overflow-x: hidden !important; max-width: 100vw !important; }
+html::-webkit-scrollbar { display: none !important; }
+html { scrollbar-width: none !important; -ms-overflow-style: none !important; }
 .stApp { background-color: #EEF4F0; overflow-x: hidden !important; }
 #MainMenu, footer, header { visibility: hidden; }
 [data-testid="collapsedControl"] { display: none !important; }
