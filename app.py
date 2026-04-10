@@ -851,34 +851,39 @@ def render_home():
 def render_questioning():
     current_q = st.session_state.current_q
 
-    # 질문 화면 전용 CSS: YES(초록 대형) / NO(회색 대형) / 뒤로가기(작은 ghost)
     st.markdown("""
     <style>
-    /* YES 버튼: 첫 번째 column */
+    .stApp { background: #F0F4F0 !important; }
+    /* YES 카드 버튼 */
     [data-testid="column"]:first-child .stButton > button {
-        background: #1B4D2E !important;
-        color: #fff !important;
-        height: 160px !important;
-        font-size: 26px !important;
-        font-weight: 900 !important;
-        border-radius: 18px !important;
-        letter-spacing: 1px !important;
+        background: #fff !important;
+        color: #1B4D2E !important;
+        height: 120px !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        border-radius: 20px !important;
+        border: 2px solid #1B4D2E !important;
+        box-shadow: 0 2px 12px rgba(27,77,46,.1) !important;
+        transition: all .15s !important;
     }
     [data-testid="column"]:first-child .stButton > button:hover {
-        background: #163D24 !important;
+        background: #1B4D2E !important;
+        color: #fff !important;
         transform: translateY(-2px) !important;
     }
-    /* NO 버튼: 두 번째 column */
+    /* NO 카드 버튼 */
     [data-testid="column"]:last-child .stButton > button {
-        background: #EEEEED !important;
-        color: #444 !important;
-        height: 160px !important;
-        font-size: 26px !important;
-        font-weight: 900 !important;
-        border-radius: 18px !important;
+        background: #fff !important;
+        color: #666 !important;
+        height: 120px !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        border-radius: 20px !important;
+        border: 2px solid #E0E0DE !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,.05) !important;
     }
     [data-testid="column"]:last-child .stButton > button:hover {
-        background: #E2E2E0 !important;
+        background: #f5f5f3 !important;
         transform: translateY(-2px) !important;
     }
     </style>
@@ -888,83 +893,87 @@ def render_questioning():
 
     # 안내 메시지
     if st.session_state.guide_message:
-        st.info(f"💡 {st.session_state.guide_message}")
+        _, cg, _ = st.columns([1, 4, 1])
+        with cg:
+            st.info(f"💡 {st.session_state.guide_message}")
         st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
 
-    # PROCESS 배경 + STEP + 질문
+    # STEP 배지 + 질문
+    desc = current_q.get("description", "")
     st.markdown(f"""
-    <div style="text-align:center; padding: 16px 0 0;">
-      <div class="process-bg">PROCESS</div>
-      <div style="margin-top:-48px; padding-bottom: 8px;">
-        <span class="step-badge">STEP {st.session_state.step_num:02d}</span>
-        <div class="question-title">{current_q["text"]}</div>
-        <div class="question-desc">{current_q.get("description", "")}</div>
+    <div style="text-align:center;padding:48px 0 32px;">
+      <div style="display:inline-block;background:#1B4D2E;color:#fff;
+                  border-radius:999px;padding:4px 16px;font-size:11px;
+                  font-weight:700;letter-spacing:1px;margin-bottom:20px;">
+        ● STEP {st.session_state.step_num:02d}
       </div>
+      <div style="font-size:36px;font-weight:900;color:#1a1a1a;
+                  line-height:1.25;letter-spacing:-1px;word-break:keep-all;">
+        {current_q["text"]}
+      </div>
+      {"<div style='font-size:14px;color:#888;margin-top:12px;line-height:1.6;word-break:keep-all;max-width:480px;margin-left:auto;margin-right:auto;'>" + desc + "</div>" if desc else ""}
     </div>
     """, unsafe_allow_html=True)
 
-    # YES / NO 버튼
-    col_yes, col_no = st.columns(2, gap="medium")
-    with col_yes:
-        if st.button("✓  예", key="yes_btn", use_container_width=True):
-            handle_answer(True)
-            st.rerun()
-    with col_no:
-        if st.button("✕  아니오", key="no_btn", use_container_width=True):
-            handle_answer(False)
-            st.rerun()
+    # YES / NO 카드 버튼
+    _, col_btns, _ = st.columns([1, 4, 1])
+    with col_btns:
+        col_yes, col_no = st.columns(2, gap="medium")
+        with col_yes:
+            if st.button("✓  네, 했어요\n\n다음 단계로 이동", key="yes_btn", use_container_width=True):
+                handle_answer(True)
+                st.rerun()
+        with col_no:
+            if st.button("✕  아직이요\n\n가이드 확인하기", key="no_btn", use_container_width=True):
+                handle_answer(False)
+                st.rerun()
 
-    # eco 박스
-    eco_title = current_q.get("eco_title", "왜 중요한가요?")
+    # 분리배출 팁 박스
+    eco_title = current_q.get("eco_title", "")
     eco_desc  = current_q.get("eco_desc", "")
     if eco_desc:
         st.markdown(f"""
-        <div class="eco-box">
-          <div class="eco-icon">💡</div>
+        <div style="max-width:560px;margin:32px auto 0;
+                    background:#fff;border-radius:16px;padding:20px 24px;
+                    display:flex;gap:16px;align-items:flex-start;
+                    box-shadow:0 1px 8px rgba(0,0,0,.06);">
+          <div style="background:#E8F5E9;border-radius:10px;width:40px;height:40px;
+                      flex-shrink:0;display:flex;align-items:center;justify-content:center;
+                      font-size:18px;">♻️</div>
           <div>
-            <div style="font-size:14px; font-weight:700; margin-bottom:4px;">{eco_title}</div>
-            <div style="font-size:13px; color:#555; line-height:1.6;">{eco_desc}</div>
+            <div style="font-size:11px;font-weight:700;color:#1B4D2E;
+                        letter-spacing:.8px;margin-bottom:6px;">분리배출 팁</div>
+            <div style="font-size:13px;color:#555;line-height:1.6;">{eco_desc}</div>
           </div>
         </div>
         """, unsafe_allow_html=True)
 
-    # 처음으로 버튼 (ghost style)
-    st.markdown("""
-    <div style="height:16px;"></div>
-    <style>
-    div[data-testid="stVerticalBlock"] > div:last-child .stButton > button {
-        background: transparent !important;
-        color: #888 !important;
-        border: 1px solid #D8D8D6 !important;
-        font-size: 13px !important;
-        font-weight: 500 !important;
-        height: auto !important;
-        padding: 8px 20px !important;
-        width: auto !important;
-        border-radius: 8px !important;
-        box-shadow: none !important;
-    }
-    div[data-testid="stVerticalBlock"] > div:last-child .stButton > button:hover {
-        background: #f5f5f3 !important;
-        transform: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    _, col_back, _ = st.columns([3, 1, 3])
+    # 처음으로 버튼
+    st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
+    _, col_back, _ = st.columns([2, 1, 2])
     with col_back:
+        st.markdown("""
+        <style>
+        [data-testid="column"]:nth-child(2) .stButton > button {
+            background: transparent !important;
+            color: #aaa !important;
+            border: 1px solid #ddd !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            height: auto !important;
+            padding: 9px 20px !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+        }
+        [data-testid="column"]:nth-child(2) .stButton > button:hover {
+            background: #f5f5f3 !important;
+            transform: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         if st.button("← 처음으로", key="back_home", use_container_width=True):
             reset_session()
             st.rerun()
-
-    # 하단 배너
-    st.markdown("""
-    <div style="background:#1B4D2E; border-radius:14px; padding:32px;
-                margin-top:32px; text-align:center;
-                color:#fff; font-size:18px; font-weight:700; letter-spacing:.3px;">
-      작은 실천이 만드는 큰 변화 🌱
-    </div>
-    """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════
@@ -974,54 +983,101 @@ def render_result():
     matched     = st.session_state.matched_item
     result_text = st.session_state.result_text
     reason      = st.session_state.result_reason or matched.get("note", "")
+    steps       = matched.get("steps", [])
+
+    st.markdown("""
+    <style>
+    .stApp { background: #F0F4F0 !important; }
+    </style>
+    """, unsafe_allow_html=True)
 
     render_navbar()
 
-    # 결과 카드
+    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
+
+    # 분석 완료 배지
     st.markdown(f"""
-    <div class="result-wrap">
-      <div class="result-badge">분석 완료 · {matched["name"]}</div>
-      <div class="result-title">{result_text}</div>
+    <div style="text-align:center;margin-bottom:8px;">
+      <span style="display:inline-flex;align-items:center;gap:6px;
+                   font-size:13px;font-weight:600;color:#1B4D2E;">
+        ✅ 분석완료: {matched["name"]}
+      </span>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
+    # 결과 카드
+    st.markdown(f"""
+    <div style="max-width:480px;margin:0 auto;
+                background:#fff;border-radius:24px;padding:40px 32px;
+                text-align:center;box-shadow:0 2px 16px rgba(0,0,0,.07);">
+      <div style="background:#E8F5E9;border-radius:16px;width:64px;height:64px;
+                  display:flex;align-items:center;justify-content:center;
+                  margin:0 auto 20px;font-size:28px;">♻️</div>
+      <div style="font-size:24px;font-weight:900;color:#1a1a1a;
+                  line-height:1.3;margin-bottom:8px;word-break:keep-all;">
+        {result_text}
+      </div>
+      {"<div style='font-size:13px;color:#888;line-height:1.6;word-break:keep-all;'>" + reason.split('.')[0] + ".</div>" if reason else ""}
+    </div>
+    """, unsafe_allow_html=True)
 
-    # 다시 검색 버튼
-    _, col_btn, _ = st.columns([2, 1, 2])
+    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
+
+    # IMPACT NOTE
+    if reason:
+        st.markdown(f"""
+        <div style="max-width:480px;margin:0 auto 20px;
+                    background:#fff;border-radius:16px;padding:20px 24px;">
+          <div style="font-size:11px;font-weight:700;color:#1B4D2E;
+                      letter-spacing:.8px;margin-bottom:8px;">🌿 IMPACT NOTE</div>
+          <div style="font-size:13px;color:#555;line-height:1.7;">{reason}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 정확한 배출 요령
+    if steps:
+        rows_html = "".join(
+            f'<li style="font-size:13px;color:#444;line-height:1.8;margin-bottom:4px;">{s}</li>'
+            for s in steps
+        )
+        st.markdown(f"""
+        <div style="max-width:480px;margin:0 auto 24px;
+                    background:#fff;border-radius:16px;padding:20px 24px;">
+          <div style="font-size:11px;font-weight:700;color:#1B4D2E;
+                      letter-spacing:.8px;margin-bottom:12px;">💡 정확한 배출 요령</div>
+          <ul style="margin:0;padding-left:18px;">{rows_html}</ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 버튼
+    _, col_btn, _ = st.columns([1, 2, 1])
     with col_btn:
-        if st.button("↺  다시 검색", use_container_width=True, key="retry_btn"):
+        st.markdown("""
+        <style>
+        [data-testid="column"]:nth-child(2) .stButton > button {
+            border-radius: 12px !important;
+            height: 48px !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+        }
+        [data-testid="column"]:nth-child(2) .stButton > button:last-child {
+            background: #f0f0ee !important;
+            color: #555 !important;
+            border: none !important;
+            margin-top: 8px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        if st.button("🔍  다시 검색", use_container_width=True, key="retry_btn"):
+            reset_session()
+            st.rerun()
+        if st.button("홈으로 돌아가기", use_container_width=True, key="home_btn"):
             reset_session()
             st.rerun()
 
-    st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
-    # 배출 요령
-    steps = matched.get("steps", [])
-    if steps:
-        rows_html = "".join(
-            f'<div class="step-row">'
-            f'<div class="step-num">{i+1}</div>'
-            f'<div class="step-text">{s}</div>'
-            f'</div>'
-            for i, s in enumerate(steps)
-        )
-        st.markdown(f"""
-        <div class="steps-card">
-          <div class="steps-title">📋 정확한 배출 요령</div>
-          {rows_html}
-        </div>
-        """, unsafe_allow_html=True)
 
-    # 환경 설명 note
-    if reason:
-        st.markdown(f"""
-        <div style="max-width:680px; margin:16px auto 40px;
-                    background:#F6F8F6; border-radius:12px; padding:16px 20px;
-                    font-size:13px; color:#666; line-height:1.7;">
-          💬 {reason}
-        </div>
-        """, unsafe_allow_html=True)
 
 
 # ──────────────────────────────────────────────
