@@ -459,12 +459,14 @@ def handle_answer(answer: bool):
 # 공통 네비게이션바
 # ──────────────────────────────────────────────
 def render_navbar():
-    st.markdown("""
+    is_home = st.session_state.get("state", "home") in ("home", "no_match")
+    nav_label = "Home" if is_home else "Guide"
+    st.markdown(f"""
     <div style="display:flex;justify-content:space-between;align-items:center;
                 padding:18px 0;border-bottom:1px solid rgba(0,0,0,.07);margin-bottom:0;">
       <span style="font-size:17px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px;">Re:Sort</span>
       <span style="font-size:13px;font-weight:600;color:#1a1a1a;
-                   border-bottom:2px solid #1a1a1a;padding-bottom:1px;cursor:pointer;">Guide</span>
+                   border-bottom:2px solid #1a1a1a;padding-bottom:1px;cursor:pointer;">{nav_label}</span>
     </div>
     """, unsafe_allow_html=True)
 
