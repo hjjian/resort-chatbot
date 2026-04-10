@@ -763,7 +763,7 @@ def render_home():
         <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px;">자주 틀리는 실수 Top 10</div>
         <div style="font-size:13px;color:#999;margin-top:4px;">가장 많은 사용자들이 헷갈려 하는 분리배출 사례</div>
       </div>
-      <div style="font-size:13px;color:#1B4D2E;font-weight:600;">View All ›</div>
+
     </div>
     """, unsafe_allow_html=True)
 
