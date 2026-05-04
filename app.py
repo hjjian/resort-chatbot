@@ -527,7 +527,7 @@ def render_home():
     # ── 히어로 제목 ──
     st.markdown("""
     <div class="hero-title-wrap" style="text-align:center;margin-bottom:40px;">
-      <div style="font-size:52px;font-weight:900;line-height:1.15;color:#1a1a1a;
+      <div style="font-size:clamp(32px,8vw,52px);font-weight:900;line-height:1.2;color:#1a1a1a;
                   letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
@@ -721,15 +721,18 @@ def render_home():
         from collections import Counter
         from datetime import date
         today = date.today().isoformat()
-        # 오늘 top4
+        # 오늘 top4 — 실제 품목 검색(matched_item_id 있는 것)만 카운팅
         today_inputs = [
             e["user_input"] for e in usage_log
-            if e.get("timestamp", "").startswith(today) and e.get("user_input")
+            if e.get("timestamp", "").startswith(today)
+            and e.get("user_input")
+            and e.get("matched_item_id")
         ]
         top4 = [item for item, _ in Counter(today_inputs).most_common(4)]
         # 오늘 데이터 4개 미만이면 전체 기간 top으로 채움
         if len(top4) < 4:
-            all_inputs = [e["user_input"] for e in usage_log if e.get("user_input")]
+            all_inputs = [e["user_input"] for e in usage_log
+                          if e.get("user_input") and e.get("matched_item_id")]
             for item, _ in Counter(all_inputs).most_common(20):
                 if item not in top4:
                     top4.append(item)
