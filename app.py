@@ -677,7 +677,6 @@ def render_home():
     nickname_input = st.text_input(
         "닉네임", placeholder="닉네임을 입력해주세요 (필수)",
         label_visibility="collapsed", key="nickname_input",
-        value=st.session_state.get("nickname", ""),
     )
     if nickname_input:
         st.session_state.nickname = nickname_input.strip()
