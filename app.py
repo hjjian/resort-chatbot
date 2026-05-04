@@ -524,43 +524,47 @@ def render_home():
     """, unsafe_allow_html=True)
 
     render_navbar()
-    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
 
-    # ── 히어로 제목 ──
-    st.markdown("""
-    <div class="hero-title-wrap" style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:58px;font-weight:900;line-height:1.2;color:#1a1a1a;
-                  letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
-        지속 가능한 미래를 위한<br>
-        <span style="color:#1B4D2E;">똑똑한 분리배출</span>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── 검색창 (st.form — 단일 레이어) ──
+    # ── 히어로 제목 + 닉네임 + 검색창 통합 ──
     st.markdown("""
     <style>
-    /* ── 검색 입력창 ── */
-    .search-wrap {
-        max-width: 580px;
-        margin: 0 auto;
+    /* 검색 영역 전체 */
+    .search-section {
+        max-width: 520px;
+        margin: 28px auto 0;
     }
-    .search-wrap [data-testid="stTextInput"] > div,
-    .search-wrap [data-testid="stTextInput"] > div > div {
+    /* 공통 input 스타일 */
+    .search-section .stTextInput > div,
+    .search-section .stTextInput > div > div {
         border: none !important;
         box-shadow: none !important;
         background: transparent !important;
         padding: 0 !important;
     }
+    /* 닉네임 */
+    .nickname-wrap .stTextInput input {
+        border-radius: 12px !important;
+        border: 1.5px solid rgba(0,0,0,.1) !important;
+        background: #fff !important;
+        padding: 12px 18px !important;
+        font-size: 14px !important;
+        color: #222 !important;
+        box-shadow: none !important;
+    }
+    .nickname-wrap .stTextInput input:focus {
+        border-color: #1B4D2E !important;
+        box-shadow: 0 0 0 3px rgba(27,77,46,.08) !important;
+        outline: none !important;
+    }
+    /* 검색창 */
     .search-wrap .stTextInput input {
         border-radius: 999px !important;
         border: 1.5px solid rgba(0,0,0,.09) !important;
         background: #fff !important;
-        box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-        padding: 14px 24px !important;
+        box-shadow: 0 2px 16px rgba(0,0,0,.07) !important;
+        padding: 14px 22px !important;
         font-size: 15px !important;
         color: #222 !important;
-        width: 100% !important;
     }
     .search-wrap .stTextInput input::placeholder { color: #bbb !important; }
     .search-wrap .stTextInput input:focus {
@@ -571,32 +575,19 @@ def render_home():
     </style>
     """, unsafe_allow_html=True)
 
-    # ── 닉네임 입력 ──
+    # 제목
     st.markdown("""
-    <style>
-    .nickname-wrap { max-width:580px; margin:0 auto 12px; }
-    .nickname-wrap [data-testid="stTextInput"] > div,
-    .nickname-wrap [data-testid="stTextInput"] > div > div {
-        border: none !important; box-shadow: none !important;
-        background: transparent !important; padding: 0 !important;
-    }
-    .nickname-wrap .stTextInput input {
-        border-radius: 12px !important;
-        border: 1.5px solid rgba(0,0,0,.1) !important;
-        background: #fff !important;
-        padding: 11px 16px !important;
-        font-size: 14px !important;
-        color: #222 !important;
-        box-shadow: 0 1px 4px rgba(0,0,0,.05) !important;
-    }
-    .nickname-wrap .stTextInput input:focus {
-        border-color: #1B4D2E !important;
-        box-shadow: 0 0 0 3px rgba(27,77,46,.1) !important;
-        outline: none !important;
-    }
-    </style>
+    <div style="text-align:center;margin:28px 0 32px;">
+      <div style="font-size:58px;font-weight:900;line-height:1.2;color:#1a1a1a;
+                  letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
+        지속 가능한 미래를 위한<br>
+        <span style="color:#1B4D2E;">똑똑한 분리배출</span>
+      </div>
+    </div>
     """, unsafe_allow_html=True)
 
+    # 닉네임 + 검색창
+    st.markdown('<div class="search-section">', unsafe_allow_html=True)
     st.markdown('<div class="nickname-wrap">', unsafe_allow_html=True)
     nickname_input = st.text_input(
         "닉네임", placeholder="닉네임을 입력해주세요 (필수)",
@@ -606,11 +597,14 @@ def render_home():
         st.session_state.nickname = nickname_input.strip()
     st.markdown('</div>', unsafe_allow_html=True)
 
+    st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+
     st.markdown('<div class="search-wrap">', unsafe_allow_html=True)
     query = st.text_input(
         "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
         label_visibility="collapsed", key="home_input",
     )
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     if query and query != st.session_state.get("_last_query", ""):
         if not st.session_state.get("nickname", "").strip():
@@ -668,7 +662,7 @@ def render_home():
     else:
         top4 = DEFAULT_TAGS
 
-    st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
     # ── 인기 태그 버튼 (중앙 정렬) ──
     tag_html = "".join([
@@ -692,7 +686,7 @@ def render_home():
 
 
 
-    st.markdown("<div style='height:48px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
 
     # ── 탄소 임팩트 카드 ──
     carbon_factors = get_carbon_factors()
@@ -704,7 +698,7 @@ def render_home():
     st.markdown(f"""
     <div style="max-width:720px;margin:0 auto;">
     <div style="background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
-                border-radius:20px;padding:32px 40px;
+                border-radius:20px;padding:28px 24px;
                 box-shadow:0 8px 32px rgba(27,77,46,.2);">
       <div class="carbon-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;">
       <div>
