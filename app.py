@@ -527,8 +527,8 @@ def render_home():
     # ── 히어로 제목 ──
     st.markdown("""
     <div class="hero-title-wrap" style="text-align:center;margin-bottom:40px;">
-      <div style="font-size:clamp(32px,8vw,52px);font-weight:900;line-height:1.2;color:#1a1a1a;
-                  letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
+      <div style="font-size:clamp(36px,9.5vw,52px);font-weight:900;line-height:1.2;color:#1a1a1a;
+                  letter-spacing:-1.5px;font-family:'Playfair Display','Noto Sans KR',serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
       </div>
@@ -616,32 +616,34 @@ def render_home():
         [data-testid="stForm"] {
             max-width: 100% !important;
         }
+        /* 가로 배치 유지 */
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
-            flex-direction: column !important;
-            border-radius: 16px !important;
-            padding: 10px !important;
-            gap: 8px !important;
-            align-items: stretch !important;
+            flex-direction: row !important;
+            border-radius: 999px !important;
+            padding: 4px 6px 4px 14px !important;
+            gap: 0 !important;
+            align-items: center !important;
         }
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-            flex: 1 1 100% !important;
-            width: 100% !important;
-            min-width: 100% !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            width: auto !important;
         }
         [data-testid="stForm"] .stTextInput input {
             padding: 10px 8px !important;
+            font-size: 15px !important;
         }
+        /* 검색 버튼 — pill 안에 자연스럽게 */
         [data-testid="stForm"] button[kind="primaryFormSubmit"],
         [data-testid="stForm"] button[type="submit"],
         [data-testid="stForm"] .stButton > button,
         [data-testid="stForm"] [data-testid="stFormSubmitButton"] button {
-            width: 100% !important;
-            height: 46px !important;
-            padding: 0 !important;
-            border-radius: 10px !important;
-            font-size: 15px !important;
-            display: block !important;
-            margin: 0 auto !important;
+            width: auto !important;
+            height: 40px !important;
+            padding: 0 20px !important;
+            border-radius: 999px !important;
+            font-size: 14px !important;
+            white-space: nowrap !important;
         }
     }
     </style>
