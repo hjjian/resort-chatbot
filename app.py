@@ -98,6 +98,8 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
         min-width: 0 !important;
         overflow: hidden !important;
     }
+    /* 히어로 타이틀 */
+    .hero-title-text { font-size: 38px !important; letter-spacing: -1px !important; }
     /* 네비바 */
     .navbar { padding: 0 16px !important; }
     /* 질문 화면 제목 */
@@ -527,7 +529,7 @@ def render_home():
     # ── 히어로 제목 ──
     st.markdown("""
     <div class="hero-title-wrap" style="text-align:center;margin-bottom:40px;">
-      <div style="font-size:clamp(36px,9.5vw,52px);font-weight:900;line-height:1.2;color:#1a1a1a;
+      <div class="hero-title-text" style="font-size:52px;font-weight:900;line-height:1.2;color:#1a1a1a;
                   letter-spacing:-1.5px;font-family:'Playfair Display','Noto Sans KR',serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
@@ -624,9 +626,13 @@ def render_home():
             gap: 0 !important;
             align-items: center !important;
         }
-        [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+        [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:first-child {
             flex: 1 1 auto !important;
             min-width: 0 !important;
+            overflow: hidden !important;
+        }
+        [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:last-child {
+            flex: 0 0 auto !important;
             width: auto !important;
         }
         [data-testid="stForm"] .stTextInput input {
