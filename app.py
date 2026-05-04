@@ -58,38 +58,50 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 
 /* ── 모바일 반응형 ── */
 @media (max-width: 768px) {
+    /* 기본 레이아웃 */
     .block-container {
-        padding: 0 16px 40px !important;
+        padding: 0 14px 40px !important;
         width: 100% !important;
         max-width: 100% !important;
     }
-    /* 히어로 타이틀 모바일 크기 */
+    /* 히어로 타이틀 */
     .hero-title-wrap div {
-        font-size: 36px !important;
-        letter-spacing: -1px !important;
+        font-size: 28px !important;
+        letter-spacing: -0.5px !important;
+        line-height: 1.3 !important;
     }
-    /* 탄소 카드 모바일: flex 세로 배치 */
+    /* 탄소 카드 세로 배치 */
     .carbon-inner {
         flex-direction: column !important;
         gap: 16px !important;
     }
+    .carbon-inner > div:first-child { width: 100% !important; }
     .carbon-inner > div:last-child {
         text-align: left !important;
         width: 100% !important;
     }
+    /* 탄소 카드 진행바 100% */
     .carbon-inner > div:last-child > div:nth-child(2) {
         width: 100% !important;
     }
-    /* 실수 카드 모바일: 2열 */
-    .mistake-card-v2 {
-        height: auto !important;
-        min-height: 70px !important;
+    /* 탄소 숫자 크기 */
+    .carbon-inner div[style*="font-size:52px"] {
+        font-size: 40px !important;
     }
-    /* 모든 column이 화면 밖으로 나가지 않게 */
+    /* 실수 카드 2열 */
+    .mistake-card {
+        height: auto !important;
+        min-height: 120px !important;
+    }
+    /* column 기본 */
     [data-testid="column"] {
         min-width: 0 !important;
         overflow: hidden !important;
     }
+    /* 네비바 */
+    .navbar { padding: 0 16px !important; }
+    /* 질문 화면 제목 */
+    .question-title { font-size: 26px !important; }
 }
 
 /* ── 네비게이션바 ── */
@@ -787,7 +799,7 @@ def render_home():
       </div>
       <div style="text-align:right;">
         <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px;">소나무 128그루 효과</div>
-        <div style="width:280px;height:6px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
+        <div style="width:100%;max-width:280px;height:6px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
           <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
         </div>
         <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;">월간 목표 달성률 84%</div>
@@ -847,12 +859,13 @@ def render_home():
     <style>
     @media (max-width: 768px) {
         /* 실수 카드 5열 → 2열로 */
-        [data-testid="stHorizontalBlock"]:has(.mistake-card) {
-            flex-wrap: wrap !important;
-        }
-        [data-testid="stHorizontalBlock"]:has(.mistake-card) > [data-testid="column"] {
+        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
             flex: 0 0 48% !important;
             min-width: 0 !important;
+        }
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+            gap: 8px !important;
         }
     }
     </style>
@@ -1001,7 +1014,7 @@ def render_questioning():
                   font-weight:700;letter-spacing:1px;margin-bottom:20px;">
         ● STEP {st.session_state.step_num:02d}
       </div>
-      <div style="font-size:36px;font-weight:900;color:#1a1a1a;
+      <div style="font-size:clamp(22px,5vw,36px);font-weight:900;color:#1a1a1a;
                   line-height:1.25;letter-spacing:-1px;word-break:keep-all;">
         {current_q["text"]}
       </div>
@@ -1082,12 +1095,22 @@ def render_result():
     st.markdown("""
     <style>
     .stApp { background: #F0F4F0 !important; }
+    @media (max-width: 768px) {
+        /* 결과 카드 패딩 축소 */
+        div[style*="max-width:480px"] {
+            padding: 28px 20px !important;
+        }
+        /* 결과 제목 크기 */
+        div[style*="font-size:24px"] {
+            font-size: 20px !important;
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 
     render_navbar()
 
-    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
     # 분석 완료 배지
     st.markdown(f"""
