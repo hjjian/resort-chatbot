@@ -540,119 +540,33 @@ def render_home():
     # ── 검색창 (st.form — 단일 레이어) ──
     st.markdown("""
     <style>
-    /* ── 검색 form 전체 ── */
-    [data-testid="stForm"] {
+    /* ── 검색 입력창 ── */
+    .search-wrap {
+        max-width: 580px;
+        margin: 0 auto;
+    }
+    .search-wrap [data-testid="stTextInput"] > div,
+    .search-wrap [data-testid="stTextInput"] > div > div {
         border: none !important;
         box-shadow: none !important;
         background: transparent !important;
         padding: 0 !important;
-        max-width: 580px !important;
-        margin: 0 auto !important;
     }
-    /* pill 래퍼 (데스크탑) */
-    [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
-        background: #fff !important;
+    .search-wrap .stTextInput input {
         border-radius: 999px !important;
         border: 1.5px solid rgba(0,0,0,.09) !important;
+        background: #fff !important;
         box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-        padding: 4px 8px 4px 16px !important;
-        gap: 0 !important;
-        align-items: center !important;
-        flex-wrap: nowrap !important;
-        overflow: hidden !important;
-    }
-    /* column 투명화 */
-    [data-testid="stForm"] [data-testid="column"],
-    [data-testid="stForm"] [data-testid="column"] > [data-testid="stVerticalBlock"] {
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-    }
-    /* input 스타일 */
-    [data-testid="stForm"] .stTextInput input {
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        padding: 12px 8px !important;
+        padding: 14px 24px !important;
         font-size: 15px !important;
         color: #222 !important;
-        border-radius: 0 !important;
+        width: 100% !important;
     }
-    [data-testid="stForm"] .stTextInput input::placeholder { color: #bbb !important; }
-    [data-testid="stForm"] .stTextInput input:focus {
-        border: none !important; box-shadow: none !important; outline: none !important;
-    }
-    [data-testid="stForm"] [data-testid="stTextInput"] > div,
-    [data-testid="stForm"] [data-testid="stTextInput"] > div > div {
-        border: none !important; box-shadow: none !important;
-        background: transparent !important; padding: 0 !important;
-    }
-    /* 검색 버튼 — 작은 이모지 원형 버튼 */
-    [data-testid="stForm"] button[kind="primaryFormSubmit"],
-    [data-testid="stForm"] button[type="submit"],
-    [data-testid="stForm"] .stButton > button,
-    [data-testid="stForm"] [data-testid="stFormSubmitButton"] button {
-        background: #1B4D2E !important;
-        color: #fff !important;
-        border: none !important;
-        border-radius: 999px !important;
-        height: 40px !important;
-        width: 40px !important;
-        min-width: 40px !important;
-        max-width: 40px !important;
-        padding: 0 !important;
-        font-size: 18px !important;
-        line-height: 1 !important;
-        box-shadow: none !important;
-        transform: none !important;
-        flex-shrink: 0 !important;
-        margin-right: 2px !important;
-    }
-    [data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
-    [data-testid="stForm"] button[type="submit"]:hover,
-    [data-testid="stForm"] .stButton > button:hover,
-    [data-testid="stForm"] [data-testid="stFormSubmitButton"] button:hover {
-        background: #163D24 !important;
-    }
-    /* ── 모바일 ── */
-    @media (max-width: 768px) {
-        [data-testid="stForm"] {
-            max-width: 100% !important;
-        }
-        /* 가로 배치 유지 */
-        [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
-            flex-direction: row !important;
-            border-radius: 999px !important;
-            padding: 4px 8px 4px 14px !important;
-            gap: 0 !important;
-            align-items: center !important;
-        }
-        [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:first-child {
-            flex: 1 1 auto !important;
-            min-width: 0 !important;
-            overflow: hidden !important;
-        }
-        [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:last-child {
-            flex: 0 0 auto !important;
-            width: auto !important;
-            padding-right: 2px !important;
-        }
-        [data-testid="stForm"] .stTextInput input {
-            padding: 10px 8px !important;
-            font-size: 15px !important;
-        }
-        /* 검색 버튼 모바일 — 동일하게 작은 원형 유지 */
-        [data-testid="stForm"] button[kind="primaryFormSubmit"],
-        [data-testid="stForm"] button[type="submit"],
-        [data-testid="stForm"] .stButton > button,
-        [data-testid="stForm"] [data-testid="stFormSubmitButton"] button {
-            height: 40px !important;
-            width: 40px !important;
-            min-width: 40px !important;
-            padding: 0 !important;
-            font-size: 18px !important;
-        }
+    .search-wrap .stTextInput input::placeholder { color: #bbb !important; }
+    .search-wrap .stTextInput input:focus {
+        border-color: #1B4D2E !important;
+        box-shadow: 0 0 0 3px rgba(27,77,46,.1) !important;
+        outline: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -692,20 +606,17 @@ def render_home():
         st.session_state.nickname = nickname_input.strip()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    with st.form(key="search_form", clear_on_submit=False):
-        col_input, col_btn = st.columns([4, 1], gap="small")
-        with col_input:
-            query = st.text_input(
-                "검색", placeholder="어떤 품목을 버리시나요?",
-                label_visibility="collapsed", key="home_input",
-            )
-        with col_btn:
-            search_btn = st.form_submit_button("🔍")
-
-    if search_btn:
+    st.markdown('<div class="search-wrap">', unsafe_allow_html=True)
+    query = st.text_input(
+        "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
+        label_visibility="collapsed", key="home_input",
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+    if query and query != st.session_state.get("_last_query", ""):
         if not st.session_state.get("nickname", "").strip():
             st.warning("닉네임을 먼저 입력해주세요.")
-        elif query:
+        else:
+            st.session_state["_last_query"] = query
             run_search(query)
             st.rerun()
 
