@@ -37,7 +37,7 @@ def _get_sheet():
         except gspread.WorksheetNotFound:
             ws = sh.add_worksheet(title="usage_log", rows=10000, cols=10)
             ws.append_row([
-                "timestamp", "user_input", "matched_item_id",
+                "timestamp", "nickname", "user_input", "matched_item_id",
                 "matched_by", "category", "final_result", "llm_used"
             ])
         return ws
@@ -100,6 +100,7 @@ def save_usage_log(log: list, path: str = None) -> None:
             entry = log[-1]  # 마지막 항목만 append
             ws.append_row([
                 entry.get("timestamp", ""),
+                entry.get("nickname", ""),
                 entry.get("user_input", ""),
                 entry.get("matched_item_id", ""),
                 entry.get("matched_by", ""),

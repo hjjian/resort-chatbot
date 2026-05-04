@@ -308,6 +308,7 @@ def init_session():
         "matched_item": None, "tree": None, "current_q": None,
         "step_num": 1, "guide_message": None,
         "result_text": None, "result_reason": None,
+        "nickname": "",
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -331,6 +332,7 @@ def append_usage_log(user_input, matched_item, final_result, llm_used=False):
     log = load_usage_log()
     log.append({
         "timestamp":       datetime.now().isoformat()[:19],
+        "nickname":        st.session_state.get("nickname", ""),
         "user_input":      user_input,
         "matched_item_id": matched_item["id"] if matched_item else None,
         "matched_by":      matched_item.get("matched_by") if matched_item else None,
@@ -633,6 +635,42 @@ def render_home():
     </style>
     """, unsafe_allow_html=True)
 
+    # ── 닉네임 입력 ──
+    st.markdown("""
+    <style>
+    .nickname-wrap { max-width:580px; margin:0 auto 12px; }
+    .nickname-wrap [data-testid="stTextInput"] > div,
+    .nickname-wrap [data-testid="stTextInput"] > div > div {
+        border: none !important; box-shadow: none !important;
+        background: transparent !important; padding: 0 !important;
+    }
+    .nickname-wrap .stTextInput input {
+        border-radius: 12px !important;
+        border: 1.5px solid rgba(0,0,0,.1) !important;
+        background: #fff !important;
+        padding: 11px 16px !important;
+        font-size: 14px !important;
+        color: #222 !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,.05) !important;
+    }
+    .nickname-wrap .stTextInput input:focus {
+        border-color: #1B4D2E !important;
+        box-shadow: 0 0 0 3px rgba(27,77,46,.1) !important;
+        outline: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="nickname-wrap">', unsafe_allow_html=True)
+    nickname_input = st.text_input(
+        "닉네임", placeholder="닉네임을 입력해주세요 (필수)",
+        label_visibility="collapsed", key="nickname_input",
+        value=st.session_state.get("nickname", ""),
+    )
+    if nickname_input:
+        st.session_state.nickname = nickname_input.strip()
+    st.markdown('</div>', unsafe_allow_html=True)
+
     with st.form(key="search_form", clear_on_submit=False):
         col_input, col_btn = st.columns([4, 1], gap="small")
         with col_input:
@@ -643,9 +681,12 @@ def render_home():
         with col_btn:
             search_btn = st.form_submit_button("검색")
 
-    if search_btn and query:
-        run_search(query)
-        st.rerun()
+    if search_btn:
+        if not st.session_state.get("nickname", "").strip():
+            st.warning("닉네임을 먼저 입력해주세요.")
+        elif query:
+            run_search(query)
+            st.rerun()
 
     # query param으로 태그 클릭 처리
     params = st.query_params
@@ -832,6 +873,59 @@ def render_home():
               </div>
               <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:6px;word-break:keep-all;">{mistake}</div>
               <div style="font-size:11px;color:#999;line-height:1.5;word-break:keep-all;">{descs[i]}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # ── 내 검색 기록 ──
+    st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
+    nickname = st.session_state.get("nickname", "").strip()
+    if nickname:
+        st.markdown(f"""
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;">
+          <div>
+            <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px;">
+              {nickname}님의 검색 기록
+            </div>
+            <div style="font-size:13px;color:#999;margin-top:4px;">최근 10건</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        my_log = load_usage_log()
+        my_entries = [
+            e for e in my_log
+            if e.get("nickname", "") == nickname
+        ][-10:][::-1]  # 최근 10건, 최신순
+
+        if my_entries:
+            for entry in my_entries:
+                ts = entry.get("timestamp", "")[:16].replace("T", " ")
+                user_input = entry.get("user_input", "")
+                final_result = entry.get("final_result", "")
+                category = entry.get("category", "")
+                is_recycled = "종량제" not in str(final_result) and "반납" not in str(final_result)
+                result_color = "#1B4D2E" if is_recycled else "#888"
+                result_bg = "#E8F5E9" if is_recycled else "#F5F5F3"
+                st.markdown(f"""
+                <div style="background:#fff;border-radius:14px;padding:16px 20px;
+                            margin-bottom:10px;border:1px solid rgba(0,0,0,.06);
+                            display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                  <div>
+                    <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">{user_input}</div>
+                    <div style="font-size:12px;color:#aaa;">{ts} · {category}</div>
+                  </div>
+                  <div style="background:{result_bg};color:{result_color};
+                              border-radius:8px;padding:5px 12px;
+                              font-size:13px;font-weight:700;white-space:nowrap;">
+                    {final_result}
+                  </div>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="background:#fff;border-radius:14px;padding:24px;text-align:center;
+                        color:#aaa;font-size:14px;">
+              아직 검색 기록이 없어요. 첫 검색을 시작해보세요! 🌿
             </div>
             """, unsafe_allow_html=True)
 

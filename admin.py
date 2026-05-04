@@ -250,7 +250,7 @@ if has_data:
     if selected_cat != "전체":
         filtered = filtered[filtered["category"] == selected_cat]
 
-    display_cols = ["timestamp", "user_input", "matched_item_id",
+    display_cols = ["timestamp", "nickname", "user_input", "matched_item_id",
                     "matched_by", "category", "final_result", "llm_used"]
     display_cols = [c for c in display_cols if c in filtered.columns]
     filtered_display = filtered[display_cols].copy()
