@@ -588,7 +588,7 @@ def render_home():
         border: none !important; box-shadow: none !important;
         background: transparent !important; padding: 0 !important;
     }
-    /* 검색 버튼 (데스크탑) */
+    /* 검색 버튼 — 작은 이모지 원형 버튼 */
     [data-testid="stForm"] button[kind="primaryFormSubmit"],
     [data-testid="stForm"] button[type="submit"],
     [data-testid="stForm"] .stButton > button,
@@ -597,15 +597,16 @@ def render_home():
         color: #fff !important;
         border: none !important;
         border-radius: 999px !important;
-        height: 44px !important;
-        padding: 0 28px !important;
-        font-size: 15px !important;
-        font-weight: 700 !important;
-        white-space: nowrap !important;
+        height: 40px !important;
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+        padding: 0 !important;
+        font-size: 18px !important;
+        line-height: 1 !important;
         box-shadow: none !important;
         transform: none !important;
-        width: auto !important;
-        min-width: 80px !important;
+        flex-shrink: 0 !important;
     }
     [data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
     [data-testid="stForm"] button[type="submit"]:hover,
@@ -639,17 +640,16 @@ def render_home():
             padding: 10px 8px !important;
             font-size: 15px !important;
         }
-        /* 검색 버튼 — pill 안에 자연스럽게 */
+        /* 검색 버튼 모바일 — 동일하게 작은 원형 유지 */
         [data-testid="stForm"] button[kind="primaryFormSubmit"],
         [data-testid="stForm"] button[type="submit"],
         [data-testid="stForm"] .stButton > button,
         [data-testid="stForm"] [data-testid="stFormSubmitButton"] button {
-            width: auto !important;
             height: 40px !important;
-            padding: 0 20px !important;
-            border-radius: 999px !important;
-            font-size: 14px !important;
-            white-space: nowrap !important;
+            width: 40px !important;
+            min-width: 40px !important;
+            padding: 0 !important;
+            font-size: 18px !important;
         }
     }
     </style>
@@ -698,7 +698,7 @@ def render_home():
                 label_visibility="collapsed", key="home_input",
             )
         with col_btn:
-            search_btn = st.form_submit_button("검색")
+            search_btn = st.form_submit_button("🔍")
 
     if search_btn:
         if not st.session_state.get("nickname", "").strip():
