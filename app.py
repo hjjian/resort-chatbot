@@ -529,12 +529,29 @@ def render_home():
     # ── 히어로 제목 ──
     st.markdown("""
     <div class="hero-title-wrap" style="text-align:center;margin-bottom:40px;">
-      <div class="hero-title-text" style="font-size:52px;font-weight:900;line-height:1.2;color:#1a1a1a;
+      <div id="hero-title" style="font-size:52px;font-weight:900;line-height:1.2;color:#1a1a1a;
                   letter-spacing:-1.5px;font-family:'Playfair Display','Noto Sans KR',serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
       </div>
     </div>
+    <script>
+    (function() {
+      function applySize() {
+        var el = document.getElementById('hero-title');
+        if (!el) return;
+        if (window.innerWidth <= 480) {
+          el.style.fontSize = '36px';
+          el.style.letterSpacing = '-0.5px';
+        } else {
+          el.style.fontSize = '52px';
+          el.style.letterSpacing = '-1.5px';
+        }
+      }
+      applySize();
+      window.addEventListener('resize', applySize);
+    })();
+    </script>
     """, unsafe_allow_html=True)
 
     # ── 검색창 (st.form — 단일 레이어) ──
@@ -559,7 +576,7 @@ def render_home():
         gap: 0 !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
-        overflow: visible !important;
+        overflow: hidden !important;
     }
     /* column 투명화 */
     [data-testid="stForm"] [data-testid="column"],
