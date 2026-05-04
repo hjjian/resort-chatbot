@@ -524,34 +524,17 @@ def render_home():
     """, unsafe_allow_html=True)
 
     render_navbar()
-    st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
 
     # ── 히어로 제목 ──
     st.markdown("""
-    <div class="hero-title-wrap" style="text-align:center;margin-bottom:40px;">
-      <div id="hero-title" style="font-size:52px;font-weight:900;line-height:1.2;color:#1a1a1a;
-                  letter-spacing:-1.5px;font-family:'Playfair Display','Noto Sans KR',serif;">
+    <div class="hero-title-wrap" style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:58px;font-weight:900;line-height:1.2;color:#1a1a1a;
+                  letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
       </div>
     </div>
-    <script>
-    (function() {
-      function applySize() {
-        var el = document.getElementById('hero-title');
-        if (!el) return;
-        if (window.innerWidth <= 480) {
-          el.style.fontSize = '36px';
-          el.style.letterSpacing = '-0.5px';
-        } else {
-          el.style.fontSize = '52px';
-          el.style.letterSpacing = '-1.5px';
-        }
-      }
-      applySize();
-      window.addEventListener('resize', applySize);
-    })();
-    </script>
     """, unsafe_allow_html=True)
 
     # ── 검색창 (st.form — 단일 레이어) ──
@@ -572,7 +555,7 @@ def render_home():
         border-radius: 999px !important;
         border: 1.5px solid rgba(0,0,0,.09) !important;
         box-shadow: 0 2px 20px rgba(0,0,0,.08) !important;
-        padding: 4px 6px 4px 16px !important;
+        padding: 4px 8px 4px 16px !important;
         gap: 0 !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
@@ -624,6 +607,7 @@ def render_home():
         box-shadow: none !important;
         transform: none !important;
         flex-shrink: 0 !important;
+        margin-right: 2px !important;
     }
     [data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
     [data-testid="stForm"] button[type="submit"]:hover,
@@ -640,7 +624,7 @@ def render_home():
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] {
             flex-direction: row !important;
             border-radius: 999px !important;
-            padding: 4px 6px 4px 14px !important;
+            padding: 4px 8px 4px 14px !important;
             gap: 0 !important;
             align-items: center !important;
         }
@@ -652,6 +636,7 @@ def render_home():
         [data-testid="stForm"] [data-testid="stHorizontalBlock"] > [data-testid="column"]:last-child {
             flex: 0 0 auto !important;
             width: auto !important;
+            padding-right: 2px !important;
         }
         [data-testid="stForm"] .stTextInput input {
             padding: 10px 8px !important;
