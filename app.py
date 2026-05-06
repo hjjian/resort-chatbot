@@ -597,7 +597,7 @@ def render_home():
         st.session_state.nickname = nickname_input.strip()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<div style='height:2px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:-12px;'></div>", unsafe_allow_html=True)
 
     st.markdown('<div class="search-wrap">', unsafe_allow_html=True)
     query = st.text_input(
@@ -630,56 +630,53 @@ def render_home():
         st.session_state.state = "home"
 
     # ── 인기 태그 ──
-    DEFAULT_TAGS = ["플라스틱 컵", "배달 용기", "알루미늄 캔", "종이팩"]
+    DEFAULT_TAGS = ["플라스틱 컵", "배달 용기", "알루미늄 캔"]
     usage_log = load_usage_log()
     if usage_log:
         from collections import Counter
         from datetime import date
         today = date.today().isoformat()
-        # 오늘 top4 — 실제 품목 검색(matched_item_id 있는 것)만 카운팅
         today_inputs = [
             e["user_input"] for e in usage_log
             if e.get("timestamp", "").startswith(today)
             and e.get("user_input")
             and e.get("matched_item_id")
         ]
-        top4 = [item for item, _ in Counter(today_inputs).most_common(4)]
-        # 오늘 데이터 4개 미만이면 전체 기간 top으로 채움
-        if len(top4) < 4:
+        top3 = [item for item, _ in Counter(today_inputs).most_common(3)]
+        if len(top3) < 3:
             all_inputs = [e["user_input"] for e in usage_log
                           if e.get("user_input") and e.get("matched_item_id")]
             for item, _ in Counter(all_inputs).most_common(20):
-                if item not in top4:
-                    top4.append(item)
-                if len(top4) == 4:
+                if item not in top3:
+                    top3.append(item)
+                if len(top3) == 3:
                     break
-        # 그래도 부족하면 기본값으로 채움
         for tag in DEFAULT_TAGS:
-            if len(top4) == 4:
+            if len(top3) == 3:
                 break
-            if tag not in top4:
-                top4.append(tag)
+            if tag not in top3:
+                top3.append(tag)
     else:
-        top4 = DEFAULT_TAGS
+        top3 = DEFAULT_TAGS
 
-    st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
 
-    # ── 인기 태그 버튼 (중앙 정렬) ──
+    # ── 인기 태그 버튼 (한 줄, nowrap) ──
     tag_html = "".join([
         f'<a href="?q={tag}" target="_self" style="'
         f'display:inline-block;background:#fff;color:#444;'
         f'border:1.5px solid rgba(0,0,0,.1);border-radius:999px;'
-        f'padding:7px 18px;font-size:13px;font-weight:500;'
+        f'padding:6px 14px;font-size:12px;font-weight:500;'
         f'text-decoration:none;white-space:nowrap;'
         f'box-shadow:0 1px 4px rgba(0,0,0,.06);'
-        f'transition:background .15s,color .15s;'
+        f'flex-shrink:0;'
         f'">{tag}</a>'
-        for tag in top4
+        for tag in top3
     ])
     st.markdown(f"""
     <div style="display:flex;justify-content:center;align-items:center;
-                gap:8px;flex-wrap:wrap;margin-top:4px;">
-      <span style="font-size:12px;color:#999;font-weight:500;white-space:nowrap;">인기 검색어</span>
+                gap:6px;flex-wrap:nowrap;overflow:hidden;">
+      <span style="font-size:11px;color:#999;font-weight:500;white-space:nowrap;flex-shrink:0;">인기 검색어</span>
       {tag_html}
     </div>
     """, unsafe_allow_html=True)
@@ -748,7 +745,7 @@ def render_home():
       <div style="flex:1;min-width:0;background:#fff;border-radius:20px;padding:18px 16px;
                   border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 8px rgba(0,0,0,.05);">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">🏆 검색 TOP 5</span>
+          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">검색 TOP 5</span>
           <span style="font-size:9px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 7px;">실시간</span>
         </div>
         {users_rows}
