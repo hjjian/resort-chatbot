@@ -767,21 +767,24 @@ def render_home():
     mistakes_html = ""
     for i, mistake in enumerate(top_mistakes[:10]):
         is_top3 = i < 3
-        mistakes_html += f"""
-        <div style="background:#fff;border-radius:16px;padding:18px 20px;
-                    margin-bottom:10px;border:1px solid rgba(0,0,0,.06);
-                    display:flex;align-items:center;gap:16px;">
-          <div style="background:{'#1a1a1a' if is_top3 else '#f0f0ee'};
-                      color:{'#fff' if is_top3 else '#888'};
-                      border-radius:10px;padding:6px 10px;
-                      font-size:12px;font-weight:800;flex-shrink:0;min-width:36px;text-align:center;">{i+1:02d}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;word-break:keep-all;">{mistake}</div>
-            <div style="font-size:12px;color:#999;line-height:1.5;word-break:keep-all;">{descs[i]}</div>
-          </div>
-          <div style="font-size:22px;flex-shrink:0;">{icons[i]}</div>
-        </div>
-        """
+        bg_color = "#1a1a1a" if is_top3 else "#f0f0ee"
+        txt_color = "#fff" if is_top3 else "#888"
+        desc_html = descs[i].replace("\n", "<br>")
+        num = f"{i+1:02d}"
+        mistakes_html += (
+            f'<div style="background:#fff;border-radius:16px;padding:18px 20px;' +
+            f'margin-bottom:10px;border:1px solid rgba(0,0,0,.06);' +
+            f'display:flex;align-items:center;gap:16px;">' +
+            f'<div style="background:{bg_color};color:{txt_color};' +
+            f'border-radius:10px;padding:6px 10px;' +
+            f'font-size:12px;font-weight:800;flex-shrink:0;min-width:36px;text-align:center;">{num}</div>' +
+            f'<div style="flex:1;min-width:0;">' +
+            f'<div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;word-break:keep-all;">{mistake}</div>' +
+            f'<div style="font-size:12px;color:#999;line-height:1.5;word-break:keep-all;">{desc_html}</div>' +
+            f'</div>' +
+            f'<div style="font-size:22px;flex-shrink:0;">{icons[i]}</div>' +
+            f'</div>'
+        )
     st.markdown(mistakes_html, unsafe_allow_html=True)
 
     # ── 내 검색 기록 ──
