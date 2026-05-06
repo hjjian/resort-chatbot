@@ -874,59 +874,6 @@ def render_home():
         )
     st.markdown(mistakes_html, unsafe_allow_html=True)
 
-    # ── 내 검색 기록 ──
-    st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
-    nickname = st.session_state.get("nickname", "").strip()
-    if nickname:
-        st.markdown(f"""
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;">
-          <div>
-            <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px;">
-              {nickname}님의 검색 기록
-            </div>
-            <div style="font-size:13px;color:#999;margin-top:4px;">최근 10건</div>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        my_log = load_usage_log()
-        my_entries = [
-            e for e in my_log
-            if e.get("nickname", "") == nickname
-        ][-10:][::-1]  # 최근 10건, 최신순
-
-        if my_entries:
-            for entry in my_entries:
-                ts = entry.get("timestamp", "")[:16].replace("T", " ")
-                user_input = entry.get("user_input", "")
-                final_result = entry.get("final_result", "")
-                category = entry.get("category", "")
-                is_recycled = "종량제" not in str(final_result) and "반납" not in str(final_result)
-                result_color = "#1B4D2E" if is_recycled else "#888"
-                result_bg = "#E8F5E9" if is_recycled else "#F5F5F3"
-                st.markdown(f"""
-                <div style="background:#fff;border-radius:14px;padding:16px 20px;
-                            margin-bottom:10px;border:1px solid rgba(0,0,0,.06);
-                            display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                  <div>
-                    <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">{user_input}</div>
-                    <div style="font-size:12px;color:#aaa;">{ts} · {category}</div>
-                  </div>
-                  <div style="background:{result_bg};color:{result_color};
-                              border-radius:8px;padding:5px 12px;
-                              font-size:13px;font-weight:700;white-space:nowrap;">
-                    {final_result}
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="background:#fff;border-radius:14px;padding:24px;text-align:center;
-                        color:#aaa;font-size:14px;">
-              아직 검색 기록이 없어요. 첫 검색을 시작해보세요! 🌿
-            </div>
-            """, unsafe_allow_html=True)
-
     # ── 푸터 ──
     st.markdown("""
     <div style="margin-top:80px;padding:28px 0;border-top:1px solid rgba(0,0,0,.07);
@@ -991,6 +938,23 @@ def render_questioning():
         background: #f5f5f3 !important;
         transform: translateY(-2px) !important;
     }
+    @media (max-width: 768px) {
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 10px !important;
+        }
+        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+        }
+        .stButton > button {
+            height: 96px !important;
+            font-size: 17px !important;
+            border-radius: 16px !important;
+            padding: 10px 8px !important;
+            white-space: normal !important;
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -1021,17 +985,15 @@ def render_questioning():
     """, unsafe_allow_html=True)
 
     # YES / NO 카드 버튼
-    _, col_btns, _ = st.columns([1, 4, 1])
-    with col_btns:
-        col_yes, col_no = st.columns(2, gap="medium")
-        with col_yes:
-            if st.button("예", key="yes_btn", use_container_width=True):
-                handle_answer(True)
-                st.rerun()
-        with col_no:
-            if st.button("아니오", key="no_btn", use_container_width=True):
-                handle_answer(False)
-                st.rerun()
+    col_yes, col_no = st.columns(2, gap="medium")
+    with col_yes:
+        if st.button("예", key="yes_btn", use_container_width=True):
+            handle_answer(True)
+            st.rerun()
+    with col_no:
+        if st.button("아니오", key="no_btn", use_container_width=True):
+            handle_answer(False)
+            st.rerun()
 
     # 분리배출 팁 박스
     eco_title = current_q.get("eco_title", "")
