@@ -533,13 +533,19 @@ def render_home():
         max-width: 520px;
         margin: 28px auto 0;
     }
-    /* 공통 input 스타일 */
+    /* 공통 input 스타일 — Streamlit 자동 마진 제거 */
+    .search-section .stTextInput,
+    .search-section div[data-testid="stTextInput"] {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
     .search-section .stTextInput > div,
     .search-section .stTextInput > div > div {
         border: none !important;
         box-shadow: none !important;
         background: transparent !important;
         padding: 0 !important;
+        margin: 0 !important;
     }
     /* 닉네임 */
     .nickname-wrap .stTextInput input {
@@ -577,7 +583,7 @@ def render_home():
 
     # 제목
     st.markdown("""
-    <div style="text-align:center;margin:16px 0 20px;">
+    <div style="text-align:center;margin:16px 0 8px;">
       <div style="font-size:35px;font-weight:900;line-height:1.3;color:#1a1a1a;
                   letter-spacing:-0.5px;font-family:'Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
@@ -597,7 +603,7 @@ def render_home():
         st.session_state.nickname = nickname_input.strip()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<div style='margin-top:-12px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:-20px;'></div>", unsafe_allow_html=True)
 
     st.markdown('<div class="search-wrap">', unsafe_allow_html=True)
     query = st.text_input(
