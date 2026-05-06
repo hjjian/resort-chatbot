@@ -525,9 +525,33 @@ def render_home():
 
     render_navbar()
 
-    # ── 제목 ──
+    # ── 제목 + 닉네임 + 검색창 ──
     st.markdown("""
-    <div style="text-align:center;margin:16px 0 20px;">
+    <style>
+    /* 입력창 간격 최소화 */
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"] {
+        margin-bottom: -12px !important;
+    }
+    .stTextInput { margin-bottom: 0 !important; }
+    .stTextInput input {
+        border-radius: 12px !important;
+        border: 1.5px solid rgba(0,0,0,.1) !important;
+        background: #fff !important;
+        padding: 12px 18px !important;
+        font-size: 14px !important;
+        color: #222 !important;
+        box-shadow: none !important;
+    }
+    .stTextInput input:focus {
+        border-color: #1B4D2E !important;
+        box-shadow: 0 0 0 3px rgba(27,77,46,.08) !important;
+        outline: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="text-align:center;margin:16px 0 16px;">
       <div style="font-size:35px;font-weight:900;line-height:1.3;color:#1a1a1a;
                   letter-spacing:-0.5px;font-family:'Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
@@ -536,65 +560,33 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    # ── 닉네임 + 검색창 (Streamlit input 숨기고 HTML로 렌더링) ──
-    nickname_val = st.session_state.get("nickname", "")
-    query_val = st.session_state.get("_last_query", "")
-
-    st.markdown(f"""
-    <div style="max-width:520px;margin:0 auto;">
-      <!-- 닉네임 -->
-      <input id="html_nickname"
-        type="text"
-        placeholder="닉네임을 입력해주세요 (필수)"
-        value="{nickname_val}"
-        style="width:100%;box-sizing:border-box;
-               border-radius:12px;border:1.5px solid rgba(0,0,0,.1);
-               background:#fff;padding:12px 18px;font-size:14px;
-               color:#222;outline:none;font-family:'Noto Sans KR',sans-serif;
-               margin-bottom:8px;display:block;"
-        onfocus="this.style.borderColor='#1B4D2E';this.style.boxShadow='0 0 0 3px rgba(27,77,46,.08)'"
-        onblur="this.style.borderColor='rgba(0,0,0,.1)';this.style.boxShadow='none'"
-      />
-      <!-- 검색창 -->
-      <input id="html_search"
-        type="text"
-        placeholder="어떤 품목을 버리시나요? (Enter로 검색)"
-        style="width:100%;box-sizing:border-box;
-               border-radius:999px;border:1.5px solid rgba(0,0,0,.09);
-               background:#fff;padding:13px 22px;font-size:15px;
-               color:#222;outline:none;font-family:'Noto Sans KR',sans-serif;
-               box-shadow:0 2px 16px rgba(0,0,0,.07);display:block;"
-        onfocus="this.style.borderColor='#1B4D2E';this.style.boxShadow='0 0 0 3px rgba(27,77,46,.1)'"
-        onblur="this.style.borderColor='rgba(0,0,0,.09)';this.style.boxShadow='0 2px 16px rgba(0,0,0,.07)'"
-        onkeydown="if(event.key==='Enter'){{
-          var nick=document.getElementById('html_nickname').value.trim();
-          var q=document.getElementById('html_search').value.trim();
-          if(!nick){{alert('닉네임을 먼저 입력해주세요.');return;}}
-          if(q){{window.location.href='?nickname='+encodeURIComponent(nick)+'&q='+encodeURIComponent(q);}}
-        }}"
-      />
-    </div>
-    """, unsafe_allow_html=True)
-
-    # HTML input에서 넘어온 파라미터 처리
-    params = st.query_params
-    if "nickname" in params and params["nickname"]:
-        st.session_state.nickname = params["nickname"]
-    if "q" in params and params["q"]:
-        incoming_q = params["q"]
-        st.query_params.clear()
-        if incoming_q != st.session_state.get("_last_query", ""):
-            st.session_state["_last_query"] = incoming_q
-            run_search(incoming_q)
-            st.rerun()
-
-    # 숨겨진 Streamlit input (세션 유지용)
-    nickname_input = st.text_input("닉네임hidden", value=nickname_val,
-        label_visibility="collapsed", key="nickname_input")
+    nickname_input = st.text_input(
+        "닉네임", placeholder="닉네임을 입력해주세요 (필수)",
+        label_visibility="collapsed", key="nickname_input",
+    )
     if nickname_input:
         st.session_state.nickname = nickname_input.strip()
 
-    query = ""  # HTML input이 처리하므로 빈값 유지
+    query = st.text_input(
+        "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
+        label_visibility="collapsed", key="home_input",
+    )
+    if query and query != st.session_state.get("_last_query", ""):
+        if not st.session_state.get("nickname", "").strip():
+            st.warning("닉네임을 먼저 입력해주세요.")
+        else:
+            st.session_state["_last_query"] = query
+            run_search(query)
+            st.rerun()
+
+    # query param으로 태그 클릭 처리
+    params = st.query_params
+    if "q" in params:
+        tag_query = params["q"]
+        st.query_params.clear()
+        if tag_query and isinstance(tag_query, str):
+            run_search(tag_query)
+            st.rerun()
 
     if st.session_state.state == "no_match":
         _, cw, _ = st.columns([0.3, 5, 0.3])
