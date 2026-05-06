@@ -10,7 +10,7 @@ from pathlib import Path
 from matcher import load_items, match_item
 from decision_tree import get_tree, get_first_question, process_answer
 from carbon import (load_carbon_factors, load_usage_log, save_usage_log,
-                    get_today_carbon, format_carbon)
+                    get_today_carbon, format_carbon, load_items_from_sheets)
 
 # ──────────────────────────────────────────────
 # 페이지 설정
@@ -306,9 +306,9 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 # ──────────────────────────────────────────────
 # 데이터 로드
 # ──────────────────────────────────────────────
-@st.cache_data
+@st.cache_data(ttl=300)  # 5분 캐시
 def get_items():
-    return load_items()
+    return load_items_from_sheets()
 
 @st.cache_data
 def get_carbon_factors():

@@ -12,8 +12,8 @@ from pathlib import Path
 # ──────────────────────────────────────────────
 # Google Sheets 연동 헬퍼
 # ──────────────────────────────────────────────
-def _get_sheet():
-    """Streamlit secrets로 Google Sheets 연결. 실패하면 None 반환."""
+def _get_workbook():
+    """Streamlit secrets로 Google Sheets 워크북 연결. 실패하면 None 반환."""
     try:
         import streamlit as st
         import gspread
@@ -30,19 +30,85 @@ def _get_sheet():
         sheet_id = st.secrets.get("GSHEET_ID", "")
         if not sheet_id:
             return None
-        sh = gc.open_by_key(sheet_id)
-        # "usage_log" 시트가 없으면 생성
+        return gc.open_by_key(sheet_id)
+    except Exception:
+        return None
+
+
+def _get_sheet():
+    """usage_log 워크시트 반환."""
+    try:
+        import gspread
+        sh = _get_workbook()
+        if not sh:
+            return None
         try:
-            ws = sh.worksheet("usage_log")
+            return sh.worksheet("usage_log")
         except gspread.WorksheetNotFound:
             ws = sh.add_worksheet(title="usage_log", rows=10000, cols=10)
             ws.append_row([
                 "timestamp", "nickname", "user_input", "matched_item_id",
                 "matched_by", "category", "final_result", "llm_used"
             ])
-        return ws
+            return ws
     except Exception:
         return None
+
+
+# ──────────────────────────────────────────────
+# items 로드 (Google Sheets → 로컬 fallback)
+# ──────────────────────────────────────────────
+def load_items_from_sheets(local_path: str = None) -> list:
+    """
+    Google Sheets의 'items' 시트에서 품목 데이터를 로드.
+    실패하면 로컬 items.json 사용.
+
+    Sheets 컬럼 구조:
+    id | name | category | keywords | skip_questions | steps | note
+    (keywords, skip_questions, steps는 쉼표/파이프로 구분된 문자열)
+    """
+    try:
+        import gspread
+        sh = _get_workbook()
+        if sh:
+            try:
+                ws = sh.worksheet("items")
+            except gspread.WorksheetNotFound:
+                # items 시트가 없으면 생성 + 헤더 추가
+                ws = sh.add_worksheet(title="items", rows=1000, cols=10)
+                ws.append_row([
+                    "id", "name", "category", "keywords",
+                    "skip_questions", "steps", "note"
+                ])
+                ws = None  # 새로 만든 빈 시트면 로컬 fallback 사용
+            if ws:
+                records = ws.get_all_records()
+                if records:
+                    items = []
+                    for row in records:
+                        items.append({
+                            "id":             str(row.get("id", "")).strip(),
+                            "name":           str(row.get("name", "")).strip(),
+                            "category":       str(row.get("category", "")).strip(),
+                            "keywords":       [k.strip() for k in str(row.get("keywords", "")).split(",") if k.strip()],
+                            "skip_questions": [s.strip() for s in str(row.get("skip_questions", "")).split(",") if s.strip()],
+                            "extra_questions": None,
+                            "steps":          [s.strip() for s in str(row.get("steps", "")).split("|") if s.strip()],
+                            "note":           str(row.get("note", "")).strip(),
+                        })
+                    return items
+    except Exception:
+        pass
+
+    # 로컬 fallback
+    if local_path is None:
+        local_path = Path(__file__).parent / "data" / "items.json"
+    try:
+        import json as _json
+        with open(local_path, encoding="utf-8") as f:
+            return _json.load(f)["items"]
+    except Exception:
+        return []
 
 
 # ──────────────────────────────────────────────

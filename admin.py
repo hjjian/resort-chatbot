@@ -273,7 +273,32 @@ else:
 # ══════════════════════════════════════════════
 # 7. items.json 편집기
 # ══════════════════════════════════════════════
-st.markdown('<div class="section-title">🗂️ 품목 데이터 편집 (items.json)</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">🗂️ 품목 데이터 편집</div>', unsafe_allow_html=True)
+
+# Google Sheets 바로가기
+try:
+    sheet_id = st.secrets.get("GSHEET_ID", "")
+    if sheet_id:
+        sheets_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit#gid=0"
+        st.markdown(f"""
+        <div style="background:#E8F5E9;border-radius:12px;padding:16px 20px;margin-bottom:20px;
+                    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#1B4D2E;">📊 Google Sheets에서 품목 편집</div>
+            <div style="font-size:12px;color:#555;margin-top:3px;">
+              Sheets의 items 탭에서 편집하면 앱에 자동 반영됩니다. (5분 캐시)
+            </div>
+          </div>
+          <a href="{sheets_url}" target="_blank"
+             style="background:#1B4D2E;color:#fff;border-radius:8px;
+                    padding:8px 18px;font-size:13px;font-weight:600;
+                    text-decoration:none;white-space:nowrap;">
+            Sheets 열기 →
+          </a>
+        </div>
+        """, unsafe_allow_html=True)
+except Exception:
+    pass
 
 ITEMS_PATH = Path(__file__).parent / "data" / "items.json"
 
