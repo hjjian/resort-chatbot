@@ -577,9 +577,9 @@ def render_home():
 
     # 제목
     st.markdown("""
-    <div style="text-align:center;margin:28px 0 32px;">
-      <div style="font-size:58px;font-weight:900;line-height:1.2;color:#1a1a1a;
-                  letter-spacing:-2px;font-family:'Playfair Display','Noto Sans KR',serif;">
+    <div style="text-align:center;margin:20px 0 24px;">
+      <div style="font-size:40px;font-weight:900;line-height:1.25;color:#1a1a1a;
+                  letter-spacing:-1px;font-family:'Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
       </div>
@@ -686,47 +686,80 @@ def render_home():
 
 
 
-    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
-    # ── 탄소 임팩트 카드 ──
+    # ── 탄소 카드 + 사용자 현황 ──
     carbon_factors = get_carbon_factors()
     usage_log2 = load_usage_log()
     carbon_val = get_today_carbon(usage_log2, carbon_factors)
     carbon_str = format_carbon(carbon_val)
     num_str = carbon_str.replace(' kg', '')
 
-    st.markdown(f"""
-    <div style="max-width:720px;margin:0 auto;">
-    <div style="background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
-                border-radius:20px;padding:28px 24px;
-                box-shadow:0 8px 32px rgba(27,77,46,.2);">
-      <div class="carbon-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;">
-      <div>
-        <div style="display:inline-flex;align-items:center;gap:6px;
-                    background:rgba(255,255,255,.15);border-radius:999px;
-                    padding:4px 12px;margin-bottom:14px;">
-          <span style="width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
-          <span style="font-size:11px;color:rgba(255,255,255,.8);font-weight:600;letter-spacing:.8px;">TODAY'S IMPACT</span>
-        </div>
-        <div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:4px;">오늘 여러분이 줄인 탄소발자국</div>
-        <div style="font-size:52px;font-weight:900;color:#fff;letter-spacing:-2px;line-height:1;
-                    font-family:'DM Sans',sans-serif;">
-          {num_str}<span style="font-size:22px;font-weight:600;color:rgba(255,255,255,.6);margin-left:6px;">kg</span>
-        </div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px;">소나무 128그루 효과</div>
-        <div style="width:100%;max-width:280px;height:6px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
-          <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
-        </div>
-        <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;">월간 목표 달성률 84%</div>
-      </div>
-      </div>
-    </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # 사용자 현황 Top5 계산
+    from collections import Counter
+    nickname_counts = Counter(
+        e.get("nickname", "") for e in usage_log2
+        if e.get("nickname", "").strip() and e.get("matched_item_id")
+    )
+    top5_users = nickname_counts.most_common(5)
 
-    st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
+    # Top5 HTML
+    medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+    users_rows = ""
+    for idx, (name, cnt) in enumerate(top5_users):
+        users_rows += f"""
+        <div style="display:flex;align-items:center;justify-content:space-between;
+                    padding:7px 0;border-bottom:1px solid rgba(0,0,0,.06);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:14px;">{medals[idx]}</span>
+            <span style="font-size:13px;font-weight:600;color:#1a1a1a;">{name}</span>
+          </div>
+          <span style="font-size:12px;color:#888;font-weight:500;">{cnt}회</span>
+        </div>
+        """
+    if not top5_users:
+        users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'
+
+    col_carbon, col_users = st.columns([1, 1], gap="medium")
+
+    with col_carbon:
+        st.markdown(f"""
+        <div style="background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
+                    border-radius:20px;padding:20px 18px;height:100%;
+                    box-shadow:0 4px 16px rgba(27,77,46,.2);">
+          <div style="display:inline-flex;align-items:center;gap:5px;
+                      background:rgba(255,255,255,.15);border-radius:999px;
+                      padding:3px 10px;margin-bottom:10px;">
+            <span style="width:5px;height:5px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
+            <span style="font-size:10px;color:rgba(255,255,255,.8);font-weight:600;letter-spacing:.5px;">TODAY'S IMPACT</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:4px;">오늘 줄인 탄소발자국</div>
+          <div style="font-size:36px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1;
+                      font-family:'DM Sans',sans-serif;">
+            {num_str}<span style="font-size:16px;font-weight:600;color:rgba(255,255,255,.6);margin-left:4px;">kg</span>
+          </div>
+          <div style="margin-top:14px;">
+            <div style="width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
+              <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
+            </div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:5px;">월간 목표 84%</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_users:
+        st.markdown(f"""
+        <div style="background:#fff;border-radius:20px;padding:20px 18px;height:100%;
+                    border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 8px rgba(0,0,0,.05);">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+            <span style="font-size:13px;font-weight:700;color:#1a1a1a;">🏆 검색 TOP 5</span>
+            <span style="font-size:10px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 8px;">실시간</span>
+          </div>
+          {users_rows}
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
     # ── 자주 틀리는 실수 Top 10 ──
     st.markdown("""
@@ -772,39 +805,25 @@ def render_home():
         "가스를 완전히 제거 후 배출하세요.",
     ]
 
-    st.markdown("""
-    <style>
-    @media (max-width: 768px) {
-        /* 실수 카드 5열 → 2열로 */
-        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-            flex: 0 0 48% !important;
-            min-width: 0 !important;
-        }
-        [data-testid="stHorizontalBlock"] {
-            flex-wrap: wrap !important;
-            gap: 8px !important;
-        }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    cols = st.columns(5, gap="small")
+    mistakes_html = ""
     for i, mistake in enumerate(top_mistakes[:10]):
-        with cols[i % 5]:
-            is_top3 = i < 3
-            st.markdown(f"""
-            <div class="mistake-card" style="background:#fff;border-radius:16px;padding:20px 18px;
-                        box-shadow:0 1px 8px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06);
-                        margin-bottom:10px;min-height:148px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <div style="background:{'#1a1a1a' if is_top3 else '#f0f0ee'};
-                            color:{'#fff' if is_top3 else '#666'};
-                            border-radius:8px;padding:3px 8px;font-size:11px;font-weight:800;">{i+1:02d}</div>
-                <div style="font-size:20px;">{icons[i]}</div>
-              </div>
-              <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:6px;word-break:keep-all;">{mistake}</div>
-              <div style="font-size:11px;color:#999;line-height:1.5;word-break:keep-all;">{descs[i]}</div>
-            </div>
-            """, unsafe_allow_html=True)
+        is_top3 = i < 3
+        mistakes_html += f"""
+        <div style="background:#fff;border-radius:16px;padding:18px 20px;
+                    margin-bottom:10px;border:1px solid rgba(0,0,0,.06);
+                    display:flex;align-items:center;gap:16px;">
+          <div style="background:{'#1a1a1a' if is_top3 else '#f0f0ee'};
+                      color:{'#fff' if is_top3 else '#888'};
+                      border-radius:10px;padding:6px 10px;
+                      font-size:12px;font-weight:800;flex-shrink:0;min-width:36px;text-align:center;">{i+1:02d}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;word-break:keep-all;">{mistake}</div>
+            <div style="font-size:12px;color:#999;line-height:1.5;word-break:keep-all;">{descs[i]}</div>
+          </div>
+          <div style="font-size:22px;flex-shrink:0;">{icons[i]}</div>
+        </div>
+        """
+    st.markdown(mistakes_html, unsafe_allow_html=True)
 
     # ── 내 검색 기록 ──
     st.markdown("<div style='height:56px;'></div>", unsafe_allow_html=True)
