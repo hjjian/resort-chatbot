@@ -102,11 +102,13 @@ def load_items_from_sheets(local_path: str = None) -> list:
                             cat_counter[prefix] = cat_counter.get(prefix, 0) + 1
                             item_id = f"{prefix}_{cat_counter[prefix]:03d}"
                         
+                        # keywords 또는 key_words 컬럼 둘 다 지원
+                        keywords_raw = str(row.get("keywords") or row.get("key_words") or "").strip()
                         items.append({
                             "id":              item_id,
                             "name":            str(row.get("name", "")).strip(),
                             "category":        category,
-                            "keywords":        [k.strip() for k in str(row.get("keywords", "")).split(",") if k.strip()],
+                            "keywords":        [k.strip() for k in keywords_raw.split(",") if k.strip()],
                             "skip_questions":  [s.strip() for s in str(row.get("skip_questions", "")).split(",") if s.strip()],
                             "extra_questions": None,
                             "steps":           [s.strip() for s in str(row.get("steps", "")).split("|") if s.strip()],
