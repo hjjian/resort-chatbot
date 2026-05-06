@@ -533,10 +533,15 @@ def render_home():
         max-width: 520px;
         margin: 28px auto 0;
     }
-    /* 공통 input 스타일 — Streamlit 자동 마진 제거 */
-    .search-section .stTextInput,
-    .search-section div[data-testid="stTextInput"] {
+    /* Streamlit 자동 gap 완전 제거 */
+    .search-section > div,
+    .search-section [data-testid="stVerticalBlock"],
+    .search-section [data-testid="stVerticalBlock"] > div,
+    .search-section [data-testid="element-container"] {
+        gap: 0 !important;
+        margin-top: 0 !important;
         margin-bottom: 0 !important;
+        padding-top: 0 !important;
         padding-bottom: 0 !important;
     }
     .search-section .stTextInput > div,
@@ -603,9 +608,7 @@ def render_home():
         st.session_state.nickname = nickname_input.strip()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<div style='margin-top:-20px;'></div>", unsafe_allow_html=True)
-
-    st.markdown('<div class="search-wrap">', unsafe_allow_html=True)
+    st.markdown('<div class="search-wrap" style="margin-top:6px;">', unsafe_allow_html=True)
     query = st.text_input(
         "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
         label_visibility="collapsed", key="home_input",
