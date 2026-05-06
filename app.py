@@ -894,17 +894,38 @@ def render_questioning():
     <style>
     html,
     body,
+    #root,
     .stApp,
     main,
+    .stMain,
+    [data-testid="stMain"],
     [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewBlockContainer"] {
+    [data-testid="stAppViewBlockContainer"],
+    .block-container {
         background: #F0F4F0 !important;
     }
+    html,
+    body,
+    #root {
+        min-height: 100% !important;
+    }
     .stApp,
+    main,
+    .stMain,
+    [data-testid="stMain"],
     [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewBlockContainer"] {
+    [data-testid="stAppViewBlockContainer"],
+    .block-container {
         min-height: 100vh !important;
         min-height: 100dvh !important;
+    }
+    .stApp::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: #F0F4F0;
+        z-index: -1;
+        pointer-events: none;
     }
     /* YES 카드 버튼 */
     [data-testid="column"]:first-child .stButton > button {
@@ -1076,17 +1097,38 @@ def render_result():
     <style>
     html,
     body,
+    #root,
     .stApp,
     main,
+    .stMain,
+    [data-testid="stMain"],
     [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewBlockContainer"] {
+    [data-testid="stAppViewBlockContainer"],
+    .block-container {
         background: #F0F4F0 !important;
     }
+    html,
+    body,
+    #root {
+        min-height: 100% !important;
+    }
     .stApp,
+    main,
+    .stMain,
+    [data-testid="stMain"],
     [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewBlockContainer"] {
+    [data-testid="stAppViewBlockContainer"],
+    .block-container {
         min-height: 100vh !important;
         min-height: 100dvh !important;
+    }
+    .stApp::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: #F0F4F0;
+        z-index: -1;
+        pointer-events: none;
     }
     @media (max-width: 768px) {
         /* 결과 카드 패딩 축소 */
