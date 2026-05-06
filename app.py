@@ -1012,11 +1012,11 @@ def render_questioning():
     with col_btns:
         col_yes, col_no = st.columns(2, gap="medium")
         with col_yes:
-            if st.button("✓  네, 했어요\n\n다음 단계로 이동", key="yes_btn", use_container_width=True):
+            if st.button("✓  예", key="yes_btn", use_container_width=True):
                 handle_answer(True)
                 st.rerun()
         with col_no:
-            if st.button("✕  아직이요\n\n가이드 확인하기", key="no_btn", use_container_width=True):
+            if st.button("✕  아니오", key="no_btn", use_container_width=True):
                 handle_answer(False)
                 st.rerun()
 
