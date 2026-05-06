@@ -577,9 +577,9 @@ def render_home():
 
     # 제목
     st.markdown("""
-    <div style="text-align:center;margin:20px 0 24px;">
-      <div style="font-size:40px;font-weight:900;line-height:1.25;color:#1a1a1a;
-                  letter-spacing:-1px;font-family:'Noto Sans KR',sans-serif;">
+    <div style="text-align:center;margin:16px 0 20px;">
+      <div style="font-size:32px;font-weight:900;line-height:1.3;color:#1a1a1a;
+                  letter-spacing:-0.5px;font-family:'Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
       </div>
@@ -720,44 +720,41 @@ def render_home():
     if not top5_users:
         users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'
 
-    col_carbon, col_users = st.columns([1, 1], gap="medium")
-
-    with col_carbon:
-        st.markdown(f"""
-        <div style="background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
-                    border-radius:20px;padding:20px 18px;height:100%;
-                    box-shadow:0 4px 16px rgba(27,77,46,.2);">
-          <div style="display:inline-flex;align-items:center;gap:5px;
-                      background:rgba(255,255,255,.15);border-radius:999px;
-                      padding:3px 10px;margin-bottom:10px;">
-            <span style="width:5px;height:5px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
-            <span style="font-size:10px;color:rgba(255,255,255,.8);font-weight:600;letter-spacing:.5px;">TODAY'S IMPACT</span>
-          </div>
-          <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:4px;">오늘 줄인 탄소발자국</div>
-          <div style="font-size:36px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1;
-                      font-family:'DM Sans',sans-serif;">
-            {num_str}<span style="font-size:16px;font-weight:600;color:rgba(255,255,255,.6);margin-left:4px;">kg</span>
-          </div>
-          <div style="margin-top:14px;">
-            <div style="width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
-              <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
-            </div>
-            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:5px;">월간 목표 84%</div>
-          </div>
+    st.markdown(f"""
+    <div style="display:flex;gap:12px;align-items:stretch;">
+      <!-- 탄소 카드 -->
+      <div style="flex:1;min-width:0;background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 60%,#2a6640 100%);
+                  border-radius:20px;padding:18px 16px;
+                  box-shadow:0 4px 16px rgba(27,77,46,.2);">
+        <div style="display:inline-flex;align-items:center;gap:5px;
+                    background:rgba(255,255,255,.15);border-radius:999px;
+                    padding:3px 10px;margin-bottom:10px;">
+          <span style="width:5px;height:5px;background:#4ade80;border-radius:50%;display:inline-block;"></span>
+          <span style="font-size:9px;color:rgba(255,255,255,.8);font-weight:600;letter-spacing:.5px;">TODAY'S IMPACT</span>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col_users:
-        st.markdown(f"""
-        <div style="background:#fff;border-radius:20px;padding:20px 18px;height:100%;
-                    border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 8px rgba(0,0,0,.05);">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
-            <span style="font-size:13px;font-weight:700;color:#1a1a1a;">🏆 검색 TOP 5</span>
-            <span style="font-size:10px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 8px;">실시간</span>
-          </div>
-          {users_rows}
+        <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:4px;">오늘 줄인 탄소발자국</div>
+        <div style="font-size:30px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1;
+                    font-family:'DM Sans',sans-serif;">
+          {num_str}<span style="font-size:14px;font-weight:600;color:rgba(255,255,255,.6);margin-left:3px;">kg</span>
         </div>
-        """, unsafe_allow_html=True)
+        <div style="margin-top:12px;">
+          <div style="width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
+            <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
+          </div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">월간 목표 84%</div>
+        </div>
+      </div>
+      <!-- 사용자 현황 -->
+      <div style="flex:1;min-width:0;background:#fff;border-radius:20px;padding:18px 16px;
+                  border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 8px rgba(0,0,0,.05);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">🏆 검색 TOP 5</span>
+          <span style="font-size:9px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 7px;">실시간</span>
+        </div>
+        {users_rows}
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
