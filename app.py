@@ -716,15 +716,16 @@ def render_home():
     # users_rows — CSS animation으로 슬라이드 (JS 없이)
     if slides_data:
         n = len(slides_data)
-        total_dur = n * 3  # 슬라이드당 5초
+        slide_dur = 3  # 슬라이드당 3초
+        total_dur = n * slide_dur
         # 각 슬라이드의 keyframe 애니메이션 계산
         style_parts = []
         slide_parts = []
         for si, s in enumerate(slides_data):
             lbl = f'<span style="font-size:9px;color:#aaa;margin-left:4px;">{s["label"]}</span>' if s["label"] else ""
             # 각 슬라이드가 보이는 구간 계산
-            start_pct = (si * 5 / total_dur) * 100
-            end_pct = ((si + 1) * 5 / total_dur) * 100
+            start_pct = (si * slide_dur / total_dur) * 100
+            end_pct = ((si + 1) * slide_dur / total_dur) * 100
             # fade 없이 즉시 전환 (마지막 슬라이드는 100%까지 유지)
             kf = f"usr{si}"
             is_last = (si == n - 1)
