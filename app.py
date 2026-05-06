@@ -607,11 +607,14 @@ def render_home():
             if e.get("timestamp", "").startswith(today)
             and e.get("user_input")
             and e.get("matched_item_id")
+            and e.get("user_input") != e.get("nickname", "")
         ]
         top3 = [item for item, _ in Counter(today_inputs).most_common(3)]
         if len(top3) < 3:
             all_inputs = [e["user_input"] for e in usage_log
-                          if e.get("user_input") and e.get("matched_item_id")]
+                          if e.get("user_input")
+                          and e.get("matched_item_id")
+                          and e.get("user_input") != e.get("nickname", "")]
             for item, _ in Counter(all_inputs).most_common(20):
                 if item not in top3:
                     top3.append(item)
@@ -658,29 +661,84 @@ def render_home():
     carbon_str = format_carbon(carbon_val)
     num_str = carbon_str.replace(' kg', '')
 
-    # 사용자 현황 Top5 계산
+    # 사용자 현황 Top5 계산 (동점자 묶기)
     from collections import Counter
     nickname_counts = Counter(
         e.get("nickname", "") for e in usage_log2
-        if e.get("nickname", "").strip() and e.get("matched_item_id")
+        if e.get("nickname", "").strip()
     )
-    top5_users = nickname_counts.most_common(5)
 
-    # Top5 HTML
-    medals = ["1.", "2.", "3.", "4️.", "5️."]
-    users_rows = ""
-    for idx, (name, cnt) in enumerate(top5_users):
-        users_rows += f"""
-        <div style="display:flex;align-items:center;justify-content:space-between;
-                    padding:7px 0;border-bottom:1px solid rgba(0,0,0,.06);">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:14px;">{medals[idx]}</span>
-            <span style="font-size:13px;font-weight:600;color:#1a1a1a;">{name}</span>
-          </div>
-          <span style="font-size:12px;color:#888;font-weight:500;">{cnt}회</span>
+    # 동점자 묶어서 순위 그룹 만들기
+    rank_groups = []  # [{"rank": 1, "count": 20, "names": [...], "cnt": 5}]
+    if nickname_counts:
+        sorted_users = sorted(nickname_counts.items(), key=lambda x: -x[1])
+        rank = 1
+        i = 0
+        while i < len(sorted_users) and rank <= 5:
+            cnt = sorted_users[i][1]
+            group_names = []
+            while i < len(sorted_users) and sorted_users[i][1] == cnt:
+                group_names.append(sorted_users[i][0])
+                i += 1
+            rank_groups.append({"rank": rank, "names": group_names, "cnt": cnt})
+            rank += len(group_names)
+
+    # 슬라이드 데이터 — 순위별 슬라이드 생성
+    slides_data = []
+    medals = ["🥇", "🥈", "🥉", "4위", "5위"]
+    for g in rank_groups:
+        medal = medals[g["rank"] - 1] if g["rank"] <= 5 else f"{g['rank']}위"
+        total = len(g["names"])
+        for si, name in enumerate(g["names"]):
+            slides_data.append({
+                "medal": medal,
+                "name": name,
+                "cnt": g["cnt"],
+                "label": f"{si+1}/{total}" if total > 1 else "",
+            })
+
+    # 슬라이드 HTML 생성
+    if slides_data:
+        slides_html = ""
+        for si, s in enumerate(slides_data):
+            display = "block" if si == 0 else "none"
+            label_html = f'<span style="font-size:9px;color:#aaa;margin-left:4px;">{s["label"]}</span>' if s["label"] else ""
+            slides_html += f'''
+            <div class="user-slide" style="display:{display};text-align:center;padding:8px 0;">
+              <div style="font-size:18px;margin-bottom:4px;">{s["medal"]}{label_html}</div>
+              <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">{s["name"]}</div>
+              <div style="font-size:11px;color:#888;">{s["cnt"]}회</div>
+            </div>
+            '''
+        # 페이지 인디케이터
+        dots_html = ""
+        for si in range(len(slides_data)):
+            color = "#1B4D2E" if si == 0 else "#ddd"
+            dots_html += f'<span class="user-dot" style="display:inline-block;width:5px;height:5px;border-radius:50%;background:{color};margin:0 2px;transition:background .3s;"></span>'
+
+        users_rows = f'''
+        <div id="user-slider">
+          {slides_html}
         </div>
-        """
-    if not top5_users:
+        <div style="text-align:center;margin-top:6px;">{dots_html}</div>
+        <script>
+        (function() {{
+          var slides = document.querySelectorAll(".user-slide");
+          var dots = document.querySelectorAll(".user-dot");
+          if (!slides.length) return;
+          var cur = 0;
+          function show(n) {{
+            slides[cur].style.display = "none";
+            dots[cur].style.background = "#ddd";
+            cur = (n + slides.length) % slides.length;
+            slides[cur].style.display = "block";
+            dots[cur].style.background = "#1B4D2E";
+          }}
+          setInterval(function() {{ show(cur + 1); }}, 5000);
+        }})();
+        </script>
+        '''
+    else:
         users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'
 
     st.markdown(f"""
