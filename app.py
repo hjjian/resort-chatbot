@@ -310,7 +310,7 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 def get_items():
     return load_items_from_sheets()
 
-@st.cache_data
+@st.cache_data(ttl=60)
 def get_carbon_factors():
     return load_carbon_factors()
 
