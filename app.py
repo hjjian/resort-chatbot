@@ -27,7 +27,8 @@ st.set_page_config(
 # ──────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap');
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 /* ── 기본 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; }
@@ -553,7 +554,7 @@ def render_home():
     st.markdown("""
     <div style="text-align:center;margin:35px 0 40px;">
       <div style="font-size:35px;font-weight:900;line-height:1.3;color:#1a1a1a;
-                  letter-spacing:-0.5px;font-family:'Noto Sans KR',sans-serif;">
+                  letter-spacing:-0.5px;font-family:'Pretendard','Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
         <span style="color:#1B4D2E;">똑똑한 분리배출</span>
       </div>
