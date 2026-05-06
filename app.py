@@ -4,6 +4,7 @@ app.py — Re:Sort 분리배출 챗봇 메인 앱
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 from datetime import datetime
 from pathlib import Path
 
@@ -330,6 +331,36 @@ def init_session():
             st.session_state[k] = v
 
 init_session()
+
+def scroll_to_top(key: str):
+    components.html(
+        """
+        <script>
+        const scrollTop = () => {
+          const doc = window.parent.document;
+          const targets = [
+            doc.scrollingElement,
+            doc.documentElement,
+            doc.body,
+            doc.querySelector('[data-testid="stAppViewContainer"]'),
+            doc.querySelector('section.main'),
+            doc.querySelector('main')
+          ].filter(Boolean);
+          targets.forEach((el) => {
+            try { el.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+            catch (_) { el.scrollTop = 0; el.scrollLeft = 0; }
+          });
+        };
+        requestAnimationFrame(scrollTop);
+        setTimeout(scrollTop, 50);
+        setTimeout(scrollTop, 250);
+        </script>
+        """,
+        height=0,
+        width=0,
+        scrolling=False,
+        key=key,
+    )
 
 # ──────────────────────────────────────────────
 # 헬퍼: 세션 초기화
