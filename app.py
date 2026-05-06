@@ -525,70 +525,9 @@ def render_home():
 
     render_navbar()
 
-    # ── 히어로 제목 + 닉네임 + 검색창 통합 ──
+    # ── 제목 ──
     st.markdown("""
-    <style>
-    /* 검색 영역 전체 */
-    .search-section {
-        max-width: 520px;
-        margin: 28px auto 0;
-    }
-    /* Streamlit 자동 gap 완전 제거 */
-    .search-section > div,
-    .search-section [data-testid="stVerticalBlock"],
-    .search-section [data-testid="stVerticalBlock"] > div,
-    .search-section [data-testid="element-container"] {
-        gap: 0 !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    .search-section .stTextInput > div,
-    .search-section .stTextInput > div > div {
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    /* 닉네임 */
-    .nickname-wrap .stTextInput input {
-        border-radius: 12px !important;
-        border: 1.5px solid rgba(0,0,0,.1) !important;
-        background: #fff !important;
-        padding: 12px 18px !important;
-        font-size: 14px !important;
-        color: #222 !important;
-        box-shadow: none !important;
-    }
-    .nickname-wrap .stTextInput input:focus {
-        border-color: #1B4D2E !important;
-        box-shadow: 0 0 0 3px rgba(27,77,46,.08) !important;
-        outline: none !important;
-    }
-    /* 검색창 */
-    .search-wrap .stTextInput input {
-        border-radius: 999px !important;
-        border: 1.5px solid rgba(0,0,0,.09) !important;
-        background: #fff !important;
-        box-shadow: 0 2px 16px rgba(0,0,0,.07) !important;
-        padding: 14px 22px !important;
-        font-size: 15px !important;
-        color: #222 !important;
-    }
-    .search-wrap .stTextInput input::placeholder { color: #bbb !important; }
-    .search-wrap .stTextInput input:focus {
-        border-color: #1B4D2E !important;
-        box-shadow: 0 0 0 3px rgba(27,77,46,.1) !important;
-        outline: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # 제목
-    st.markdown("""
-    <div style="text-align:center;margin:16px 0 8px;">
+    <div style="text-align:center;margin:16px 0 20px;">
       <div style="font-size:35px;font-weight:900;line-height:1.3;color:#1a1a1a;
                   letter-spacing:-0.5px;font-family:'Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
@@ -597,40 +536,65 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    # 닉네임 + 검색창
-    st.markdown('<div class="search-section">', unsafe_allow_html=True)
-    st.markdown('<div class="nickname-wrap">', unsafe_allow_html=True)
-    nickname_input = st.text_input(
-        "닉네임", placeholder="닉네임을 입력해주세요 (필수)",
-        label_visibility="collapsed", key="nickname_input",
-    )
+    # ── 닉네임 + 검색창 (Streamlit input 숨기고 HTML로 렌더링) ──
+    nickname_val = st.session_state.get("nickname", "")
+    query_val = st.session_state.get("_last_query", "")
+
+    st.markdown(f"""
+    <div style="max-width:520px;margin:0 auto;">
+      <!-- 닉네임 -->
+      <input id="html_nickname"
+        type="text"
+        placeholder="닉네임을 입력해주세요 (필수)"
+        value="{nickname_val}"
+        style="width:100%;box-sizing:border-box;
+               border-radius:12px;border:1.5px solid rgba(0,0,0,.1);
+               background:#fff;padding:12px 18px;font-size:14px;
+               color:#222;outline:none;font-family:'Noto Sans KR',sans-serif;
+               margin-bottom:8px;display:block;"
+        onfocus="this.style.borderColor='#1B4D2E';this.style.boxShadow='0 0 0 3px rgba(27,77,46,.08)'"
+        onblur="this.style.borderColor='rgba(0,0,0,.1)';this.style.boxShadow='none'"
+      />
+      <!-- 검색창 -->
+      <input id="html_search"
+        type="text"
+        placeholder="어떤 품목을 버리시나요? (Enter로 검색)"
+        style="width:100%;box-sizing:border-box;
+               border-radius:999px;border:1.5px solid rgba(0,0,0,.09);
+               background:#fff;padding:13px 22px;font-size:15px;
+               color:#222;outline:none;font-family:'Noto Sans KR',sans-serif;
+               box-shadow:0 2px 16px rgba(0,0,0,.07);display:block;"
+        onfocus="this.style.borderColor='#1B4D2E';this.style.boxShadow='0 0 0 3px rgba(27,77,46,.1)'"
+        onblur="this.style.borderColor='rgba(0,0,0,.09)';this.style.boxShadow='0 2px 16px rgba(0,0,0,.07)'"
+        onkeydown="if(event.key==='Enter'){{
+          var nick=document.getElementById('html_nickname').value.trim();
+          var q=document.getElementById('html_search').value.trim();
+          if(!nick){{alert('닉네임을 먼저 입력해주세요.');return;}}
+          if(q){{window.location.href='?nickname='+encodeURIComponent(nick)+'&q='+encodeURIComponent(q);}}
+        }}"
+      />
+    </div>
+    """, unsafe_allow_html=True)
+
+    # HTML input에서 넘어온 파라미터 처리
+    params = st.query_params
+    if "nickname" in params and params["nickname"]:
+        st.session_state.nickname = params["nickname"]
+    if "q" in params and params["q"]:
+        incoming_q = params["q"]
+        st.query_params.clear()
+        if incoming_q != st.session_state.get("_last_query", ""):
+            st.session_state["_last_query"] = incoming_q
+            run_search(incoming_q)
+            st.rerun()
+
+    # 숨겨진 Streamlit input (세션 유지용)
+    nickname_input = st.text_input("닉네임hidden", value=nickname_val,
+        label_visibility="collapsed", key="nickname_input")
     if nickname_input:
         st.session_state.nickname = nickname_input.strip()
-    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="search-wrap" style="margin-top:6px;">', unsafe_allow_html=True)
-    query = st.text_input(
-        "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
-        label_visibility="collapsed", key="home_input",
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-    if query and query != st.session_state.get("_last_query", ""):
-        if not st.session_state.get("nickname", "").strip():
-            st.warning("닉네임을 먼저 입력해주세요.")
-        else:
-            st.session_state["_last_query"] = query
-            run_search(query)
-            st.rerun()
-
-    # query param으로 태그 클릭 처리
-    params = st.query_params
-    if "q" in params:
-        tag_query = params["q"]
-        st.query_params.clear()
-        if tag_query and isinstance(tag_query, str):
-            run_search(tag_query)
-            st.rerun()
+    query = ""  # HTML input이 처리하므로 빈값 유지
 
     if st.session_state.state == "no_match":
         _, cw, _ = st.columns([0.3, 5, 0.3])
@@ -754,7 +718,7 @@ def render_home():
       <div style="flex:1;min-width:0;background:#fff;border-radius:20px;padding:18px 16px;
                   border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 8px rgba(0,0,0,.05);">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">검색 TOP 5</span>
+          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">사용자 TOP 5</span>
           <span style="font-size:9px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 7px;">실시간</span>
         </div>
         {users_rows}
