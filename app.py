@@ -725,16 +725,15 @@ def render_home():
             # 각 슬라이드가 보이는 구간 계산
             start_pct = (si * 5 / total_dur) * 100
             end_pct = ((si + 1) * 5 / total_dur) * 100
-            fade_pct = min(5, 100/n * 0.1)  # fade 구간
-            # keyframe
+            # fade 없이 즉시 전환
             kf = f"usr{si}"
             style_parts.append(
                 f"@keyframes {kf} {{"
                 f"0%{{opacity:0;}} "
-                f"{max(0,start_pct-fade_pct):.1f}%{{opacity:0;}} "
+                f"{max(0,start_pct-0.1):.1f}%{{opacity:0;}} "
                 f"{start_pct:.1f}%{{opacity:1;}} "
-                f"{end_pct-fade_pct:.1f}%{{opacity:1;}} "
-                f"{end_pct:.1f}%{{opacity:0;}} "
+                f"{end_pct:.1f}%{{opacity:1;}} "
+                f"{min(end_pct+0.1,100):.1f}%{{opacity:0;}} "
                 f"100%{{opacity:0;}}"
                 f"}}"
             )
