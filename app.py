@@ -945,7 +945,20 @@ def render_questioning():
 
     st.markdown("""
     <style>
-    .stApp { background: #F0F4F0 !important; }
+    html,
+    body,
+    .stApp,
+    main,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewBlockContainer"] {
+        background: #F0F4F0 !important;
+    }
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewBlockContainer"] {
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+    }
     /* YES 카드 버튼 */
     [data-testid="column"]:first-child .stButton > button {
         background: #fff !important;
@@ -1012,11 +1025,11 @@ def render_questioning():
     with col_btns:
         col_yes, col_no = st.columns(2, gap="medium")
         with col_yes:
-            if st.button("✓  예", key="yes_btn", use_container_width=True):
+            if st.button("예", key="yes_btn", use_container_width=True):
                 handle_answer(True)
                 st.rerun()
         with col_no:
-            if st.button("✕  아니오", key="no_btn", use_container_width=True):
+            if st.button("아니오", key="no_btn", use_container_width=True):
                 handle_answer(False)
                 st.rerun()
 
@@ -1079,7 +1092,20 @@ def render_result():
 
     st.markdown("""
     <style>
-    .stApp { background: #F0F4F0 !important; }
+    html,
+    body,
+    .stApp,
+    main,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewBlockContainer"] {
+        background: #F0F4F0 !important;
+    }
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewBlockContainer"] {
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+    }
     @media (max-width: 768px) {
         /* 결과 카드 패딩 축소 */
         div[style*="max-width:480px"] {
