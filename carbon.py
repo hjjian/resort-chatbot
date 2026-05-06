@@ -224,4 +224,6 @@ def is_carbon_data_ready(carbon_factors: dict) -> bool:
 def format_carbon(value: float) -> str:
     if value == 0.0:
         return "집계 중..."
-    return f"{int(value):,} kg"
+    if value < 1.0:
+        return f"{value:.2f} kg"
+    return f"{value:,.2f} kg"
