@@ -674,12 +674,15 @@ def render_home():
     goal_pct = min(int(weekly_carbon / WEEKLY_GOAL * 100), 100)
     goal_str = f"{weekly_carbon:.1f} / {int(WEEKLY_GOAL)} kg"
 
-    # 사용자 현황 Top5 계산 (동점자 묶기)
-    from collections import Counter
-    nickname_counts = Counter(
-        e.get("nickname", "") for e in usage_log2
-        if e.get("nickname", "").strip()
-    )
+    # 사용자 현황 — 날짜별 중복 제거 (하루 1회로 제한)
+    from collections import defaultdict
+    user_dates = defaultdict(set)
+    for e in usage_log2:
+        nick = e.get("nickname", "").strip()
+        ts = str(e.get("timestamp", ""))[:10]  # "2026-05-06"
+        if nick and ts:
+            user_dates[nick].add(ts)
+    nickname_counts = {nick: len(dates) for nick, dates in user_dates.items()}
 
     # 동점자 묶어서 순위 그룹 만들기
     rank_groups = []  # [{"rank": 1, "count": 20, "names": [...], "cnt": 5}]
@@ -742,7 +745,7 @@ def render_home():
                 f'animation:{kf} {total_dur}s linear infinite;">'
                 f'<div style="font-size:18px;margin-bottom:4px;">{s["medal"]}{lbl}</div>'
                 f'<div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">{s["name"]}</div>'
-                f'<div style="font-size:11px;color:#888;">{s["cnt"]}회</div>'
+                f'<div style="font-size:11px;color:#888;">{s["cnt"]}일 참여</div>'
                 f'</div>'
             )
         style_str = "<style>" + " ".join(style_parts) + "</style>"
