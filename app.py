@@ -551,7 +551,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <div style="text-align:center;margin:40px 0 36px;">
+    <div style="text-align:center;margin:40px 0 40px;">
       <div style="font-size:35px;font-weight:900;line-height:1.3;color:#1a1a1a;
                   letter-spacing:-0.5px;font-family:'Noto Sans KR',sans-serif;">
         지속 가능한 미래를 위한<br>
