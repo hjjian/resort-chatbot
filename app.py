@@ -524,7 +524,6 @@ def render_home():
     """, unsafe_allow_html=True)
 
     render_navbar()
-    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
     # ── 제목 + 닉네임 + 검색창 ──
     st.markdown("""
