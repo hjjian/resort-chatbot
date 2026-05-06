@@ -661,6 +661,18 @@ def render_home():
     carbon_str = format_carbon(carbon_val)
     num_str = carbon_str.replace(' kg', '')
 
+    # 월간 목표: 500 kg
+    MONTHLY_GOAL = 500.0
+    from datetime import date as _date
+    _today = _date.today()
+    monthly_carbon = sum(
+        carbon_factors.get(e.get("category", "기타"), 0.0)
+        for e in usage_log2
+        if str(e.get("timestamp", "")).startswith(f"{_today.year}-{_today.month:02d}")
+    )
+    goal_pct = min(int(monthly_carbon / MONTHLY_GOAL * 100), 100)
+    goal_str = f"{monthly_carbon:.1f} / {int(MONTHLY_GOAL)} kg"
+
     # 사용자 현황 Top5 계산 (동점자 묶기)
     from collections import Counter
     nickname_counts = Counter(
@@ -761,9 +773,9 @@ def render_home():
         </div>
         <div style="margin-top:12px;">
           <div style="width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;">
-            <div style="width:84%;height:100%;background:#4ade80;border-radius:999px;"></div>
+            <div style="width:{goal_pct}%;height:100%;background:#4ade80;border-radius:999px;"></div>
           </div>
-          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">월간 목표 84%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">월간 목표 {goal_pct}% ({goal_str})</div>
         </div>
       </div>
       <!-- 사용자 현황 -->
