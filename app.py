@@ -1083,16 +1083,6 @@ def render_result():
 
     st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
-    # 분석 완료 배지
-    st.markdown(f"""
-    <div style="text-align:center;margin-bottom:8px;">
-      <span style="display:inline-flex;align-items:center;gap:6px;
-                   font-size:13px;font-weight:600;color:#1B4D2E;">
-        ✅ 분석완료: {matched["name"]}
-      </span>
-    </div>
-    """, unsafe_allow_html=True)
-
     # 결과 카드
     st.markdown(f"""
     <div style="max-width:480px;margin:0 auto;
