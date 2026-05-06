@@ -84,17 +84,33 @@ def load_items_from_sheets(local_path: str = None) -> list:
             if ws:
                 records = ws.get_all_records()
                 if records:
+                    # 카테고리별 자동 id 생성용 카운터
+                    cat_prefix_map = {
+                        "스티로폼": "styro", "유리": "glass", "금속·캔": "metal",
+                        "플라스틱": "plastic", "종이·종이팩": "paper", "비닐": "vinyl",
+                        "전자제품": "elec", "폐의약품": "medi", "기타": "etc"
+                    }
+                    cat_counter = {}
                     items = []
                     for row in records:
+                        category = str(row.get("category", "")).strip()
+                        item_id = str(row.get("id", "")).strip()
+
+                        # id가 비어있으면 자동 생성
+                        if not item_id:
+                            prefix = cat_prefix_map.get(category, "item")
+                            cat_counter[prefix] = cat_counter.get(prefix, 0) + 1
+                            item_id = f"{prefix}_{cat_counter[prefix]:03d}"
+                        
                         items.append({
-                            "id":             str(row.get("id", "")).strip(),
-                            "name":           str(row.get("name", "")).strip(),
-                            "category":       str(row.get("category", "")).strip(),
-                            "keywords":       [k.strip() for k in str(row.get("keywords", "")).split(",") if k.strip()],
-                            "skip_questions": [s.strip() for s in str(row.get("skip_questions", "")).split(",") if s.strip()],
+                            "id":              item_id,
+                            "name":            str(row.get("name", "")).strip(),
+                            "category":        category,
+                            "keywords":        [k.strip() for k in str(row.get("keywords", "")).split(",") if k.strip()],
+                            "skip_questions":  [s.strip() for s in str(row.get("skip_questions", "")).split(",") if s.strip()],
                             "extra_questions": None,
-                            "steps":          [s.strip() for s in str(row.get("steps", "")).split("|") if s.strip()],
-                            "note":           str(row.get("note", "")).strip(),
+                            "steps":           [s.strip() for s in str(row.get("steps", "")).split("|") if s.strip()],
+                            "note":            str(row.get("note", "")).strip(),
                         })
                     return items
     except Exception:
