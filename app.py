@@ -694,7 +694,7 @@ def render_home():
                 group_names.append(sorted_users[i][0])
                 i += 1
             rank_groups.append({"rank": rank, "names": group_names, "cnt": cnt})
-            rank += len(group_names)
+            rank += 1
 
     # 슬라이드 데이터 — 순위별 슬라이드 생성
     slides_data = []
