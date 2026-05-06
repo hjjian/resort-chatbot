@@ -697,38 +697,47 @@ def render_home():
                 "label": f"{si+1}/{total}" if total > 1 else "",
             })
 
-    # users_rows — 슬라이드를 모두 쌓고 JS로 전환
+    # users_rows — CSS animation으로 슬라이드 (JS 없이)
     if slides_data:
-        parts = []
+        n = len(slides_data)
+        total_dur = n * 5  # 슬라이드당 5초
+        # 각 슬라이드의 keyframe 애니메이션 계산
+        style_parts = []
+        slide_parts = []
         for si, s in enumerate(slides_data):
-            vis = "block" if si == 0 else "none"
             lbl = f'<span style="font-size:9px;color:#aaa;margin-left:4px;">{s["label"]}</span>' if s["label"] else ""
-            parts.append(
-                f'<div class="usr-slide" style="display:{vis};text-align:center;padding:8px 0;">'
+            # 각 슬라이드가 보이는 구간 계산
+            start_pct = (si * 5 / total_dur) * 100
+            end_pct = ((si + 1) * 5 / total_dur) * 100
+            fade_pct = min(5, 100/n * 0.1)  # fade 구간
+            # keyframe
+            kf = f"usr{si}"
+            style_parts.append(
+                f"@keyframes {kf} {{"
+                f"0%{{opacity:0;}} "
+                f"{max(0,start_pct-fade_pct):.1f}%{{opacity:0;}} "
+                f"{start_pct:.1f}%{{opacity:1;}} "
+                f"{end_pct-fade_pct:.1f}%{{opacity:1;}} "
+                f"{end_pct:.1f}%{{opacity:0;}} "
+                f"100%{{opacity:0;}}"
+                f"}}"
+            )
+            delay = 0
+            slide_parts.append(
+                f'<div style="position:absolute;top:0;left:0;right:0;text-align:center;padding:8px 0;'
+                f'opacity:{"1" if si==0 else "0"};'
+                f'animation:{kf} {total_dur}s linear infinite;">'
                 f'<div style="font-size:18px;margin-bottom:4px;">{s["medal"]}{lbl}</div>'
                 f'<div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">{s["name"]}</div>'
                 f'<div style="font-size:11px;color:#888;">{s["cnt"]}회</div>'
                 f'</div>'
             )
-        n = len(slides_data)
-        dots = "".join(
-            f'<span class="usr-dot" style="display:inline-block;width:5px;height:5px;'
-            f'border-radius:50%;background:{"#1B4D2E" if i==0 else "#ddd"};margin:0 2px;transition:background .3s;"></span>'
-            for i in range(n)
-        )
+        style_str = "<style>" + " ".join(style_parts) + "</style>"
         users_rows = (
-            "".join(parts) +
-            f'<div style="text-align:center;margin-top:6px;">{dots}</div>'
-            f'<script>(function(){{'
-            f'var s=document.querySelectorAll(".usr-slide");'
-            f'var d=document.querySelectorAll(".usr-dot");'
-            f'if(!s.length)return;var c=0;'
-            f'setInterval(function(){{'
-            f's[c].style.display="none";d[c].style.background="#ddd";'
-            f'c=(c+1)%s.length;'
-            f's[c].style.display="block";d[c].style.background="#1B4D2E";'
-            f'}},5000);'
-            f'}})();</script>'
+            style_str +
+            f'<div style="position:relative;height:80px;">' +
+            "".join(slide_parts) +
+            f'</div>'
         )
     else:
         users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'  
