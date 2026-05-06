@@ -674,7 +674,7 @@ def render_home():
         sorted_users = sorted(nickname_counts.items(), key=lambda x: -x[1])
         rank = 1
         i = 0
-        while i < len(sorted_users) and rank <= 5:
+        while i < len(sorted_users) and rank <= 3:
             cnt = sorted_users[i][1]
             group_names = []
             while i < len(sorted_users) and sorted_users[i][1] == cnt:
@@ -685,7 +685,7 @@ def render_home():
 
     # 슬라이드 데이터 — 순위별 슬라이드 생성
     slides_data = []
-    medals = ["🥇", "🥈", "🥉", "4위", "5위"]
+    medals = ["🥇", "🥈", "🥉"]
     for g in rank_groups:
         medal = medals[g["rank"] - 1] if g["rank"] <= 5 else f"{g['rank']}위"
         total = len(g["names"])
@@ -770,7 +770,7 @@ def render_home():
       <div style="flex:1;min-width:0;background:#fff;border-radius:20px;padding:18px 16px;
                   border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 8px rgba(0,0,0,.05);">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">사용자 TOP 5</span>
+          <span style="font-size:12px;font-weight:700;color:#1a1a1a;">사용자 TOP 3</span>
           <span style="font-size:9px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 7px;">실시간</span>
         </div>
         {users_rows}
