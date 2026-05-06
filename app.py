@@ -716,7 +716,7 @@ def render_home():
     # users_rows — CSS animation으로 슬라이드 (JS 없이)
     if slides_data:
         n = len(slides_data)
-        total_dur = n * 5  # 슬라이드당 5초
+        total_dur = n * 3  # 슬라이드당 5초
         # 각 슬라이드의 keyframe 애니메이션 계산
         style_parts = []
         slide_parts = []
