@@ -716,30 +716,41 @@ def render_home():
             color = "#1B4D2E" if si == 0 else "#ddd"
             dots_html += f'<span class="user-dot" style="display:inline-block;width:5px;height:5px;border-radius:50%;background:{color};margin:0 2px;transition:background .3s;"></span>'
 
-        users_rows = f'''
-        <div id="user-slider">
-          {slides_html}
-        </div>
-        <div style="text-align:center;margin-top:6px;">{dots_html}</div>
-        <script>
-        (function() {{
-          var slides = document.querySelectorAll(".user-slide");
-          var dots = document.querySelectorAll(".user-dot");
-          if (!slides.length) return;
-          var cur = 0;
-          function show(n) {{
-            slides[cur].style.display = "none";
-            dots[cur].style.background = "#ddd";
-            cur = (n + slides.length) % slides.length;
-            slides[cur].style.display = "block";
-            dots[cur].style.background = "#1B4D2E";
-          }}
-          setInterval(function() {{ show(cur + 1); }}, 5000);
-        }})();
-        </script>
-        '''
+        users_rows = (
+            '<div id="user-slider">' +
+            slides_html +
+            '</div>' +
+            f'<div style="text-align:center;margin-top:6px;">{dots_html}</div>'
+        )
     else:
         users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'
+
+    # 슬라이드 자동전환 스크립트 별도 출력
+    st.markdown("""
+    <script>
+    (function() {
+      function initSlider() {
+        var slides = document.querySelectorAll(".user-slide");
+        var dots = document.querySelectorAll(".user-dot");
+        if (!slides.length) return;
+        var cur = 0;
+        function show(n) {
+          slides[cur].style.display = "none";
+          dots[cur].style.background = "#ddd";
+          cur = (n + slides.length) % slides.length;
+          slides[cur].style.display = "block";
+          dots[cur].style.background = "#1B4D2E";
+        }
+        setInterval(function() { show(cur + 1); }, 5000);
+      }
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initSlider);
+      } else {
+        initSlider();
+      }
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 
     st.markdown(f"""
     <div style="display:flex;gap:12px;align-items:stretch;">
