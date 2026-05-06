@@ -783,10 +783,17 @@ def render_home():
           <span style="font-size:12px;font-weight:700;color:#1a1a1a;">사용자 TOP 5</span>
           <span style="font-size:9px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 7px;">실시간</span>
         </div>
-        {users_rows}
+        <div id="user-slot"></div>
       </div>
     </div>
     """, unsafe_allow_html=True)
+
+    st.markdown(users_rows, unsafe_allow_html=True)
+    st.markdown("""<script>
+    var slot = document.getElementById("user-slot");
+    var src = document.getElementById("user-slider");
+    if (slot && src) { slot.appendChild(src); }
+    </script>""", unsafe_allow_html=True)
 
     st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
