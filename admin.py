@@ -4,8 +4,6 @@ streamlit run admin.py 또는 멀티페이지: pages/admin.py
 """
 
 import json
-import base64
-import requests
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
