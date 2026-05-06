@@ -697,60 +697,41 @@ def render_home():
                 "label": f"{si+1}/{total}" if total > 1 else "",
             })
 
-    # 슬라이드 HTML 생성
+    # users_rows — 슬라이드를 모두 쌓고 JS로 전환
     if slides_data:
-        slides_html = ""
+        parts = []
         for si, s in enumerate(slides_data):
-            display = "block" if si == 0 else "none"
-            label_html = f'<span style="font-size:9px;color:#aaa;margin-left:4px;">{s["label"]}</span>' if s["label"] else ""
-            slides_html += f'''
-            <div class="user-slide" style="display:{display};text-align:center;padding:8px 0;">
-              <div style="font-size:18px;margin-bottom:4px;">{s["medal"]}{label_html}</div>
-              <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">{s["name"]}</div>
-              <div style="font-size:11px;color:#888;">{s["cnt"]}회</div>
-            </div>
-            '''
-        # 페이지 인디케이터
-        dots_html = ""
-        for si in range(len(slides_data)):
-            color = "#1B4D2E" if si == 0 else "#ddd"
-            dots_html += f'<span class="user-dot" style="display:inline-block;width:5px;height:5px;border-radius:50%;background:{color};margin:0 2px;transition:background .3s;"></span>'
-
+            vis = "block" if si == 0 else "none"
+            lbl = f'<span style="font-size:9px;color:#aaa;margin-left:4px;">{s["label"]}</span>' if s["label"] else ""
+            parts.append(
+                f'<div class="usr-slide" style="display:{vis};text-align:center;padding:8px 0;">'
+                f'<div style="font-size:18px;margin-bottom:4px;">{s["medal"]}{lbl}</div>'
+                f'<div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">{s["name"]}</div>'
+                f'<div style="font-size:11px;color:#888;">{s["cnt"]}회</div>'
+                f'</div>'
+            )
+        n = len(slides_data)
+        dots = "".join(
+            f'<span class="usr-dot" style="display:inline-block;width:5px;height:5px;'
+            f'border-radius:50%;background:{"#1B4D2E" if i==0 else "#ddd"};margin:0 2px;transition:background .3s;"></span>'
+            for i in range(n)
+        )
         users_rows = (
-            '<div id="user-slider">' +
-            slides_html +
-            '</div>' +
-            f'<div style="text-align:center;margin-top:6px;">{dots_html}</div>'
+            "".join(parts) +
+            f'<div style="text-align:center;margin-top:6px;">{dots}</div>'
+            f'<script>(function(){{'
+            f'var s=document.querySelectorAll(".usr-slide");'
+            f'var d=document.querySelectorAll(".usr-dot");'
+            f'if(!s.length)return;var c=0;'
+            f'setInterval(function(){{'
+            f's[c].style.display="none";d[c].style.background="#ddd";'
+            f'c=(c+1)%s.length;'
+            f's[c].style.display="block";d[c].style.background="#1B4D2E";'
+            f'}},5000);'
+            f'}})();</script>'
         )
     else:
-        users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'
-
-    # 슬라이드 자동전환 스크립트 별도 출력
-    st.markdown("""
-    <script>
-    (function() {
-      function initSlider() {
-        var slides = document.querySelectorAll(".user-slide");
-        var dots = document.querySelectorAll(".user-dot");
-        if (!slides.length) return;
-        var cur = 0;
-        function show(n) {
-          slides[cur].style.display = "none";
-          dots[cur].style.background = "#ddd";
-          cur = (n + slides.length) % slides.length;
-          slides[cur].style.display = "block";
-          dots[cur].style.background = "#1B4D2E";
-        }
-        setInterval(function() { show(cur + 1); }, 5000);
-      }
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initSlider);
-      } else {
-        initSlider();
-      }
-    })();
-    </script>
-    """, unsafe_allow_html=True)
+        users_rows = '<div style="font-size:13px;color:#aaa;text-align:center;padding:16px 0;">아직 데이터가 없어요</div>'  
 
     st.markdown(f"""
     <div style="display:flex;gap:12px;align-items:stretch;">
@@ -783,17 +764,10 @@ def render_home():
           <span style="font-size:12px;font-weight:700;color:#1a1a1a;">사용자 TOP 5</span>
           <span style="font-size:9px;color:#aaa;background:#f5f5f3;border-radius:999px;padding:2px 7px;">실시간</span>
         </div>
-        <div id="user-slot"></div>
+        {users_rows}
       </div>
     </div>
     """, unsafe_allow_html=True)
-
-    st.markdown(users_rows, unsafe_allow_html=True)
-    st.markdown("""<script>
-    var slot = document.getElementById("user-slot");
-    var src = document.getElementById("user-slider");
-    if (slot && src) { slot.appendChild(src); }
-    </script>""", unsafe_allow_html=True)
 
     st.markdown("<div style='height:40px;'></div>", unsafe_allow_html=True)
 
