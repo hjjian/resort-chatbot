@@ -1146,10 +1146,7 @@ def render_result():
         }
         </style>
         """, unsafe_allow_html=True)
-        if st.button("🔍  다시 검색", use_container_width=True, key="retry_btn"):
-            reset_session()
-            st.rerun()
-        if st.button("홈으로 돌아가기", use_container_width=True, key="home_btn"):
+        if st.button("다시 검색", use_container_width=True, key="retry_btn"):
             reset_session()
             st.rerun()
 
