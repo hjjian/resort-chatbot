@@ -332,7 +332,7 @@ def init_session():
 
 init_session()
 
-def scroll_to_top(key: str):
+def scroll_to_top(_key: str):
     components.html(
         """
         <script>
@@ -359,7 +359,6 @@ def scroll_to_top(key: str):
         height=0,
         width=0,
         scrolling=False,
-        key=key,
     )
 
 # ──────────────────────────────────────────────
@@ -920,6 +919,7 @@ def render_home():
 
 def render_questioning():
     current_q = st.session_state.current_q
+    scroll_to_top(f"scroll_question_{current_q.get('id', 'q')}_{st.session_state.step_num}")
 
     st.markdown("""
     <style>
@@ -948,15 +948,19 @@ def render_questioning():
     [data-testid="stAppViewBlockContainer"],
     .block-container {
         min-height: 100vh !important;
-        min-height: 100dvh !important;
+        min-height: 100svh !important;
     }
     .stApp::before {
         content: "";
         position: fixed;
         inset: 0;
         background: #F0F4F0;
-        z-index: -1;
+        z-index: 0;
         pointer-events: none;
+    }
+    .stApp > * {
+        position: relative;
+        z-index: 1;
     }
     /* YES 카드 버튼 */
     [data-testid="column"]:first-child .stButton > button {
@@ -1123,6 +1127,7 @@ def render_result():
     result_text = st.session_state.result_text
     reason      = st.session_state.result_reason or matched.get("note", "")
     steps       = matched.get("steps", [])
+    scroll_to_top("scroll_result")
 
     st.markdown("""
     <style>
@@ -1151,15 +1156,19 @@ def render_result():
     [data-testid="stAppViewBlockContainer"],
     .block-container {
         min-height: 100vh !important;
-        min-height: 100dvh !important;
+        min-height: 100svh !important;
     }
     .stApp::before {
         content: "";
         position: fixed;
         inset: 0;
         background: #F0F4F0;
-        z-index: -1;
+        z-index: 0;
         pointer-events: none;
+    }
+    .stApp > * {
+        position: relative;
+        z-index: 1;
     }
     @media (max-width: 768px) {
         /* 결과 카드 패딩 축소 */
