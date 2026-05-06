@@ -725,18 +725,29 @@ def render_home():
             # 각 슬라이드가 보이는 구간 계산
             start_pct = (si * 5 / total_dur) * 100
             end_pct = ((si + 1) * 5 / total_dur) * 100
-            # fade 없이 즉시 전환
+            # fade 없이 즉시 전환 (마지막 슬라이드는 100%까지 유지)
             kf = f"usr{si}"
-            style_parts.append(
-                f"@keyframes {kf} {{"
-                f"0%{{opacity:0;}} "
-                f"{max(0,start_pct-0.1):.1f}%{{opacity:0;}} "
-                f"{start_pct:.1f}%{{opacity:1;}} "
-                f"{end_pct:.1f}%{{opacity:1;}} "
-                f"{min(end_pct+0.1,100):.1f}%{{opacity:0;}} "
-                f"100%{{opacity:0;}}"
-                f"}}"
-            )
+            is_last = (si == n - 1)
+            if is_last:
+                style_parts.append(
+                    f"@keyframes {kf} {{"
+                    f"0%{{opacity:0;}} "
+                    f"{max(0,start_pct-0.1):.1f}%{{opacity:0;}} "
+                    f"{start_pct:.1f}%{{opacity:1;}} "
+                    f"100%{{opacity:1;}}"
+                    f"}}"
+                )
+            else:
+                style_parts.append(
+                    f"@keyframes {kf} {{"
+                    f"0%{{opacity:0;}} "
+                    f"{max(0,start_pct-0.1):.1f}%{{opacity:0;}} "
+                    f"{start_pct:.1f}%{{opacity:1;}} "
+                    f"{end_pct:.1f}%{{opacity:1;}} "
+                    f"{end_pct+0.1:.1f}%{{opacity:0;}} "
+                    f"100%{{opacity:0;}}"
+                    f"}}"
+                )
             delay = 0
             slide_parts.append(
                 f'<div style="position:absolute;top:0;left:0;right:0;text-align:center;padding:8px 0;'
