@@ -938,23 +938,6 @@ def render_questioning():
         background: #f5f5f3 !important;
         transform: translateY(-2px) !important;
     }
-    @media (max-width: 768px) {
-        [data-testid="stHorizontalBlock"] {
-            flex-wrap: nowrap !important;
-            gap: 10px !important;
-        }
-        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-            flex: 1 1 0 !important;
-            min-width: 0 !important;
-        }
-        .stButton > button {
-            height: 96px !important;
-            font-size: 17px !important;
-            border-radius: 16px !important;
-            padding: 10px 8px !important;
-            white-space: normal !important;
-        }
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -985,15 +968,52 @@ def render_questioning():
     """, unsafe_allow_html=True)
 
     # YES / NO 카드 버튼
-    col_yes, col_no = st.columns(2, gap="medium")
-    with col_yes:
-        if st.button("예", key="yes_btn", use_container_width=True):
-            handle_answer(True)
-            st.rerun()
-    with col_no:
-        if st.button("아니오", key="no_btn", use_container_width=True):
-            handle_answer(False)
-            st.rerun()
+    _, col_btns, _ = st.columns([1, 4, 1])
+    with col_btns:
+        st.markdown("""
+        <style>
+        @media (max-width: 768px) {
+            [data-testid="stHorizontalBlock"]:has(#answer-row-marker) {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: visible !important;
+            }
+            [data-testid="stHorizontalBlock"]:has(#answer-row-marker) + [data-testid="stHorizontalBlock"] {
+                display: grid !important;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+                gap: 10px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: hidden !important;
+            }
+            [data-testid="stHorizontalBlock"]:has(#answer-row-marker) + [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+            }
+            [data-testid="stHorizontalBlock"]:has(#answer-row-marker) + [data-testid="stHorizontalBlock"] .stButton > button {
+                height: 88px !important;
+                min-height: 88px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                font-size: 17px !important;
+                border-radius: 16px !important;
+                padding: 10px 8px !important;
+                white-space: normal !important;
+            }
+        }
+        </style>
+        <span id="answer-row-marker"></span>
+        """, unsafe_allow_html=True)
+        col_yes, col_no = st.columns(2, gap="small")
+        with col_yes:
+            if st.button("예", key="yes_btn", use_container_width=True):
+                handle_answer(True)
+                st.rerun()
+        with col_no:
+            if st.button("아니오", key="no_btn", use_container_width=True):
+                handle_answer(False)
+                st.rerun()
 
     # 분리배출 팁 박스
     eco_title = current_q.get("eco_title", "")
