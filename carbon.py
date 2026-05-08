@@ -88,7 +88,8 @@ def load_items_from_sheets(local_path: str = None) -> list:
                     cat_prefix_map = {
                         "스티로폼": "styro", "유리": "glass", "금속·캔": "metal",
                         "플라스틱": "plastic", "종이·종이팩": "paper", "비닐": "vinyl",
-                        "전자제품": "elec", "폐의약품": "medi", "기타": "etc"
+                        "전자제품": "elec", "폐의약품": "medi", "기타": "etc",
+                        "일반쓰레기": "trash",
                     }
                     # 이미 존재하는 id 목록 수집 (중복 방지)
                     existing_ids = {

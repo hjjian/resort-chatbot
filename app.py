@@ -419,14 +419,14 @@ def run_search(query: str):
     else:
         tree = get_tree(matched["category"])
         if tree is None:
-            st.session_state.result_text   = matched["category"] + " 분리배출"
+            st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
             st.session_state.result_reason = matched.get("note", "")
             st.session_state.state         = "result"
             append_usage_log(query, matched, st.session_state.result_text)
             return
         first_q = get_first_question(tree, skip)
         if first_q is None:
-            st.session_state.result_text   = matched["category"] + " 분리배출"
+            st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
             st.session_state.result_reason = matched.get("note", "")
             st.session_state.state         = "result"
             append_usage_log(query, matched, st.session_state.result_text)
@@ -469,14 +469,14 @@ def handle_answer(answer: bool):
             else:
                 tree = get_tree(matched["category"])
                 if tree is None:
-                    st.session_state.result_text   = matched["category"] + " 분리배출"
+                    st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
                     st.session_state.result_reason = matched.get("note", "")
                     st.session_state.state         = "result"
                     append_usage_log(st.session_state.query, matched, st.session_state.result_text)
                     return
                 first_q = get_first_question(tree, skip)
                 if first_q is None:
-                    st.session_state.result_text   = matched["category"] + " 분리배출"
+                    st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
                     st.session_state.result_reason = matched.get("note", "")
                     st.session_state.state         = "result"
                     append_usage_log(st.session_state.query, matched, st.session_state.result_text)
