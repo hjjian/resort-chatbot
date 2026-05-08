@@ -90,18 +90,33 @@ def load_items_from_sheets(local_path: str = None) -> list:
                         "플라스틱": "plastic", "종이·종이팩": "paper", "비닐": "vinyl",
                         "전자제품": "elec", "폐의약품": "medi", "기타": "etc"
                     }
+                    # 이미 존재하는 id 목록 수집 (중복 방지)
+                    existing_ids = {
+                        str(r.get("id", "")).strip()
+                        for r in records
+                        if str(r.get("id", "")).strip()
+                    }
                     cat_counter = {}
                     items = []
-                    for row in records:
+                    rows_to_update = []  # (sheet_row_index, new_id)
+
+                    for i, row in enumerate(records):
                         category = str(row.get("category", "")).strip()
                         item_id = str(row.get("id", "")).strip()
 
-                        # id가 비어있으면 자동 생성
+                        # id가 비어있으면 자동 생성 후 Sheets에 다시 쓸 목록에 추가
                         if not item_id:
                             prefix = cat_prefix_map.get(category, "item")
                             cat_counter[prefix] = cat_counter.get(prefix, 0) + 1
-                            item_id = f"{prefix}_{cat_counter[prefix]:03d}"
-                        
+                            candidate = f"{prefix}_{cat_counter[prefix]:03d}"
+                            # 기존 id와 충돌하면 번호 증가
+                            while candidate in existing_ids:
+                                cat_counter[prefix] += 1
+                                candidate = f"{prefix}_{cat_counter[prefix]:03d}"
+                            item_id = candidate
+                            existing_ids.add(item_id)
+                            rows_to_update.append((i + 2, item_id))  # +2: 헤더행 + 0-index 보정
+
                         # keywords 또는 key_words 컬럼 둘 다 지원
                         keywords_raw = str(row.get("keywords") or row.get("key_words") or "").strip()
                         items.append({
@@ -114,6 +129,17 @@ def load_items_from_sheets(local_path: str = None) -> list:
                             "steps":           [s.strip() for s in str(row.get("steps", "")).split("|") if s.strip()],
                             "note":            str(row.get("note", "")).strip(),
                         })
+
+                    # 비어있던 id 셀들을 Sheets A열에 일괄 업데이트
+                    if rows_to_update:
+                        try:
+                            ws.batch_update([{
+                                "range": f"A{row_idx}",
+                                "values": [[new_id]]
+                            } for row_idx, new_id in rows_to_update])
+                        except Exception:
+                            pass  # 쓰기 실패해도 로드는 정상 반환
+
                     return items
     except Exception:
         pass
