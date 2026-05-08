@@ -311,6 +311,12 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 def get_items():
     return load_items_from_sheets()
 
+def get_items_and_fill_ids():
+    """캐시 없이 호출 — 빈 id를 Sheets에 채워주는 사이드이펙트 포함."""
+    items = load_items_from_sheets()
+    st.cache_data.clear()   # 캐시 갱신해서 다음 get_items()도 최신 반영
+    return items
+
 @st.cache_data(ttl=60)
 def get_carbon_factors():
     return load_carbon_factors()
@@ -329,6 +335,11 @@ def init_session():
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
+
+    # 세션 첫 시작 시 한 번만 — 빈 id를 Sheets에 채워줌
+    if "ids_filled" not in st.session_state:
+        get_items_and_fill_ids()
+        st.session_state["ids_filled"] = True
 
 init_session()
 
