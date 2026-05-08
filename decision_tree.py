@@ -520,7 +520,7 @@ CATEGORY_TREES = {
     "플라스틱":    PLASTIC_TREE,
     "종이·종이팩": PAPER_TREE,
     "비닐":        VINYL_TREE,
-    "전자제품":    ELEC_TREE,
+    "전자제품 및 완충재": ELEC_TREE,
     "폐의약품":    MEDI_TREE,
     "기타":        ETC_TREE,
 }
