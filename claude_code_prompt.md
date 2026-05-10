@@ -33,7 +33,7 @@ resort-chatbot/
 - name: 품목 대표 이름
 - keywords: 사용자 입력 유사 표현 리스트
 - category: 9개 카테고리 중 하나
-  (스티로폼 / 유리 / 금속·캔 / 비닐 / 플라스틱 / 종이·종이팩 / 폐의약품 / 전자제품 / 기타)
+  (스티로폼 / 유리 / 금속·캔 / 비닐 / 플라스틱 / 종이·종이팩 / 폐의약품 / 전자제품 및 완충재 / 기타)
 - skip_questions: 건너뛸 공통 질문 ID 리스트
 - extra_questions: 품목 전용 추가 질문 (null이면 공통 트리만 사용)
 - note: 환경 설명 텍스트
@@ -65,7 +65,7 @@ resort-chatbot/
   "플라스틱":   0.0,
   "종이·종이팩": 0.0,
   "폐의약품":   0.0,
-  "전자제품":   0.0,
+  "전자제품 및 완충재":   0.0,
   "기타":       0.0
 }
 ```
@@ -162,7 +162,7 @@ genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 CATEGORIES = ["스티로폼", "유리", "금속·캔", "비닐", "플라스틱",
-              "종이·종이팩", "폐의약품", "전자제품", "기타"]
+              "종이·종이팩", "폐의약품", "전자제품 및 완충재", "기타"]
 
 def classify_category(user_input: str) -> dict:
     prompt = f"""

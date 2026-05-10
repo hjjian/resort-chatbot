@@ -5,6 +5,7 @@ app.py — Re:Sort 분리배출 챗봇 메인 앱
 
 import streamlit as st
 import streamlit.components.v1 as components
+import html
 from datetime import datetime
 from pathlib import Path
 
@@ -381,6 +382,19 @@ def reset_session():
         if k in st.session_state:
             del st.session_state[k]
 
+
+CATEGORY_OPTIONS = [
+    "스티로폼",
+    "유리",
+    "금속·캔",
+    "비닐",
+    "플라스틱",
+    "종이·종이팩",
+    "폐의약품",
+    "전자제품 및 완충재",
+    "기타",
+]
+
 # ──────────────────────────────────────────────
 # 헬퍼: usage_log 저장
 # ──────────────────────────────────────────────
@@ -412,7 +426,7 @@ def run_search(query: str):
     st.session_state.query = query
 
     if matched is None:
-        st.session_state.state = "no_match"
+        st.session_state.state = "category_select"
         st.session_state.matched_item = None
         return
 
@@ -448,6 +462,44 @@ def run_search(query: str):
     st.session_state.state         = "questioning"
     st.session_state.step_num      = 1
     st.session_state.guide_message = None
+
+
+def start_category_flow(category: str):
+    query = st.session_state.get("query", "").strip()
+    matched = {
+        "id": f"manual:{category}",
+        "name": query or category,
+        "keywords": [],
+        "category": category,
+        "skip_questions": [],
+        "extra_questions": None,
+        "steps": [],
+        "note": "",
+        "matched_by": "category_manual",
+    }
+    tree = get_tree(category)
+    st.session_state.matched_item = matched
+
+    if tree is None:
+        st.session_state.result_text = f"{category} 분리배출"
+        st.session_state.result_reason = ""
+        st.session_state.state = "result"
+        append_usage_log(query, matched, st.session_state.result_text)
+        return
+
+    first_q = get_first_question(tree, [])
+    if first_q is None:
+        st.session_state.result_text = f"{category} 분리배출"
+        st.session_state.result_reason = ""
+        st.session_state.state = "result"
+        append_usage_log(query, matched, st.session_state.result_text)
+        return
+
+    st.session_state.tree = tree
+    st.session_state.current_q = first_q
+    st.session_state.step_num = 1
+    st.session_state.guide_message = None
+    st.session_state.state = "questioning"
 
 # ──────────────────────────────────────────────
 # 헬퍼: 답변 처리
@@ -629,12 +681,6 @@ def render_home():
         if tag_query and isinstance(tag_query, str):
             run_search(tag_query)
             st.rerun()
-
-    if st.session_state.state == "no_match":
-        _, cw, _ = st.columns([0.3, 5, 0.3])
-        with cw:
-            st.warning(f"**'{st.session_state.query}'** 에 해당하는 품목을 찾지 못했어요.")
-        st.session_state.state = "home"
 
     # ── 인기 태그 ──
     DEFAULT_TAGS = ["플라스틱 컵", "배달 용기", "알루미늄 캔"]
@@ -926,6 +972,93 @@ def render_home():
       </div>
     </div>
     """, unsafe_allow_html=True)
+
+
+def render_category_select():
+    scroll_to_top("scroll_category_select")
+
+    st.markdown("""
+    <style>
+    .stApp { background: #F0F4F0 !important; }
+    .category-select-wrap {
+        max-width: 720px;
+        margin: 44px auto 0;
+        text-align: center;
+    }
+    .category-select-title {
+        font-size: 30px;
+        font-weight: 900;
+        color: #1a1a1a;
+        line-height: 1.3;
+        word-break: keep-all;
+    }
+    .category-select-desc {
+        max-width: 480px;
+        margin: 12px auto 28px;
+        font-size: 14px;
+        color: #777;
+        line-height: 1.6;
+        word-break: keep-all;
+    }
+    .stButton > button {
+        background: #fff !important;
+        color: #1a1a1a !important;
+        border: 1px solid rgba(0,0,0,.08) !important;
+        border-radius: 14px !important;
+        min-height: 58px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 1px 8px rgba(0,0,0,.05) !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+    }
+    .stButton > button:hover {
+        background: #1B4D2E !important;
+        color: #fff !important;
+        transform: translateY(-1px) !important;
+    }
+    @media (max-width: 768px) {
+        .category-select-wrap { margin-top: 32px; }
+        .category-select-title { font-size: 24px; }
+        .stButton > button {
+            min-height: 52px !important;
+            font-size: 13px !important;
+            padding: 10px 8px !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    render_navbar()
+
+    query = html.escape(st.session_state.get("query", ""))
+    st.markdown(f"""
+    <div class="category-select-wrap">
+      <div class="category-select-title">"{query}" 품목을 아직 찾지 못했어요</div>
+      <div class="category-select-desc">
+        가장 가까운 분류를 선택하면 해당 카테고리의 공통 질문으로 이어서 안내해드릴게요.
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    _, grid, _ = st.columns([0.5, 5, 0.5])
+    with grid:
+        st.markdown('<div class="category-grid">', unsafe_allow_html=True)
+        for start in range(0, len(CATEGORY_OPTIONS), 3):
+            cols = st.columns(3, gap="small")
+            for col, category in zip(cols, CATEGORY_OPTIONS[start:start + 3]):
+                with col:
+                    if st.button(category, key=f"manual_category_{category}", use_container_width=True):
+                        start_category_flow(category)
+                        st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown("<div style='height:28px;'></div>", unsafe_allow_html=True)
+        _, col_back, _ = st.columns([1, 1, 1])
+        with col_back:
+            if st.button("다시 검색", key="category_back_home", use_container_width=True):
+                reset_session()
+                st.rerun()
 
 
 def render_questioning():
@@ -1277,6 +1410,8 @@ state = st.session_state.state
 
 if state in ("home", "no_match"):
     render_home()
+elif state == "category_select":
+    render_category_select()
 elif state == "questioning":
     render_questioning()
 elif state == "result":

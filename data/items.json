@@ -112,7 +112,7 @@
       "id": "elec_001",
       "name": "전지류",
       "keywords": ["건전지", "배터리", "AA 배터리", "AAA 배터리", "전지"],
-      "category": "전자제품",
+      "category": "전자제품 및 완충재",
       "skip_questions": [],
       "extra_questions": [
         {
@@ -290,7 +290,7 @@
       "id": "elec_002",
       "name": "폐형광등",
       "keywords": ["형광등", "폐형광등", "형광 전구", "형광등 교체"],
-      "category": "전자제품",
+      "category": "전자제품 및 완충재",
       "skip_questions": [],
       "extra_questions": [
         {
@@ -324,7 +324,7 @@
       "id": "elec_003",
       "name": "보조배터리",
       "keywords": ["보조배터리", "충전기", "파워뱅크", "휴대용 충전기"],
-      "category": "전자제품",
+      "category": "전자제품 및 완충재",
       "skip_questions": [],
       "extra_questions": null,
       "steps": ["소형 가전 수거함 또는 전자제품 판매점(삼성·LG 등)에 배출하세요.", "절대 일반쓰레기나 폐건전지 수거함에 버리지 마세요."],
@@ -425,7 +425,7 @@
       "id": "elec_004",
       "name": "평판형 LED 조명",
       "keywords": ["LED 조명", "평판 조명", "LED 패널", "형광등 대체 LED"],
-      "category": "전자제품",
+      "category": "전자제품 및 완충재",
       "skip_questions": [],
       "extra_questions": null,
       "steps": ["소형 가전 수거함에 배출하세요.", "형광등 전용 수거함과 혼동하지 마세요."],
