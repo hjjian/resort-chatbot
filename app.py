@@ -395,6 +395,31 @@ CATEGORY_OPTIONS = [
     "기타",
 ]
 
+ITEM_RESULT_TOKEN = "__ITEM_RESULT__"
+
+
+def get_item_result(matched_item, fallback: str = "") -> str:
+    if matched_item and matched_item.get("result"):
+        return matched_item["result"]
+    if matched_item and matched_item.get("category"):
+        category = matched_item["category"]
+        return "일반쓰레기 배출" if category == "일반쓰레기" else f"{category} 분리배출"
+    return fallback
+
+
+def resolve_result_text(result_text: str, matched_item) -> str:
+    if result_text == ITEM_RESULT_TOKEN:
+        return get_item_result(matched_item)
+    return result_text
+
+
+def set_result_state(matched_item, result_text: str = ITEM_RESULT_TOKEN, reason: str = ""):
+    resolved = resolve_result_text(result_text, matched_item)
+    st.session_state.result_text = resolved
+    st.session_state.result_reason = reason or (matched_item.get("note", "") if matched_item else "")
+    st.session_state.state = "result"
+    append_usage_log(st.session_state.get("query", ""), matched_item, resolved)
+
 # ──────────────────────────────────────────────
 # 헬퍼: usage_log 저장
 # ──────────────────────────────────────────────
@@ -444,17 +469,11 @@ def run_search(query: str):
     else:
         tree = get_tree(matched["category"])
         if tree is None:
-            st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
-            st.session_state.result_reason = matched.get("note", "")
-            st.session_state.state         = "result"
-            append_usage_log(query, matched, st.session_state.result_text)
+            set_result_state(matched, ITEM_RESULT_TOKEN)
             return
         first_q = get_first_question(tree, skip)
         if first_q is None:
-            st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
-            st.session_state.result_reason = matched.get("note", "")
-            st.session_state.state         = "result"
-            append_usage_log(query, matched, st.session_state.result_text)
+            set_result_state(matched, ITEM_RESULT_TOKEN)
             return
         st.session_state.tree      = tree
         st.session_state.current_q = first_q
@@ -513,10 +532,7 @@ def handle_answer(answer: bool):
         eq     = current_q["_extra_data"]
         branch = eq["yes"] if answer else eq["no"]
         if "result" in branch:
-            st.session_state.result_text   = branch["result"]
-            st.session_state.result_reason = branch.get("reason", "")
-            st.session_state.state         = "result"
-            append_usage_log(st.session_state.query, matched, branch["result"])
+            set_result_state(matched, branch["result"], branch.get("reason", ""))
             return
         if branch.get("next") == "category_tree":
             extra_list = matched.get("extra_questions", [])
@@ -532,17 +548,11 @@ def handle_answer(answer: bool):
             else:
                 tree = get_tree(matched["category"])
                 if tree is None:
-                    st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
-                    st.session_state.result_reason = matched.get("note", "")
-                    st.session_state.state         = "result"
-                    append_usage_log(st.session_state.query, matched, st.session_state.result_text)
+                    set_result_state(matched, ITEM_RESULT_TOKEN)
                     return
                 first_q = get_first_question(tree, skip)
                 if first_q is None:
-                    st.session_state.result_text   = ("일반쓰레기 배출" if matched["category"] == "일반쓰레기" else matched["category"] + " 분리배출")
-                    st.session_state.result_reason = matched.get("note", "")
-                    st.session_state.state         = "result"
-                    append_usage_log(st.session_state.query, matched, st.session_state.result_text)
+                    set_result_state(matched, ITEM_RESULT_TOKEN)
                     return
                 st.session_state.tree          = tree
                 st.session_state.current_q     = first_q
@@ -552,10 +562,7 @@ def handle_answer(answer: bool):
 
     outcome = process_answer(st.session_state.tree, current_q["id"], answer, skip)
     if outcome["type"] == "result":
-        st.session_state.result_text   = outcome["result"]
-        st.session_state.result_reason = outcome.get("reason", "")
-        st.session_state.state         = "result"
-        append_usage_log(st.session_state.query, matched, outcome["result"])
+        set_result_state(matched, outcome["result"], outcome.get("reason", ""))
     elif outcome["type"] == "guide":
         st.session_state.guide_message = outcome["message"]
         st.session_state.current_q     = outcome["next_question"]

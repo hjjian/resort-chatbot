@@ -64,7 +64,7 @@ def load_items_from_sheets(local_path: str = None) -> list:
     실패하면 로컬 items.json 사용.
 
     Sheets 컬럼 구조:
-    id | name | category | keywords | skip_questions | steps | note
+    id | name | category | keywords | skip_questions | result | steps | note
     (keywords, skip_questions, steps는 쉼표/파이프로 구분된 문자열)
     """
     try:
@@ -78,7 +78,7 @@ def load_items_from_sheets(local_path: str = None) -> list:
                 ws = sh.add_worksheet(title="items", rows=1000, cols=10)
                 ws.append_row([
                     "id", "name", "category", "keywords",
-                    "skip_questions", "steps", "note"
+                    "skip_questions", "result", "steps", "note"
                 ])
                 ws = None  # 새로 만든 빈 시트면 로컬 fallback 사용
             if ws:
@@ -127,6 +127,7 @@ def load_items_from_sheets(local_path: str = None) -> list:
                             "keywords":        [k.strip() for k in keywords_raw.split(",") if k.strip()],
                             "skip_questions":  [s.strip() for s in str(row.get("skip_questions", "")).split(",") if s.strip()],
                             "extra_questions": None,
+                            "result":          str(row.get("result", "")).strip(),
                             "steps":           [s.strip() for s in str(row.get("steps", "")).split("|") if s.strip()],
                             "note":            str(row.get("note", "")).strip(),
                         })
