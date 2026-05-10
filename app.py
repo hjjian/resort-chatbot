@@ -1302,11 +1302,11 @@ def render_questioning():
     _, col_prev, col_back, _ = st.columns([1.5, 1, 1, 1.5])
     with col_prev:
         if st.session_state.get("question_history"):
-            if st.button("← 이전", key="prev_question", use_container_width=True):
+            if st.button("이전", key="prev_question", use_container_width=True):
                 go_previous_question()
                 st.rerun()
     with col_back:
-        if st.button("← 처음으로", key="back_home", use_container_width=True):
+        if st.button("처음으로", key="back_home", use_container_width=True):
             reset_session()
             st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
