@@ -12,7 +12,8 @@ from pathlib import Path
 from matcher import load_items, match_item
 from decision_tree import get_tree, get_first_question, process_answer
 from carbon import (load_carbon_factors, load_usage_log, save_usage_log,
-                    get_today_carbon, format_carbon, load_items_from_sheets)
+                    get_today_carbon, format_carbon, load_items_from_sheets,
+                    load_cert_log)
 
 # ──────────────────────────────────────────────
 # 페이지 설정
@@ -802,20 +803,17 @@ def render_home():
     goal_pct = min(int(weekly_carbon / WEEKLY_GOAL * 100), 100)
     goal_str = f"{weekly_carbon:.1f} / {int(WEEKLY_GOAL)} kg"
 
-    # 사용자 현황 — 날짜별 중복 제거 (하루 1회로 제한)
-    from collections import defaultdict
-    user_dates = defaultdict(set)
-    for e in usage_log2:
-        nick = e.get("nickname", "").strip()
-        ts = str(e.get("timestamp", ""))[:10]  # "2026-05-06"
-        if nick and ts:
-            user_dates[nick].add(ts)
-    nickname_counts = {nick: len(dates) for nick, dates in user_dates.items()}
+    # 사용자 현황 — 구글폼 인증 횟수 기준
+    cert_log = load_cert_log()
+    from collections import Counter as _Counter
+    cert_counts = _Counter(
+        e["nickname"] for e in cert_log if e.get("nickname")
+    )
 
     # 동점자 묶어서 순위 그룹 만들기
-    rank_groups = []  # [{"rank": 1, "count": 20, "names": [...], "cnt": 5}]
-    if nickname_counts:
-        sorted_users = sorted(nickname_counts.items(), key=lambda x: -x[1])
+    rank_groups = []
+    if cert_counts:
+        sorted_users = sorted(cert_counts.items(), key=lambda x: -x[1])
         rank = 1
         i = 0
         while i < len(sorted_users) and rank <= 3:
@@ -884,7 +882,7 @@ def render_home():
                 f'animation:{kf} {total_dur}s linear infinite;">'
                 f'<div style="font-size:18px;margin-bottom:4px;">{s["medal"]}{lbl}</div>'
                 f'<div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">{s["name"]}</div>'
-                f'<div style="font-size:11px;color:#888;">{s["cnt"]}일 참여</div>'
+                f'<div style="font-size:11px;color:#888;">{s["cnt"]}회 인증</div>'
                 f'</div>'
             )
         style_str = "<style>" + " ".join(style_parts) + "</style>"
@@ -1423,6 +1421,29 @@ def render_result():
           <ul style="margin:0;padding-left:18px;">{rows_html}</ul>
         </div>
         """, unsafe_allow_html=True)
+
+    # 분리배출 인증 링크
+    st.markdown("""
+    <div style="max-width:480px;margin:0 auto 20px;
+                background:linear-gradient(135deg,#1a3a2a 0%,#1B4D2E 100%);
+                border-radius:16px;padding:20px 24px;
+                display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6);
+                    letter-spacing:.8px;margin-bottom:6px;">✅ 분리배출 인증</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.4;">
+          올바르게 배출했다면 인증하고<br>기록을 남겨보세요!
+        </div>
+      </div>
+      <a href="https://forms.gle/HAMK7nNPxsn5TeNRA" target="_blank"
+         style="flex-shrink:0;background:#fff;color:#1B4D2E;
+                border-radius:10px;padding:10px 18px;
+                font-size:13px;font-weight:700;text-decoration:none;
+                white-space:nowrap;">
+        인증하기 →
+      </a>
+    </div>
+    """, unsafe_allow_html=True)
 
     # 버튼
     _, col_btn, _ = st.columns([1, 2, 1])

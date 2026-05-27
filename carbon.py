@@ -158,6 +158,56 @@ def load_items_from_sheets(local_path: str = None) -> list:
 
 
 # ──────────────────────────────────────────────
+# 인증 시트 (구글폼 응답) 연동
+# ──────────────────────────────────────────────
+def _get_cert_sheet():
+    """GSHEET_FORM_ID로 폼 응답 워크시트 반환."""
+    try:
+        import streamlit as st
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        scopes = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        creds = Credentials.from_service_account_info(
+            dict(st.secrets["gcp_service_account"]), scopes=scopes
+        )
+        gc = gspread.authorize(creds)
+        sheet_id = st.secrets.get("GSHEET_FORM_ID", "")
+        if not sheet_id:
+            return None
+        return gc.open_by_key(sheet_id).get_worksheet(0)
+    except Exception:
+        return None
+
+
+def load_cert_log() -> list:
+    """
+    구글폼 인증 응답 로드.
+    반환값: [{"nickname": str, ...}, ...] — 닉네임 키로 정규화된 레코드 목록.
+    """
+    ws = _get_cert_sheet()
+    if not ws:
+        return []
+    try:
+        records = ws.get_all_records()
+        result = []
+        for row in records:
+            # '닉네임'으로 시작하는 컬럼을 닉네임으로 사용
+            nickname = ""
+            for key, val in row.items():
+                if str(key).startswith("닉네임"):
+                    nickname = str(val).strip()
+                    break
+            result.append({**row, "nickname": nickname})
+        return result
+    except Exception:
+        return []
+
+
+# ──────────────────────────────────────────────
 # carbon_factors
 # ──────────────────────────────────────────────
 def load_carbon_factors(path: str = None) -> dict:
