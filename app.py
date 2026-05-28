@@ -14,6 +14,7 @@ from decision_tree import get_tree, get_first_question, process_answer
 from carbon import (load_carbon_factors, load_usage_log, save_usage_log,
                     get_today_carbon, format_carbon, load_items_from_sheets,
                     load_cert_log)
+from hybrid_handler import generate_impact_note
 
 # ──────────────────────────────────────────────
 # 페이지 설정
@@ -427,7 +428,7 @@ def reset_question_history():
     st.session_state.question_history = []
 
 
-def push_question_history():
+def push_question_history(answer: bool = None):
     current_q = st.session_state.get("current_q")
     if not current_q:
         return
@@ -436,6 +437,7 @@ def push_question_history():
         "tree": st.session_state.get("tree"),
         "step_num": st.session_state.get("step_num", 1),
         "guide_message": st.session_state.get("guide_message"),
+        "answer": answer,
     })
 
 
@@ -561,7 +563,7 @@ def handle_answer(answer: bool):
     current_q = st.session_state.current_q
     matched   = st.session_state.matched_item
     skip      = matched.get("skip_questions", [])
-    push_question_history()
+    push_question_history(answer)
 
     if current_q.get("_is_extra"):
         eq     = current_q["_extra_data"]
@@ -1396,14 +1398,26 @@ def render_result():
 
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
-    # IMPACT NOTE
-    if reason:
+    # IMPACT NOTE — Gemini Flash 동적 생성
+    carbon_factors = load_carbon_factors()
+    carbon_factor  = carbon_factors.get(matched.get("category", ""), 0.0)
+    history        = st.session_state.get("question_history", [])
+
+    with st.spinner("환경 설명 불러오는 중..."):
+        impact_text = generate_impact_note(
+            matched_item     = matched,
+            result_text      = result_text,
+            question_history = history,
+            carbon_factor    = carbon_factor,
+        )
+
+    if impact_text:
         st.markdown(f"""
         <div style="max-width:480px;margin:0 auto 20px;
                     background:#fff;border-radius:16px;padding:20px 24px;">
           <div style="font-size:11px;font-weight:700;color:#1B4D2E;
                       letter-spacing:.8px;margin-bottom:8px;">🌿 IMPACT NOTE</div>
-          <div style="font-size:13px;color:#555;line-height:1.7;">{reason}</div>
+          <div style="font-size:13px;color:#555;line-height:1.7;">{impact_text}</div>
         </div>
         """, unsafe_allow_html=True)
 
