@@ -14,7 +14,6 @@ from decision_tree import get_tree, get_first_question, process_answer
 from carbon import (load_carbon_factors, load_usage_log, save_usage_log,
                     get_today_carbon, format_carbon, load_items_from_sheets,
                     load_cert_log)
-from hybrid_handler import generate_impact_note
 
 # ──────────────────────────────────────────────
 # 페이지 설정
@@ -333,7 +332,7 @@ def init_session():
         "matched_item": None, "tree": None, "current_q": None,
         "step_num": 1, "guide_message": None,
         "result_text": None, "result_reason": None,
-        "nickname": "", "question_history": [],
+        "question_history": [],
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -428,7 +427,7 @@ def reset_question_history():
     st.session_state.question_history = []
 
 
-def push_question_history(answer: bool = None):
+def push_question_history():
     current_q = st.session_state.get("current_q")
     if not current_q:
         return
@@ -437,7 +436,6 @@ def push_question_history(answer: bool = None):
         "tree": st.session_state.get("tree"),
         "step_num": st.session_state.get("step_num", 1),
         "guide_message": st.session_state.get("guide_message"),
-        "answer": answer,
     })
 
 
@@ -563,7 +561,7 @@ def handle_answer(answer: bool):
     current_q = st.session_state.current_q
     matched   = st.session_state.matched_item
     skip      = matched.get("skip_questions", [])
-    push_question_history(answer)
+    push_question_history()
 
     if current_q.get("_is_extra"):
         eq     = current_q["_extra_data"]
@@ -698,24 +696,14 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    nickname_input = st.text_input(
-        "닉네임", placeholder="닉네임을 입력해주세요 (필수)",
-        label_visibility="collapsed", key="nickname_input",
-    )
-    if nickname_input:
-        st.session_state.nickname = nickname_input.strip()
-
     query = st.text_input(
         "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
         label_visibility="collapsed", key="home_input",
     )
     if query and query != st.session_state.get("_last_query", ""):
-        if not st.session_state.get("nickname", "").strip():
-            st.warning("닉네임을 먼저 입력해주세요.")
-        else:
-            st.session_state["_last_query"] = query
-            run_search(query)
-            st.rerun()
+        st.session_state["_last_query"] = query
+        run_search(query)
+        st.rerun()
 
     # query param으로 태그 클릭 처리
     params = st.query_params
@@ -738,14 +726,12 @@ def render_home():
             if e.get("timestamp", "").startswith(today)
             and e.get("user_input")
             and e.get("matched_item_id")
-            and e.get("user_input") != e.get("nickname", "")
         ]
         top3 = [item for item, _ in Counter(today_inputs).most_common(3)]
         if len(top3) < 3:
             all_inputs = [e["user_input"] for e in usage_log
                           if e.get("user_input")
-                          and e.get("matched_item_id")
-                          and e.get("user_input") != e.get("nickname", "")]
+                          and e.get("matched_item_id")]
             for item, _ in Counter(all_inputs).most_common(20):
                 if item not in top3:
                     top3.append(item)
@@ -1398,26 +1384,14 @@ def render_result():
 
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
-    # IMPACT NOTE — Gemini Flash 동적 생성
-    carbon_factors = load_carbon_factors()
-    carbon_factor  = carbon_factors.get(matched.get("category", ""), 0.0)
-    history        = st.session_state.get("question_history", [])
-
-    with st.spinner("환경 설명 불러오는 중..."):
-        impact_text = generate_impact_note(
-            matched_item     = matched,
-            result_text      = result_text,
-            question_history = history,
-            carbon_factor    = carbon_factor,
-        )
-
-    if impact_text:
+    # IMPACT NOTE
+    if reason:
         st.markdown(f"""
         <div style="max-width:480px;margin:0 auto 20px;
                     background:#fff;border-radius:16px;padding:20px 24px;">
           <div style="font-size:11px;font-weight:700;color:#1B4D2E;
                       letter-spacing:.8px;margin-bottom:8px;">🌿 IMPACT NOTE</div>
-          <div style="font-size:13px;color:#555;line-height:1.7;">{impact_text}</div>
+          <div style="font-size:13px;color:#555;line-height:1.7;">{reason}</div>
         </div>
         """, unsafe_allow_html=True)
 
