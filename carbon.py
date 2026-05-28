@@ -282,6 +282,37 @@ def save_usage_log(log: list, path: str = None) -> None:
 
 
 # ──────────────────────────────────────────────
+# usage_log 마지막 행 llm_used 업데이트
+# ──────────────────────────────────────────────
+def update_last_llm_used(value: bool) -> None:
+    """
+    Google Sheets usage_log의 마지막 행 H열(llm_used)을 업데이트.
+    render_result()에서 AI 생성 성공 여부 확정 후 호출.
+    """
+    ws = _get_sheet()
+    if ws:
+        try:
+            last_row = len(ws.get_all_values())  # 헤더 포함 전체 행 수
+            if last_row >= 2:  # 헤더 제외 데이터 1행 이상
+                ws.update_cell(last_row, 8, str(value))  # H열 = 8번째
+            return
+        except Exception:
+            pass
+
+    # 로컬 fallback
+    try:
+        path = Path(__file__).parent / "data" / "usage_log.json"
+        with open(path, encoding="utf-8") as f:
+            log = json.load(f)
+        if log:
+            log[-1]["llm_used"] = value
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(log, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+
+# ──────────────────────────────────────────────
 # 탄소 계산
 # ──────────────────────────────────────────────
 def get_today_carbon(usage_log: list, carbon_factors: dict) -> float:
