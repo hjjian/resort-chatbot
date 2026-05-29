@@ -4,10 +4,10 @@ matcher.py — items 키워드 기반 품목 매칭 로직
 match_item(user_input, items) → 매칭된 item 딕셔너리 또는 None
 
 매칭 우선순위:
-  1. 완전 일치 (keyword == user_input, 공백 제거 포함)
-  2. 키워드가 입력에 포함 (keyword in user_input, 공백 제거 포함)
+  1. 완전 일치 (keyword == user_input)
+  2. 공백 제거 후 완전 일치 (compact_exact)
 
-3순위 이하(입력이 키워드에 포함, 토큰 겹침)는 오매칭 방지를 위해 제거.
+3순위 이하 전부 제거 — 오매칭 방지.
 매칭 실패 시 hybrid_handler.infer_category()로 AI 추론.
 """
 
@@ -42,7 +42,7 @@ def match_item(user_input: str, items: list) -> dict | None:
     user_input과 가장 잘 매칭되는 item을 반환. 없으면 None.
 
     반환값: item 딕셔너리 (matched_by 필드 추가)
-      - matched_by: "exact" | "compact_exact" | "keyword_in_input" | "compact_keyword_in_input"
+      - matched_by: "exact" | "compact_exact"
     """
     normalized = _normalize(user_input)
     normalized_compact = _compact(user_input)
@@ -66,20 +66,7 @@ def match_item(user_input: str, items: list) -> dict | None:
                 best_score, best_priority, best_by = 98, 0, "compact_exact"
                 break
 
-            # 2. 키워드가 입력에 포함
-            if kw_norm and kw_norm in normalized:
-                score = 80 + len(kw_norm)
-                if score > best_score:
-                    best_score, best_priority, best_by = score, 1, "keyword_in_input"
-                continue
-
-            if len(kw_compact) >= 3 and kw_compact in normalized_compact:
-                score = 78 + len(kw_compact)
-                if score > best_score:
-                    best_score, best_priority, best_by = score, 1, "compact_keyword_in_input"
-                continue
-
-            # ※ 3순위 이하(input_in_keyword, token_overlap) 제거
+            # ※ 3순위 이하 전부 제거 (keyword_in_input 포함)
             #    오매칭 방지 — 매칭 실패 시 AI(infer_category)로 처리
 
         if best_score > 0:
