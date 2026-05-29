@@ -1381,12 +1381,16 @@ def render_questioning():
     </style>
     <div class="nav-action-row">
     """, unsafe_allow_html=True)
-    _, col_prev, col_back, _ = st.columns([1.5, 1, 1, 1.5])
+    _, col_prev, col_cat, col_back, _ = st.columns([1, 1, 1.4, 1, 1])
     with col_prev:
         if st.session_state.get("question_history"):
             if st.button("이전", key="prev_question", use_container_width=True):
                 go_previous_question()
                 st.rerun()
+    with col_cat:
+        if st.button("재질 직접 선택", key="goto_category", use_container_width=True):
+            st.session_state.state = "category_select"
+            st.rerun()
     with col_back:
         if st.button("처음으로", key="back_home", use_container_width=True):
             reset_session()
@@ -1463,18 +1467,25 @@ def render_result():
     st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
     # 결과 카드
+    is_recycled = "일반쓰레기" not in result_text
+    accent_color = "#1B4D2E" if is_recycled else "#B94A48"
+    bg_icon = "#E8F5E9" if is_recycled else "#FDECEA"
+    icon = "♻️" if is_recycled else "🗑️"
+    reason_first = reason.split('.')[0] + "." if reason else ""
     st.markdown(f"""
     <div style="max-width:480px;margin:0 auto;
-                background:#fff;border-radius:24px;padding:40px 32px;
+                background:#fff;border-radius:24px;padding:36px 32px 28px;
                 text-align:center;box-shadow:0 2px 16px rgba(0,0,0,.07);">
-      <div style="background:#E8F5E9;border-radius:16px;width:64px;height:64px;
+      <div style="background:{bg_icon};border-radius:16px;width:56px;height:56px;
                   display:flex;align-items:center;justify-content:center;
-                  margin:0 auto 20px;font-size:28px;">♻️</div>
-      <div style="font-size:24px;font-weight:900;color:#1a1a1a;
-                  line-height:1.3;margin-bottom:8px;word-break:keep-all;">
+                  margin:0 auto 14px;font-size:26px;">{icon}</div>
+      <div style="font-size:11px;font-weight:700;color:{accent_color};
+                  letter-spacing:1px;margin-bottom:10px;">배출 결과</div>
+      <div style="font-size:34px;font-weight:900;color:{accent_color};
+                  line-height:1.2;margin-bottom:{"14px" if reason_first else "0"};word-break:keep-all;">
         {result_text}
       </div>
-      {"<div style='font-size:13px;color:#888;line-height:1.6;word-break:keep-all;'>" + reason.split('.')[0] + ".</div>" if reason else ""}
+      {"<div style='height:1px;background:#F2F2F0;margin-bottom:12px;'></div><div style='font-size:13px;color:#888;line-height:1.6;word-break:keep-all;'>" + reason_first + "</div>" if reason_first else ""}
     </div>
     """, unsafe_allow_html=True)
 
@@ -1502,11 +1513,32 @@ def render_result():
     display_note = impact_text or (matched.get("note", "") if matched else "")
     if display_note:
         safe_note = html.escape(display_note).replace("\n", "<br>")
+        # 탄소 수치 강조 표시
+        if carbon_factor > 0:
+            if carbon_factor < 0.01:
+                co2_num = f"{carbon_factor * 1000:.0f}"
+                co2_unit = "g CO₂"
+            else:
+                co2_num = f"{carbon_factor:.2f}"
+                co2_unit = "kg CO₂"
+            carbon_highlight = f"""
+            <div style="display:flex;align-items:center;gap:12px;
+                        background:#F0F7F2;border-radius:12px;padding:12px 16px;margin-bottom:14px;">
+              <div style="font-size:28px;font-weight:900;color:#1B4D2E;
+                          font-family:'DM Sans',sans-serif;line-height:1;">{co2_num}</div>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1B4D2E;">{co2_unit} 절감</div>
+                <div style="font-size:11px;color:#888;margin-top:1px;">이번 분리배출로 아낀 탄소</div>
+              </div>
+            </div>"""
+        else:
+            carbon_highlight = ""
         st.markdown(f"""
         <div style="max-width:480px;margin:0 auto 20px;
                     background:#fff;border-radius:16px;padding:20px 24px;">
           <div style="font-size:11px;font-weight:700;color:#1B4D2E;
-                      letter-spacing:.8px;margin-bottom:8px;">🌿 IMPACT NOTE</div>
+                      letter-spacing:.8px;margin-bottom:12px;">🌿 IMPACT NOTE</div>
+          {carbon_highlight}
           <div style="font-size:13px;color:#555;line-height:1.7;">{safe_note}</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1514,15 +1546,20 @@ def render_result():
     # 정확한 배출 요령
     if steps:
         rows_html = "".join(
-            f'<li style="font-size:13px;color:#444;line-height:1.8;margin-bottom:4px;">{s}</li>'
+            f"""<div style="display:flex;align-items:flex-start;gap:10px;
+                            background:#F6FAF7;border-radius:10px;padding:10px 12px;
+                            margin-bottom:8px;">
+                  <div style="flex-shrink:0;font-size:14px;margin-top:1px;">✅</div>
+                  <div style="font-size:13px;color:#333;line-height:1.6;">{s}</div>
+                </div>"""
             for s in steps
         )
         st.markdown(f"""
         <div style="max-width:480px;margin:0 auto 24px;
                     background:#fff;border-radius:16px;padding:20px 24px;">
           <div style="font-size:11px;font-weight:700;color:#1B4D2E;
-                      letter-spacing:.8px;margin-bottom:12px;">💡 정확한 배출 요령</div>
-          <ul style="margin:0;padding-left:18px;">{rows_html}</ul>
+                      letter-spacing:.8px;margin-bottom:12px;">💡 배출 요령</div>
+          {rows_html}
         </div>
         """, unsafe_allow_html=True)
 
