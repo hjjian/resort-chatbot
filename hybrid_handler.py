@@ -20,14 +20,23 @@ import json
 # 공통 헬퍼: Gemini 클라이언트
 # ──────────────────────────────────────────────
 def _get_client():
+    import streamlit as st
     try:
-        import streamlit as st
         import google.genai as genai
+        st.info("[AI 디버그] google.genai import 성공")
+    except ImportError as e:
+        st.warning(f"[AI 디버그] google.genai import 실패: {e}")
+        return None
+    try:
         api_key = st.secrets.get("GEMINI_API_KEY", "")
         if not api_key:
+            st.warning("[AI 디버그] GEMINI_API_KEY 없음")
             return None
-        return genai.Client(api_key=api_key)
-    except Exception:
+        client = genai.Client(api_key=api_key)
+        st.info(f"[AI 디버그] 클라이언트 생성 성공 — 키: {api_key[:10]}...")
+        return client
+    except Exception as e:
+        st.warning(f"[AI 디버그] 클라이언트 생성 실패: {type(e).__name__}: {e}")
         return None
 
 
