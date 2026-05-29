@@ -1,15 +1,14 @@
 """
-matcher.py — items.json keywords 기반 품목 매칭 로직
+matcher.py — items 키워드 기반 품목 매칭 로직
 
 match_item(user_input, items) → 매칭된 item 딕셔너리 또는 None
 
 매칭 우선순위:
-  1. 완전 일치 (keyword == user_input)
-  2. 키워드가 입력에 포함 (keyword in user_input)
-  3. 입력이 키워드에 포함 (user_input in keyword)
-  4. 형태소 단위 부분 일치 (공백 분리 토큰 교집합)
+  1. 완전 일치 (keyword == user_input, 공백 제거 포함)
+  2. 키워드가 입력에 포함 (keyword in user_input, 공백 제거 포함)
 
-공백 유무로 매칭 결과가 갈리지 않도록 공백 제거 문자열도 함께 비교합니다.
+3순위 이하(입력이 키워드에 포함, 토큰 겹침)는 오매칭 방지를 위해 제거.
+매칭 실패 시 hybrid_handler.infer_category()로 AI 추론.
 """
 
 import json
@@ -38,36 +37,16 @@ def _compact(text: str) -> str:
     return _normalize(text).replace(" ", "")
 
 
-_TOKEN_STOPWORDS = {
-    "일회용",
-    "용기",
-    "통",
-    "컵",
-    "봉투",
-    "포장",
-}
-
-
-def _token_overlap(a: str, b: str) -> int:
-    """두 문자열의 공백 분리 토큰 교집합 크기 반환."""
-    tokens_a = {token for token in a.split() if token not in _TOKEN_STOPWORDS}
-    tokens_b = {token for token in b.split() if token not in _TOKEN_STOPWORDS}
-    return len(tokens_a & tokens_b)
-
-
 def match_item(user_input: str, items: list) -> dict | None:
     """
     user_input과 가장 잘 매칭되는 item을 반환. 없으면 None.
 
     반환값: item 딕셔너리 (matched_by 필드 추가)
-      - matched_by: "exact" | "compact_exact" | "keyword_in_input" |
-                    "compact_keyword_in_input" | "input_in_keyword" |
-                    "compact_input_in_keyword" | "token_overlap"
+      - matched_by: "exact" | "compact_exact" | "keyword_in_input" | "compact_keyword_in_input"
     """
     normalized = _normalize(user_input)
     normalized_compact = _compact(user_input)
 
-    # 점수 기반 후보 수집: (score, priority, item, matched_by)
     candidates = []
 
     for item in items:
@@ -80,7 +59,7 @@ def match_item(user_input: str, items: list) -> dict | None:
             # 1. 완전 일치
             if normalized == kw_norm:
                 best_score, best_priority, best_by = 100, 0, "exact"
-                break  # 완전 일치면 더 볼 필요 없음
+                break
 
             # 1-1. 공백 제거 완전 일치
             if normalized_compact and normalized_compact == kw_compact:
@@ -100,25 +79,8 @@ def match_item(user_input: str, items: list) -> dict | None:
                     best_score, best_priority, best_by = score, 1, "compact_keyword_in_input"
                 continue
 
-            # 3. 입력이 키워드에 포함
-            if normalized and normalized in kw_norm:
-                score = 60 + len(normalized)
-                if score > best_score:
-                    best_score, best_priority, best_by = score, 2, "input_in_keyword"
-                continue
-
-            if len(normalized_compact) >= 3 and normalized_compact in kw_compact:
-                score = 58 + len(normalized_compact)
-                if score > best_score:
-                    best_score, best_priority, best_by = score, 2, "compact_input_in_keyword"
-                continue
-
-            # 4. 토큰 겹침
-            overlap = _token_overlap(normalized, kw_norm)
-            if overlap > 0:
-                score = overlap * 10
-                if score > best_score:
-                    best_score, best_priority, best_by = score, 3, "token_overlap"
+            # ※ 3순위 이하(input_in_keyword, token_overlap) 제거
+            #    오매칭 방지 — 매칭 실패 시 AI(infer_category)로 처리
 
         if best_score > 0:
             candidates.append((best_score, best_priority, item, best_by))
@@ -126,7 +88,6 @@ def match_item(user_input: str, items: list) -> dict | None:
     if not candidates:
         return None
 
-    # score 내림차순, priority 오름차순으로 정렬 후 최상위 반환
     candidates.sort(key=lambda x: (-x[0], x[1]))
     _, _, best_item, matched_by = candidates[0]
 

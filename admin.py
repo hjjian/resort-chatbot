@@ -301,6 +301,104 @@ except Exception:
     st.info("Google Sheets 연동 설정을 확인해주세요.")
 
 
+# ══════════════════════════════════════════════
+# 8. AI 추론 입력 검수 (A 전략)
+# ══════════════════════════════════════════════
+st.markdown('<div class="section-title">🤖 AI 추론 입력 검수</div>', unsafe_allow_html=True)
+
+st.markdown(
+    '<div style="background:#E8F5E9;border-radius:12px;padding:16px 20px;margin-bottom:16px;' +
+    'font-size:13px;color:#1B4D2E;line-height:1.7;">' +
+    '키워드 매칭에 실패해 AI가 카테고리를 추론한 입력 목록이에요.<br>' +
+    '자주 등장하는 입력은 구글 시트 items 탭에 키워드로 추가하면 다음부터 정확하게 매칭돼요.' +
+    '</div>',
+    unsafe_allow_html=True
+)
+
+@st.cache_data(ttl=30)
+def get_ai_inferred() -> pd.DataFrame:
+    try:
+        import gspread
+        from carbon import _get_workbook
+        sh = _get_workbook()
+        if not sh:
+            return pd.DataFrame()
+        try:
+            ws = sh.worksheet("ai_inferred")
+            records = ws.get_all_records()
+            if not records:
+                return pd.DataFrame()
+            return pd.DataFrame(records)
+        except gspread.WorksheetNotFound:
+            return pd.DataFrame()
+    except Exception:
+        return pd.DataFrame()
+
+inferred_df = get_ai_inferred()
+
+if len(inferred_df) > 0:
+    if "added_to_items" in inferred_df.columns:
+        pending = inferred_df[inferred_df["added_to_items"] != "True"].copy()
+    else:
+        pending = inferred_df.copy()
+
+    if len(pending) > 0:
+        freq = (
+            pending.groupby(["user_input", "inferred_category", "confidence"])
+            .size()
+            .reset_index(name="횟수")
+            .sort_values("횟수", ascending=False)
+            .reset_index(drop=True)
+        )
+        st.markdown(f"**미검수 항목 {len(freq)}건** (동일 입력 중복 제거)")
+        st.dataframe(freq, use_container_width=True)
+        st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+        st.info("💡 위 목록에서 자주 등장하는 항목을 구글 시트 items 탭에 키워드로 직접 추가해주세요.")
+
+        sheets_url = ""
+        try:
+            sheet_id = st.secrets.get("GSHEET_ID", "")
+            if sheet_id:
+                sheets_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit#gid=0"
+        except Exception:
+            pass
+
+        col_a, col_b = st.columns([1, 3])
+        with col_a:
+            if sheets_url:
+                st.markdown(
+                    f'<a href="{sheets_url}" target="_blank" ' +
+                    'style="display:inline-block;background:#1B4D2E;color:#fff;' +
+                    'border-radius:8px;padding:10px 20px;font-size:13px;' +
+                    'font-weight:600;text-decoration:none;">Sheets 열기 →</a>',
+                    unsafe_allow_html=True
+                )
+        with col_b:
+            if st.button("✅ 전체 검수 완료 처리", key="mark_all_reviewed"):
+                try:
+                    from carbon import _get_workbook
+                    sh = _get_workbook()
+                    ws = sh.worksheet("ai_inferred")
+                    all_vals = ws.get_all_values()
+                    header = all_vals[0] if all_vals else []
+                    if "added_to_items" in header:
+                        col_idx = header.index("added_to_items") + 1
+                        updates = [
+                            {"range": f"{chr(64 + col_idx)}{row_i}", "values": [["True"]]}
+                            for row_i in range(2, len(all_vals) + 1)
+                        ]
+                        if updates:
+                            ws.batch_update(updates)
+                    st.success("완료 처리됐어요! 새로고침하면 목록이 비워져요.")
+                    st.cache_data.clear()
+                except Exception as e:
+                    st.error(f"처리 실패: {e}")
+    else:
+        st.success("미검수 항목이 없어요.")
+else:
+    st.info("AI 추론 데이터가 아직 없어요. 키워드 매칭 실패 검색이 발생하면 여기에 쌓여요.")
+
+
 # ──────────────────────────────────────────────
 # 로그아웃
 # ──────────────────────────────────────────────

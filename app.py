@@ -14,6 +14,7 @@ from decision_tree import get_tree, get_first_question, process_answer
 from carbon import (load_carbon_factors, load_usage_log, save_usage_log,
                     get_today_carbon, format_carbon, load_items_from_sheets,
                     load_cert_log, update_last_llm_used)
+from hybrid_handler import generate_impact_note, infer_category
 
 # ──────────────────────────────────────────────
 # 페이지 설정
@@ -451,6 +452,37 @@ def go_previous_question():
     st.session_state.state = "questioning"
 
 # ──────────────────────────────────────────────
+# 헬퍼: AI 추론 입력 저장 (관리자 검수용 — A 전략)
+# ──────────────────────────────────────────────
+def _save_ai_inferred_input(user_input: str, category: str, confidence: str):
+    """
+    AI가 카테고리를 추론한 입력을 구글 시트 'ai_inferred' 탭에 저장.
+    관리자가 검수 후 items 시트에 키워드로 추가할 수 있음.
+    """
+    try:
+        import gspread
+        from carbon import _get_workbook
+        sh = _get_workbook()
+        if not sh:
+            return
+        try:
+            ws = sh.worksheet("ai_inferred")
+        except gspread.WorksheetNotFound:
+            ws = sh.add_worksheet(title="ai_inferred", rows=1000, cols=5)
+            ws.append_row(["timestamp", "user_input", "inferred_category",
+                           "confidence", "added_to_items"])
+        ws.append_row([
+            datetime.now().isoformat()[:19],
+            user_input,
+            category,
+            confidence,
+            "False",  # 관리자가 검수 후 True로 변경
+        ])
+    except Exception:
+        pass  # 저장 실패해도 사용자 경험에 영향 없음
+
+
+# ──────────────────────────────────────────────
 # 헬퍼: usage_log 저장
 # ──────────────────────────────────────────────
 def append_usage_log(user_input, matched_item, final_result, llm_used=False):
@@ -481,10 +513,46 @@ def run_search(query: str):
     st.session_state.query = query
 
     if matched is None:
-        st.session_state.state = "category_select"
-        st.session_state.matched_item = None
-        reset_question_history()
-        return
+        # AI 카테고리 추론 시도 (B 전략)
+        inferred = infer_category(query)
+        if inferred and inferred.get("confidence") == "high":
+            # 추론 성공 → 카테고리 기반 가상 item으로 질문 트리 진입
+            category = inferred["category"]
+            matched = {
+                "id": f"ai_inferred:{category}",
+                "name": query,
+                "keywords": [],
+                "category": category,
+                "skip_questions": [],
+                "extra_questions": None,
+                "steps": [],
+                "note": "",
+                "matched_by": "ai_inferred",
+            }
+            st.session_state.matched_item = matched
+            reset_question_history()
+            tree = get_tree(category)
+            if tree is None:
+                set_result_state(matched, ITEM_RESULT_TOKEN)
+                return
+            first_q = get_first_question(tree, [])
+            if first_q is None:
+                set_result_state(matched, ITEM_RESULT_TOKEN)
+                return
+            st.session_state.tree      = tree
+            st.session_state.current_q = first_q
+            st.session_state.state         = "questioning"
+            st.session_state.step_num      = 1
+            st.session_state.guide_message = None
+            # AI 추론 입력 로그 저장 (A 전략 — 관리자가 검수 후 시트에 추가)
+            _save_ai_inferred_input(query, category, inferred.get("confidence", ""))
+            return
+        else:
+            # 추론 실패 또는 confidence low → 카테고리 직접 선택
+            st.session_state.state = "category_select"
+            st.session_state.matched_item = None
+            reset_question_history()
+            return
 
     st.session_state.matched_item = matched
     reset_question_history()
