@@ -239,34 +239,25 @@ PLASTIC_TREE = [
     },
     {
         "id": "Q3",
-        "text": "펌프·노즐 등 다른 재질이 붙어있나요?",
-        "description": "세제 용기의 펌프, 스프레이 노즐처럼 플라스틱이 아닌 부품이 결합된 경우 해당합니다.",
-        "eco_title": "혼합 재질이 왜 문제인가요?",
-        "eco_desc": "펌프나 노즐은 여러 재질이 섞여 있어 그대로 배출하면 재활용 공정에서 불순물이 됩니다. 분리할 수 있다면 각각 맞는 방법으로 배출해주세요.",
+        "text": "금속 펌프·고무 패킹 등 다른 재질이 붙어있나요?",
+        "description": "펌프, 노즐, 고무 패킹, 금속 부품처럼 플라스틱이 아닌 부분이 결합된 경우 해당합니다. 칫솔·장난감처럼 여러 재질이 섞여 분리 자체가 어려운 경우도 포함합니다.",
+        "eco_title": "다른 재질이 왜 문제인가요?",
+        "eco_desc": "펌프·노즐·고무 패킹은 여러 재질이 섞여 재활용 공정에서 불순물이 됩니다. 손으로 분리할 수 있다면 각각 맞는 방법으로 배출하고, 분리가 불가능하면 종량제로 배출하세요.",
         "yes": {"next": "Q3_1"},
         "no":  {"next": "Q4"},
     },
     {
         "id": "Q3_1",
         "parent": "Q3",
-        "text": "펌프·노즐을 손으로 분리할 수 있나요?",
-        "description": "돌려서 빼거나 당겨서 뽑을 수 있는지 확인해주세요.",
+        "text": "손으로 분리할 수 있나요?",
+        "description": "돌려서 빼거나 당겨서 뽑는 등 도구 없이 분리할 수 있는지 확인해주세요.",
         "eco_title": "분리 가능 여부가 왜 중요한가요?",
-        "eco_desc": "분리하면 용기 몸체는 플라스틱으로, 펌프·노즐은 종량제로 각각 올바르게 배출할 수 있습니다.",
-        "yes": {"result": "분리 후 각각 배출", "reason": "펌프·노즐을 분리한 뒤 플라스틱 용기 몸체는 플라스틱류 수거함에, 펌프·노즐은 종량제 봉투에 담아 배출하세요."},
-        "no":  {"result": "일반쓰레기(종량제)", "reason": "분리할 수 없는 혼합 재질은 종량제 봉투에 담아 배출하세요."},
+        "eco_desc": "분리할 수 있다면 플라스틱 몸체는 플라스틱류로, 다른 재질 부분은 해당 재질에 맞게 각각 배출할 수 있습니다. 분리가 불가능하면 종량제로 배출해야 합니다.",
+        "yes": {"result": "분리 후 각각 배출", "reason": "다른 재질 부분을 분리한 뒤, 플라스틱 몸체는 플라스틱류 수거함에, 분리된 부분은 해당 재질에 맞게 각각 배출하세요."},
+        "no":  {"result": "일반쓰레기(종량제)", "reason": "분리할 수 없는 복합 재질 플라스틱은 재활용 공정에서 처리가 불가능합니다. 종량제 봉투에 담아 배출하세요."},
     },
     {
         "id": "Q4",
-        "text": "칫솔·장난감처럼 복합 재질인가요?",
-        "description": "여러 종류의 플라스틱이나 금속·고무 등이 결합되어 분리가 어려운 제품이 해당합니다.",
-        "eco_title": "복합 재질 플라스틱은 왜 재활용이 안 되나요?",
-        "eco_desc": "칫솔, 장난감 등 여러 재질이 섞인 제품은 선별·분리 비용이 높아 재활용 공정에서 처리가 불가능합니다. 종량제로 배출하는 것이 맞습니다.",
-        "yes": {"result": "일반쓰레기(종량제)", "reason": "복합 재질 플라스틱은 재활용이 어렵습니다. 종량제 봉투에 담아 배출하세요."},
-        "no":  {"next": "Q5"},
-    },
-    {
-        "id": "Q5",
         "text": "멜라민 그릇인가요?",
         "description": "분식집·구내식당에서 흔히 쓰는 미끄럽고 광택 나는 플라스틱 그릇, 또는 바닥에 'MF' 표시가 있는 그릇이 해당합니다.",
         "eco_title": "멜라민 그릇은 왜 재활용이 안 되나요?",
@@ -510,14 +501,15 @@ def process_answer(tree: list, question_id: str, answer: bool, skip_questions: l
     if "action" in branch:
         next_q = _next_non_skip(tree, branch["next"], skip)
         if next_q is None:
-            return {"type": "result", "result": "오류", "reason": "다음 질문을 찾을 수 없습니다."}
+            return {"type": "result", "result": "__ITEM_RESULT__", "reason": ""}
         return {"type": "guide", "message": branch["action"], "next_question": next_q}
 
     # 다음 질문으로 이동
     if "next" in branch:
         next_q = _next_non_skip(tree, branch["next"], skip)
         if next_q is None:
-            return {"type": "result", "result": "오류", "reason": "다음 질문을 찾을 수 없습니다."}
+            # skip으로 인해 남은 질문이 없으면 기본 재활용 결과로 처리
+            return {"type": "result", "result": "__ITEM_RESULT__", "reason": ""}
         return {"type": "question", "question": next_q}
 
     return {"type": "result", "result": "오류", "reason": "잘못된 트리 구성입니다."}
