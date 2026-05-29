@@ -9,53 +9,43 @@ hybrid_handler.py
 
 2. generate_impact_note(matched_item, result_text, question_history, carbon_factor)
    결과 화면의 IMPACT NOTE를 Gemini Flash로 동적 생성.
-   반환: str (실패 시 matched_item["note"] fallback)
+   반환: str (실패 시 빈 문자열)
 """
 
 import re
+import json
 
 
 # ──────────────────────────────────────────────
-# 공통 헬퍼: Gemini API 키 로드
+# 공통 헬퍼: Gemini 클라이언트
 # ──────────────────────────────────────────────
-def _get_api_key() -> str:
+def _get_client():
     try:
         import streamlit as st
-        return st.secrets.get("GEMINI_API_KEY", "")
+        import google.genai as genai
+        api_key = st.secrets.get("GEMINI_API_KEY", "")
+        if not api_key:
+            return None
+        return genai.Client(api_key=api_key)
     except Exception:
-        return ""
-
-
-def _get_gemini_model():
-    import google.generativeai as genai
-    api_key = _get_api_key()
-    if not api_key:
         return None
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel("gemini-2.5-flash")
 
 
 # ──────────────────────────────────────────────
-# 1. 카테고리 추론 (매칭 실패 fallback)
+# 1. 카테고리 추론
 # ──────────────────────────────────────────────
 CATEGORIES = [
     "스티로폼", "유리", "금속·캔", "비닐", "플라스틱",
     "종이·종이팩", "폐의약품", "전자제품 및 완충재", "기타",
 ]
 
-def infer_category(user_input: str, categories: list = None) -> dict | None:
-    """
-    Gemini Flash로 user_input의 분리배출 카테고리를 추론.
 
-    Returns
-    -------
-    {"category": str, "confidence": "high"|"low"} 또는 None (API 실패 시)
-    """
+def infer_category(user_input: str, categories: list = None) -> dict | None:
     if categories is None:
         categories = CATEGORIES
 
-    model = _get_gemini_model()
-    if not model:
+    client = _get_client()
+    if not client:
         return None
 
     category_list = "\n".join(f"- {c}" for c in categories)
@@ -75,23 +65,22 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
 - 형식: {{"category": "카테고리명", "confidence": "high"}}"""
 
     try:
-        import google.generativeai as genai
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
+        from google.genai import types
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
                 max_output_tokens=100,
                 temperature=0.1,
             ),
         )
         text = response.text.strip()
-        # 마크다운 코드블록 제거
         text = re.sub(r"```json|```", "", text).strip()
-        import json
         result = json.loads(text)
         if result.get("category") in categories:
             return result
         return None
-    except Exception:
+    except Exception as e:
         return None
 
 
@@ -99,7 +88,6 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
 # 2. IMPACT NOTE 동적 생성
 # ──────────────────────────────────────────────
 def _carbon_analogy(carbon_kg: float) -> str:
-    """탄소 절감량(kg)을 친근한 비유로 변환."""
     if carbon_kg <= 0:
         return ""
     if carbon_kg < 0.05:
@@ -113,7 +101,6 @@ def _carbon_analogy(carbon_kg: float) -> str:
 
 
 def _format_answer_path(question_history: list) -> str:
-    """question_history를 'Q → 답변' 형태의 텍스트로 변환."""
     if not question_history:
         return "질문 없이 바로 결과 도출"
     lines = []
@@ -133,49 +120,35 @@ def generate_impact_note(
     question_history: list,
     carbon_factor: float = 0.0,
 ) -> str:
-    """
-    Gemini Flash로 IMPACT NOTE 생성.
-
-    Parameters
-    ----------
-    matched_item      : items 매칭 항목 (name, category, note 등 포함)
-    result_text       : 최종 결과 텍스트
-    question_history  : 사용자가 답변한 질문 경로 리스트
-    carbon_factor     : 카테고리별 탄소 절감 계수 (kg CO₂e)
-
-    Returns
-    -------
-    str : AI 생성 IMPACT NOTE (실패 시 기존 note 반환)
-    """
-    fallback = matched_item.get("note", "") if matched_item else ""
-
-    model = _get_gemini_model()
-    if not model:
-        return fallback
+    client = _get_client()
+    if not client:
+        return ""
 
     is_recycled = "일반쓰레기" not in result_text
     carbon_text = _carbon_analogy(carbon_factor) if is_recycled else ""
     answer_path_text = _format_answer_path(question_history)
+    item_name = matched_item.get("name", matched_item.get("category", "")) if matched_item else ""
+    category = matched_item.get("category", "") if matched_item else ""
 
     if is_recycled:
         prompt = f"""당신은 분리배출 환경 교육 챗봇의 결과 화면에 표시되는 짧은 환경 설명 문구를 작성하는 역할이에요.
 
 [상황]
-- 품목: {matched_item.get('name', matched_item.get('category', ''))}
-- 카테고리: {matched_item.get('category', '')}
+- 품목: {item_name}
+- 카테고리: {category}
 - 최종 결과: {result_text} (재활용 성공)
 - 사용자 답변 경로:
 {answer_path_text}
 - 탄소 절감 정보: {carbon_text if carbon_text else '집계 중'}
 
 [복합재질 처리 규칙 — 최우선 적용]
-- 이 품목이 여러 소재로 구성됐다면(예: 샴푸 용기의 몸통+펌프, 텀블러의 뚜껑+몸통+패킹 등), 반드시 각 부분을 어떻게 분리해서 배출해야 하는지 구체적으로 설명할 것
+- 이 품목이 여러 소재로 구성됐다면, 반드시 각 부분을 어떻게 분리해서 배출해야 하는지 구체적으로 설명할 것
 - 단일 재질이 확실한 경우에만 아래 일반 규칙을 따를 것
 - 복합재질 여부가 불확실하면 복합재질로 가정하고 설명할 것
 
 [작성 규칙]
 - 3~4문장으로 작성
-- 첫 문장: 복합재질이면 각 부분 분리 방법 설명 / 단일 재질이면 왜 재활용 가능한지 설명
+- 첫 문장: 복합재질이면 각 부분 분리 방법 / 단일 재질이면 왜 재활용 가능한지
 - 둘째 문장: 탄소 절감 정보 자연스럽게 포함
 - 셋째 문장: 칭찬 또는 동기부여 한 마디 (친근한 말투)
 - 이모지 사용 금지, 마크다운 사용 금지, 한국어, 200자 이내"""
@@ -183,38 +156,37 @@ def generate_impact_note(
         prompt = f"""당신은 분리배출 환경 교육 챗봇의 결과 화면에 표시되는 짧은 환경 설명 문구를 작성하는 역할이에요.
 
 [상황]
-- 품목: {matched_item.get('name', matched_item.get('category', ''))}
-- 카테고리: {matched_item.get('category', '')}
+- 품목: {item_name}
+- 카테고리: {category}
 - 최종 결과: {result_text} (일반쓰레기)
 - 사용자 답변 경로:
 {answer_path_text}
 
 [복합재질 처리 규칙 — 최우선 적용]
-- 이 품목이 여러 소재로 구성됐다면, 일반쓰레기로 버려야 하는 부분과 따로 분리해서 재활용 가능한 부분이 있는지 구분해서 설명할 것
-- 전부 일반쓰레기인 경우에만 아래 일반 규칙을 따를 것
+- 이 품목이 여러 소재로 구성됐다면, 일반쓰레기로 버려야 하는 부분과 따로 재활용 가능한 부분이 있는지 구분해서 설명할 것
 
 [작성 규칙]
 - 3~4문장으로 작성
-- 첫 문장: 복합재질이면 각 부분 배출 방법 설명 / 단일 재질이면 이 경로에서 왜 재활용이 안 되는지 설명
+- 첫 문장: 이 경로에서 왜 재활용이 안 되는지 설명
 - 둘째 문장: 다음에 올바르게 배출하는 팁
-- 셋째 문장: 아쉽지만 격려하는 마무리 (친근한 말투)
+- 셋째 문장: 격려하는 마무리 (친근한 말투)
 - 이모지 사용 금지, 마크다운 사용 금지, 한국어, 200자 이내"""
 
     try:
-        import google.generativeai as genai
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                max_output_tokens=300,
+        from google.genai import types
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                max_output_tokens=400,
                 temperature=0.7,
             ),
         )
         text = response.text.strip()
         text = re.sub(r"\*+", "", text)
         text = re.sub(r"#+\s*", "", text)
-        text = text.strip()
-        return text if text else fallback
+        return text.strip()
     except Exception as e:
         import streamlit as st
         st.warning(f"[IMPACT NOTE 오류] {type(e).__name__}: {e}")
-        return fallback
+        return ""
