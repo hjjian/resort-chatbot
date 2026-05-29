@@ -178,7 +178,7 @@ def generate_impact_note(
             model="gemini-2.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(
-                max_output_tokens=400,
+                max_output_tokens=800,
                 temperature=0.7,
             ),
         )
