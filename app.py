@@ -518,12 +518,13 @@ def run_search(query: str):
         if inferred and inferred.get("confidence") == "high":
             # 추론 성공 → 카테고리 기반 가상 item으로 질문 트리 진입
             category = inferred["category"]
+            ai_skip = inferred.get("skip_questions", [])
             matched = {
                 "id": f"ai_inferred:{category}",
                 "name": query,
                 "keywords": [],
                 "category": category,
-                "skip_questions": [],
+                "skip_questions": ai_skip,
                 "extra_questions": None,
                 "steps": [],
                 "note": "",
@@ -535,7 +536,7 @@ def run_search(query: str):
             if tree is None:
                 set_result_state(matched, ITEM_RESULT_TOKEN)
                 return
-            first_q = get_first_question(tree, [])
+            first_q = get_first_question(tree, ai_skip)
             if first_q is None:
                 set_result_state(matched, ITEM_RESULT_TOKEN)
                 return

@@ -50,10 +50,17 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
 
     category_list = "\n".join(f"- {c}" for c in categories)
     prompt = f"""당신은 한국 분리배출 전문가예요.
-사용자가 입력한 품목이 아래 카테고리 중 어디에 해당하는지 판단해주세요.
+사용자가 입력한 품목의 카테고리와, 기타 카테고리일 경우 건너뛸 질문을 판단해주세요.
 
 [카테고리 목록]
 {category_list}
+
+[기타 카테고리 질문 트리 (기타일 때만 참고)]
+Q1: 전용 수거함이나 지자체 별도 배출 안내가 있는 품목인가요?
+Q2: 크기가 커서 종량제봉투에 들어가지 않나요? (가구·가전·자전거 등)
+Q3: 천·섬유·가죽 재질인가요? (Q3_1: 아직 사용 가능한가요?)
+Q4: 나무·고무·도자기처럼 딱딱하고 분리하기 어려운 재질인가요?
+Q5: 주된 재질을 구분할 수 있나요?
 
 [사용자 입력]
 {user_input}
@@ -62,7 +69,12 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
 - 반드시 위 카테고리 중 하나만 선택
 - JSON만 반환, 다른 텍스트 없음
 - confidence: 확신하면 "high", 애매하면 "low"
-- 형식: {{"category": "카테고리명", "confidence": "high"}}"""
+- skip_questions: 기타 카테고리일 때, 이 품목에 불필요한 질문 ID 목록
+  예) 천가방 → 기타, skip: ["Q1","Q2","Q4","Q5"] (Q3만 받음)
+  예) 시계 → 기타, skip: ["Q1","Q2","Q3"] (Q4만 받음)
+  예) 나무젓가락 → 기타, skip: ["Q1","Q2","Q3"] (Q4만 받음)
+  기타가 아닌 카테고리면 skip_questions: []
+- 형식: {{"category": "카테고리명", "confidence": "high", "skip_questions": ["Q1","Q2"]}}"""
 
     try:
         from google.genai import types
@@ -70,7 +82,7 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
             model="gemini-2.5-flash-lite",
             contents=prompt,
             config=types.GenerateContentConfig(
-                max_output_tokens=200,
+                max_output_tokens=300,
                 temperature=0.1,
             ),
         )
@@ -78,9 +90,11 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
         text = re.sub(r"```json|```", "", text).strip()
         result = json.loads(text)
         if result.get("category") in categories:
+            if "skip_questions" not in result:
+                result["skip_questions"] = []
             return result
         return None
-    except Exception as e:
+    except Exception:
         return None
 
 
