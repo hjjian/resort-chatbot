@@ -1521,37 +1521,33 @@ def render_result():
             else:
                 co2_num = f"{carbon_factor:.2f}"
                 co2_unit = "kg CO₂"
-            carbon_highlight = f"""
-            <div style="display:flex;align-items:center;gap:12px;
-                        background:#F0F7F2;border-radius:12px;padding:12px 16px;margin-bottom:14px;">
-              <div style="font-size:28px;font-weight:900;color:#1B4D2E;
-                          font-family:'DM Sans',sans-serif;line-height:1;">{co2_num}</div>
-              <div>
-                <div style="font-size:12px;font-weight:700;color:#1B4D2E;">{co2_unit} 절감</div>
-                <div style="font-size:11px;color:#888;margin-top:1px;">이번 분리배출로 아낀 탄소</div>
-              </div>
-            </div>"""
+            carbon_highlight = (
+                f'<div style="display:flex;align-items:center;gap:12px;background:#F0F7F2;'
+                f'border-radius:12px;padding:12px 16px;margin-bottom:14px;">'
+                f'<div style="font-size:28px;font-weight:900;color:#1B4D2E;'
+                f'font-family:\'DM Sans\',sans-serif;line-height:1;">{co2_num}</div>'
+                f'<div><div style="font-size:12px;font-weight:700;color:#1B4D2E;">{co2_unit} 절감</div>'
+                f'<div style="font-size:11px;color:#888;margin-top:1px;">이번 분리배출로 아낀 탄소</div>'
+                f'</div></div>'
+            )
         else:
             carbon_highlight = ""
-        st.markdown(f"""
-        <div style="max-width:480px;margin:0 auto 20px;
-                    background:#fff;border-radius:16px;padding:20px 24px;">
-          <div style="font-size:11px;font-weight:700;color:#1B4D2E;
-                      letter-spacing:.8px;margin-bottom:12px;">🌿 IMPACT NOTE</div>
-          {carbon_highlight}
-          <div style="font-size:13px;color:#555;line-height:1.7;">{safe_note}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div style="max-width:480px;margin:0 auto 20px;background:#fff;border-radius:16px;padding:20px 24px;">'
+            f'<div style="font-size:11px;font-weight:700;color:#1B4D2E;letter-spacing:.8px;margin-bottom:12px;">🌿 IMPACT NOTE</div>'
+            f'{carbon_highlight}'
+            f'<div style="font-size:13px;color:#555;line-height:1.7;">{safe_note}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
     # 정확한 배출 요령
     if steps:
         rows_html = "".join(
-            f"""<div style="display:flex;align-items:flex-start;gap:10px;
-                            background:#F6FAF7;border-radius:10px;padding:10px 12px;
-                            margin-bottom:8px;">
-                  <div style="flex-shrink:0;font-size:14px;margin-top:1px;">✅</div>
-                  <div style="font-size:13px;color:#333;line-height:1.6;">{s}</div>
-                </div>"""
+            f'<div style="display:flex;align-items:flex-start;gap:10px;background:#F6FAF7;border-radius:10px;padding:10px 12px;margin-bottom:8px;">'
+            f'<div style="flex-shrink:0;font-size:14px;margin-top:1px;">✅</div>'
+            f'<div style="font-size:13px;color:#333;line-height:1.6;">{s}</div>'
+            f'</div>'
             for s in steps
         )
         st.markdown(f"""
