@@ -1158,7 +1158,7 @@ def render_category_select():
         재질을 선택하면 해당 분리배출 방법을 안내해드려요.
       </div>
       <div class="category-select-hint">
-        예) 천가방 → 기타 &nbsp;|&nbsp; 종이 쇼핑백 → 종이·박스 &nbsp;|&nbsp; 비닐봉투 → 비닐·봉지
+        예) 천가방·에코백 → 잘 모르겠어요 &nbsp;|&nbsp; 종이 쇼핑백 → 종이·박스 &nbsp;|&nbsp; 비닐봉투 → 비닐·봉지
       </div>
     </div>
     """, unsafe_allow_html=True)
