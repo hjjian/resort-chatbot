@@ -67,10 +67,10 @@ def infer_category(user_input: str, categories: list = None) -> dict | None:
     try:
         from google.genai import types
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-flash-lite",
             contents=prompt,
             config=types.GenerateContentConfig(
-                max_output_tokens=100,
+                max_output_tokens=200,
                 temperature=0.1,
             ),
         )
@@ -175,10 +175,10 @@ def generate_impact_note(
     try:
         from google.genai import types
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-flash-lite",
             contents=prompt,
             config=types.GenerateContentConfig(
-                max_output_tokens=800,
+                max_output_tokens=1500,
                 temperature=0.7,
             ),
         )
