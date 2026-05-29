@@ -1497,13 +1497,15 @@ def render_result():
     llm_succeeded = bool(impact_text and impact_text != fallback_text)
     update_last_llm_used(llm_succeeded)
 
-    if impact_text:
+    # impact_text 없으면 matched_item의 note로 대체
+    display_note = impact_text or (matched.get("note", "") if matched else "")
+    if display_note:
         st.markdown(f"""
         <div style="max-width:480px;margin:0 auto 20px;
                     background:#fff;border-radius:16px;padding:20px 24px;">
           <div style="font-size:11px;font-weight:700;color:#1B4D2E;
                       letter-spacing:.8px;margin-bottom:8px;">🌿 IMPACT NOTE</div>
-          <div style="font-size:13px;color:#555;line-height:1.7;">{impact_text}</div>
+          <div style="font-size:13px;color:#555;line-height:1.7;">{display_note}</div>
         </div>
         """, unsafe_allow_html=True)
 
