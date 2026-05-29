@@ -1069,6 +1069,20 @@ def render_home():
     """, unsafe_allow_html=True)
 
 
+# 재질 선택 옵션 (일상 언어 + 카테고리 매핑)
+MATERIAL_OPTIONS = [
+    {"label": "🟡  스티로폼",          "category": "스티로폼"},
+    {"label": "🫙  유리",              "category": "유리"},
+    {"label": "🔩  금속·철·캔",        "category": "금속·캔"},
+    {"label": "🛍️  비닐·봉지",         "category": "비닐"},
+    {"label": "🧴  플라스틱",          "category": "플라스틱"},
+    {"label": "📦  종이·박스",          "category": "종이·종이팩"},
+    {"label": "💊  의약품",            "category": "폐의약품"},
+    {"label": "📱  전자제품·완충재",    "category": "전자제품 및 완충재"},
+    {"label": "❓  잘 모르겠어요",      "category": "기타"},
+]
+
+
 def render_category_select():
     scroll_to_top("scroll_category_select")
 
@@ -1081,7 +1095,7 @@ def render_category_select():
         text-align: center;
     }
     .category-select-title {
-        font-size: 30px;
+        font-size: 28px;
         font-weight: 900;
         color: #1a1a1a;
         line-height: 1.3;
@@ -1092,6 +1106,14 @@ def render_category_select():
         margin: 12px auto 28px;
         font-size: 14px;
         color: #777;
+        line-height: 1.6;
+        word-break: keep-all;
+    }
+    .category-select-hint {
+        max-width: 480px;
+        margin: 0 auto 24px;
+        font-size: 12px;
+        color: #aaa;
         line-height: 1.6;
         word-break: keep-all;
     }
@@ -1114,7 +1136,7 @@ def render_category_select():
     }
     @media (max-width: 768px) {
         .category-select-wrap { margin-top: 32px; }
-        .category-select-title { font-size: 24px; }
+        .category-select-title { font-size: 22px; }
         .stButton > button {
             min-height: 52px !important;
             font-size: 13px !important;
@@ -1129,9 +1151,14 @@ def render_category_select():
     query = html.escape(st.session_state.get("query", ""))
     st.markdown(f"""
     <div class="category-select-wrap">
-      <div class="category-select-title">"{query}" 품목을 아직 찾지 못했어요</div>
+      <div class="category-select-title">
+        <span style="color:#1B4D2E;">"{query}"</span>의 재질이 무엇인가요?
+      </div>
       <div class="category-select-desc">
-        가장 가까운 분류를 선택하면 해당 카테고리의 공통 질문으로 이어서 안내해드릴게요.
+        재질을 선택하면 해당 분리배출 방법을 안내해드려요.
+      </div>
+      <div class="category-select-hint">
+        예) 천가방 → 기타 &nbsp;|&nbsp; 종이 쇼핑백 → 종이·박스 &nbsp;|&nbsp; 비닐봉투 → 비닐·봉지
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1139,12 +1166,12 @@ def render_category_select():
     _, grid, _ = st.columns([0.5, 5, 0.5])
     with grid:
         st.markdown('<div class="category-grid">', unsafe_allow_html=True)
-        for start in range(0, len(CATEGORY_OPTIONS), 3):
+        for start in range(0, len(MATERIAL_OPTIONS), 3):
             cols = st.columns(3, gap="small")
-            for col, category in zip(cols, CATEGORY_OPTIONS[start:start + 3]):
+            for col, mat in zip(cols, MATERIAL_OPTIONS[start:start + 3]):
                 with col:
-                    if st.button(category, key=f"manual_category_{category}", use_container_width=True):
-                        start_category_flow(category)
+                    if st.button(mat["label"], key=f"mat_{mat['category']}", use_container_width=True):
+                        start_category_flow(mat["category"])
                         st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
