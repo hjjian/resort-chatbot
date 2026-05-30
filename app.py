@@ -400,14 +400,40 @@ html, body,
   div[style*="padding:36px 32px 28px"] {
     padding: 24px 18px 20px !important;
   }
-  /* 결과 제목 크기 */
+  /* 결과 제목 — 20px 이상 보장 */
   div[style*="font-size:34px"] {
     font-size: 26px !important;
     line-height: 1.25 !important;
   }
+  /* 결과 카드 내 첫 번째 문장 (reason) */
+  div[style*="font-size:13px"][style*="color:#888"] {
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+  }
+  /* IMPACT NOTE 본문 */
+  div[style*="font-size:13px"][style*="color:#555"][style*="line-height:1.7"] {
+    font-size: 16px !important;
+    line-height: 1.75 !important;
+  }
   /* IMPACT NOTE 탄소 수치 */
   div[style*="font-size:28px"][style*="font-weight:900"] {
-    font-size: 22px !important;
+    font-size: 24px !important;
+  }
+  /* IMPACT NOTE 탄소 단위 라벨 */
+  div[style*="font-size:12px"][style*="font-weight:700"][style*="color:#1B4D2E"] {
+    font-size: 14px !important;
+  }
+  div[style*="font-size:11px"][style*="color:#888"][style*="margin-top:1px"] {
+    font-size: 13px !important;
+  }
+  /* 배출 요령 각 항목 */
+  div[style*="font-size:13px"][style*="color:#333"][style*="line-height:1.6"] {
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+  }
+  /* 배출 요령·IMPACT NOTE 섹션 라벨 */
+  div[style*="font-size:11px"][style*="font-weight:700"][style*="letter-spacing:.8px"] {
+    font-size: 13px !important;
   }
   /* 인증 카드 세로 배치 */
   div[style*="1a3a2a"][style*="display:flex"] {
@@ -431,11 +457,19 @@ html, body,
   .block-container {
     padding: 0 10px 28px !important;
   }
+  /* 결과 제목 최소 20px 보장 */
   div[style*="font-size:34px"] {
     font-size: 22px !important;
   }
   div[style*="font-size:35px"] {
     font-size: 22px !important;
+  }
+  /* 본문 최소 16px 유지 */
+  div[style*="font-size:13px"][style*="color:#555"][style*="line-height:1.7"] {
+    font-size: 16px !important;
+  }
+  div[style*="font-size:13px"][style*="color:#333"][style*="line-height:1.6"] {
+    font-size: 16px !important;
   }
   .stButton > button {
     font-size: 13px !important;
