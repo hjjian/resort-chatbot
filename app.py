@@ -312,14 +312,32 @@ st.markdown("""
 <style>
 
 /* ════════════════════════════════
-   1. 페이지 전환 fadeIn
+   1. 페이지 전환 — 플래시 억제 + 부드러운 진입
    ════════════════════════════════ */
+
+/* 재렌더링 순간 흰 배경 번쩍임 방지 */
+html, body,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMain"],
+.stApp, main {
+  background-color: #F0F4F0 !important;
+}
+
+/* GPU 가속 활성화 */
+.block-container {
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 자연스러운 커스텀 easing — 빠르게 진입 후 살짝 감속 */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .block-container {
-  animation: fadeInUp 0.3s ease both;
+  animation: fadeInUp 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ════════════════════════════════
