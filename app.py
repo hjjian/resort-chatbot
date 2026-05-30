@@ -307,6 +307,126 @@ div[data-testid="stAppViewBlockContainer"] { padding-top: 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
+# ── 추가 CSS: 애니메이션 · 버튼 개선 · 모바일 최적화 ──
+st.markdown("""
+<style>
+
+/* ════════════════════════════════
+   1. 페이지 전환 fadeIn
+   ════════════════════════════════ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.block-container {
+  animation: fadeInUp 0.3s ease both;
+}
+
+/* ════════════════════════════════
+   2. 버튼 스타일 개선
+   ════════════════════════════════ */
+
+/* 기본 초록 버튼 — shadow + 더 부드러운 transition */
+.stButton > button {
+  box-shadow: 0 2px 8px rgba(27,77,46,.15) !important;
+  transition: background .2s, transform .18s, box-shadow .2s !important;
+  letter-spacing: 0.1px !important;
+}
+.stButton > button:hover {
+  box-shadow: 0 6px 18px rgba(27,77,46,.25) !important;
+  transform: translateY(-2px) !important;
+}
+.stButton > button:active {
+  transform: translateY(0) scale(0.97) !important;
+  box-shadow: 0 1px 4px rgba(27,77,46,.12) !important;
+}
+.stButton > button:focus-visible {
+  outline: 3px solid rgba(27,77,46,.35) !important;
+  outline-offset: 3px !important;
+}
+
+/* YES 버튼 — 테두리 버튼 hover 강화 */
+[data-testid="column"]:first-child .stButton > button:hover {
+  box-shadow: 0 8px 24px rgba(27,77,46,.22) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* 하단 네비 버튼 (이전·처음으로·재질 직접 선택) — shadow 없이 */
+.nav-action-row .stButton > button {
+  box-shadow: none !important;
+  transition: background .18s, color .18s, border-color .18s !important;
+}
+.nav-action-row .stButton > button:hover {
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ════════════════════════════════
+   3. 모바일 반응형 최적화
+   ════════════════════════════════ */
+@media (max-width: 768px) {
+  /* 버튼 터치 타겟 최소 44px */
+  .stButton > button {
+    min-height: 44px !important;
+  }
+  /* 네비 버튼 폰트·패딩 축소 */
+  .nav-action-row .stButton > button {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+  }
+  /* 질문화면 상단 여백 축소 */
+  div[style*="padding:48px 0 32px"] {
+    padding: 24px 0 16px !important;
+  }
+  /* 결과 카드 패딩 축소 */
+  div[style*="padding:36px 32px 28px"] {
+    padding: 24px 18px 20px !important;
+  }
+  /* 결과 제목 크기 */
+  div[style*="font-size:34px"] {
+    font-size: 26px !important;
+    line-height: 1.25 !important;
+  }
+  /* IMPACT NOTE 탄소 수치 */
+  div[style*="font-size:28px"][style*="font-weight:900"] {
+    font-size: 22px !important;
+  }
+  /* 인증 카드 세로 배치 */
+  div[style*="1a3a2a"][style*="display:flex"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: flex-start !important;
+  }
+  /* 홈 타이틀 */
+  div[style*="font-size:35px"] {
+    font-size: 26px !important;
+    line-height: 1.35 !important;
+  }
+  /* 탄소 카드·사용자현황 세로 배치 */
+  div[style*="display:flex"][style*="gap:12px"][style*="align-items:stretch"] {
+    flex-direction: column !important;
+  }
+}
+
+/* 초소형 화면 (≤ 390px) */
+@media (max-width: 390px) {
+  .block-container {
+    padding: 0 10px 28px !important;
+  }
+  div[style*="font-size:34px"] {
+    font-size: 22px !important;
+  }
+  div[style*="font-size:35px"] {
+    font-size: 22px !important;
+  }
+  .stButton > button {
+    font-size: 13px !important;
+  }
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # ──────────────────────────────────────────────
 # 데이터 로드
 # ──────────────────────────────────────────────
