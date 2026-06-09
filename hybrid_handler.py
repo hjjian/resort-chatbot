@@ -14,6 +14,35 @@ hybrid_handler.py
 
 import re
 import json
+import time
+
+
+# ──────────────────────────────────────────────
+# 공통 헬퍼: Retry with exponential backoff
+# ──────────────────────────────────────────────
+def _call_with_retry(fn, max_retries: int = 3, base_delay: float = 1.0):
+    """
+    429 TooManyRequests / 503 ServiceUnavailable 발생 시
+    exponential backoff으로 재시도.
+    최대 max_retries회 재시도 후 마지막 예외를 그대로 raise.
+    """
+    for attempt in range(max_retries + 1):
+        try:
+            return fn()
+        except Exception as e:
+            err_str = str(e).lower()
+            is_retryable = (
+                "429" in err_str
+                or "resource_exhausted" in err_str
+                or "toomanyrequests" in err_str
+                or "503" in err_str
+                or "serviceunavailable" in err_str
+            )
+            if is_retryable and attempt < max_retries:
+                delay = base_delay * (2 ** attempt)  # 1s → 2s → 4s
+                time.sleep(delay)
+                continue
+            raise
 
 
 # ──────────────────────────────────────────────
@@ -78,14 +107,18 @@ Q5: 주된 재질을 구분할 수 있나요?
 
     try:
         from google.genai import types
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                max_output_tokens=300,
-                temperature=0.1,
-            ),
-        )
+
+        def _call():
+            return client.models.generate_content(
+                model="gemini-2.5-flash-lite",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    max_output_tokens=300,
+                    temperature=0.1,
+                ),
+            )
+
+        response = _call_with_retry(_call)
         text = response.text.strip()
         text = re.sub(r"```json|```", "", text).strip()
         result = json.loads(text)
@@ -188,14 +221,18 @@ def generate_impact_note(
 
     try:
         from google.genai import types
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                max_output_tokens=1500,
-                temperature=0.7,
-            ),
-        )
+
+        def _call():
+            return client.models.generate_content(
+                model="gemini-2.5-flash-lite",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    max_output_tokens=1500,
+                    temperature=0.7,
+                ),
+            )
+
+        response = _call_with_retry(_call)
         text = response.text.strip()
         text = re.sub(r"\*+", "", text)
         text = re.sub(r"#+\s*", "", text)
