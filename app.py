@@ -1663,23 +1663,27 @@ def render_result():
 
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
-    # IMPACT NOTE — Gemini Flash 동적 생성
+    # IMPACT NOTE — Gemini Flash 동적 생성 (세션 캐싱으로 재호출 방지)
     carbon_factors = load_carbon_factors()
     carbon_factor  = carbon_factors.get(matched.get("category", ""), 0.0)
     history        = st.session_state.get("question_history", [])
 
-    with st.spinner("환경 설명 불러오는 중..."):
-        impact_text = generate_impact_note(
-            matched_item     = matched,
-            result_text      = result_text,
-            question_history = history,
-            carbon_factor    = carbon_factor,
-        )
+    if "cached_impact_text" not in st.session_state:
+        with st.spinner("환경 설명 불러오는 중..."):
+            impact_text = generate_impact_note(
+                matched_item     = matched,
+                result_text      = result_text,
+                question_history = history,
+                carbon_factor    = carbon_factor,
+            )
+        st.session_state.cached_impact_text = impact_text
 
-    # AI 생성 성공 여부 판단 후 로그 업데이트
-    fallback_text = matched.get("note", "") if matched else ""
-    llm_succeeded = bool(impact_text and impact_text != fallback_text)
-    update_last_llm_used(llm_succeeded)
+        # AI 생성 성공 여부 판단 후 로그 업데이트 (최초 1회만)
+        fallback_text = matched.get("note", "") if matched else ""
+        llm_succeeded = bool(impact_text and impact_text != fallback_text)
+        update_last_llm_used(llm_succeeded)
+    else:
+        impact_text = st.session_state.cached_impact_text
 
     # impact_text 없으면 matched_item의 note로 대체
     display_note = impact_text or (matched.get("note", "") if matched else "")
