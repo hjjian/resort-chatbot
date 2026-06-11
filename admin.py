@@ -140,9 +140,9 @@ st.markdown('<div class="section-title">📊 요약</div>', unsafe_allow_html=Tr
 c1, c2, c3, c4 = st.columns(4)
 
 total = len(df)
-keyword_ok = int((df["matched_by"] != "llm").sum()) if has_data else 0
+keyword_ok = int((df["matched_by"].astype(str).str.strip() != "llm").sum()) if has_data and "matched_by" in df.columns else 0
 match_rate = f"{keyword_ok / total * 100:.1f}%" if total > 0 else "—"
-llm_count = int(df["llm_used"].sum()) if has_data and "llm_used" in df.columns else 0
+llm_count = int(df["llm_used"].fillna(False).map(lambda x: str(x).strip().lower() == "true").sum()) if has_data and "llm_used" in df.columns else 0
 top_cat = df["category"].value_counts().idxmax() if has_data and "category" in df.columns and not df["category"].isna().all() else "—"
 
 for col, label, value, sub in [
