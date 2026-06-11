@@ -937,6 +937,43 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <div style="background:linear-gradient(135deg,#2d5016 0%,#4a7c2f 50%,#6aab40 100%);
+                border-radius:16px;padding:14px 20px;margin-bottom:18px;
+                display:flex;align-items:center;justify-content:space-between;gap:12px;
+                box-shadow:0 2px 12px rgba(74,124,47,.25);
+                position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-18px;right:-18px;width:80px;height:80px;
+                  background:rgba(255,255,255,.06);border-radius:50%;pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-24px;right:40px;width:60px;height:60px;
+                  background:rgba(255,255,255,.04);border-radius:50%;pointer-events:none;"></div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:800;color:#fff;
+                    letter-spacing:-0.3px;line-height:1.35;word-break:keep-all;margin-bottom:4px;">
+          🎟️ 분리수거 인증하고 경품 받자!
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.82);line-height:1.5;word-break:keep-all;">
+          챗봇 사용 후 인증하면 추첨권 지급 &mdash; 많이 할수록 당첨 확률 UP
+        </div>
+        <div style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="background:rgba(255,255,255,.18);color:#fff;border-radius:999px;
+                       padding:3px 10px;font-size:11px;font-weight:600;white-space:nowrap;">
+            🎁 패브릭 컵슬리브
+          </span>
+          <span style="background:rgba(255,255,255,.18);color:#fff;border-radius:999px;
+                       padding:3px 10px;font-size:11px;font-weight:600;white-space:nowrap;">
+            🧼 친환경 페이스&amp;바디 비누 세트
+          </span>
+        </div>
+      </div>
+    </div>
+    <style>
+    @media (max-width: 480px) {
+      .event-banner-prizes { flex-direction: column !important; gap: 4px !important; }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     query = st.text_input(
         "검색", placeholder="어떤 품목을 버리시나요? (Enter로 검색)",
         label_visibility="collapsed", key="home_input",
