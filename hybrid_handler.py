@@ -237,7 +237,5 @@ def generate_impact_note(
         text = re.sub(r"\*+", "", text)
         text = re.sub(r"#+\s*", "", text)
         return text.strip()
-    except Exception as e:
-        import streamlit as st
-        st.warning(f"[IMPACT NOTE 오류] {type(e).__name__}: {e}")
+    except Exception:
         return ""
