@@ -974,7 +974,7 @@ def render_home():
     """, unsafe_allow_html=True)
     st.markdown('<div class="event-banner-btn">', unsafe_allow_html=True)
     if st.button(
-        "🎟️ 분리수거 인증하고 경품 받자!\n챗봇 사용 후 인증하면 추첨권 지급 — 많이 할수록 당첨 확률 UP  👉 자세히 보기",
+        "🎟️ 분리수거 인증하고 경품 받자!  👉 자세히 보기",
         use_container_width=True,
         key="event_banner_btn",
     ):
