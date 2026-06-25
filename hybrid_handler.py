@@ -54,9 +54,12 @@ def _get_client():
         import google.genai as genai
         api_key = st.secrets.get("GEMINI_API_KEY", "")
         if not api_key:
+            st.warning("[AI 오류] GEMINI_API_KEY가 secrets에 없거나 비어있음")
             return None
         return genai.Client(api_key=api_key)
-    except Exception:
+    except Exception as e:
+        import streamlit as st
+        st.warning(f"[AI 오류] 클라이언트 생성 실패: {type(e).__name__}: {e}")
         return None
 
 
@@ -238,6 +241,8 @@ def generate_impact_note(
         text = re.sub(r"#+\s*", "", text)
         return text.strip()
     except Exception as e:
+        import traceback
         import streamlit as st
         st.warning(f"[IMPACT NOTE 오류] {type(e).__name__}: {e}")
+        st.warning(f"[IMPACT NOTE 상세]\n{traceback.format_exc()}")
         return ""
