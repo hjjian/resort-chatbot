@@ -54,12 +54,9 @@ def _get_client():
         import google.genai as genai
         api_key = st.secrets.get("GEMINI_API_KEY", "")
         if not api_key:
-            st.warning("[AI 오류] GEMINI_API_KEY가 secrets에 없거나 비어있음")
             return None
         return genai.Client(api_key=api_key)
-    except Exception as e:
-        import streamlit as st
-        st.warning(f"[AI 오류] 클라이언트 생성 실패: {type(e).__name__}: {e}")
+    except Exception:
         return None
 
 
@@ -195,6 +192,7 @@ def generate_impact_note(
 - 이 품목이 여러 소재로 구성됐다면, 반드시 각 부분을 어떻게 분리해서 배출해야 하는지 구체적으로 설명할 것
 - 단일 재질이 확실한 경우에만 아래 일반 규칙을 따를 것
 - 복합재질 여부가 불확실하면 복합재질로 가정하고 설명할 것
+- 품목명에 뚜껑, 캡, 마개가 포함되어 있으면 해당 부분은 플라스틱으로 분리배출해야 함을 반드시 안내할 것
 
 [작성 규칙]
 - 3~4문장으로 작성
@@ -214,6 +212,7 @@ def generate_impact_note(
 
 [복합재질 처리 규칙 — 최우선 적용]
 - 이 품목이 여러 소재로 구성됐다면, 일반쓰레기로 버려야 하는 부분과 따로 재활용 가능한 부분이 있는지 구분해서 설명할 것
+- 품목명에 뚜껑, 캡, 마개가 포함되어 있으면 해당 부분은 플라스틱으로 분리배출해야 함을 반드시 안내할 것
 
 [작성 규칙]
 - 3~4문장으로 작성
@@ -241,8 +240,6 @@ def generate_impact_note(
         text = re.sub(r"#+\s*", "", text)
         return text.strip()
     except Exception as e:
-        import traceback
         import streamlit as st
         st.warning(f"[IMPACT NOTE 오류] {type(e).__name__}: {e}")
-        st.warning(f"[IMPACT NOTE 상세]\n{traceback.format_exc()}")
         return ""
