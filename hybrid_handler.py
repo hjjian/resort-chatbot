@@ -240,9 +240,13 @@ def generate_impact_note(
         text = re.sub(r"\*+", "", text)
         text = re.sub(r"#+\s*", "", text)
         return text.strip()
+<<<<<<< HEAD
     except Exception as e:
         import traceback
         import streamlit as st
         st.warning(f"[IMPACT NOTE 오류] {type(e).__name__}: {e}")
         st.warning(f"[IMPACT NOTE 상세]\n{traceback.format_exc()}")
+=======
+    except Exception:
+>>>>>>> d9cd7829e164007ca5d8f19268aa921891887066
         return ""
