@@ -865,7 +865,7 @@ def render_navbar():
 
 @st.dialog("🎟️ 경품 이벤트 안내", width="large")
 def show_event_poster():
-    st.image("resort_poster.png", use_container_width=True)
+    st.image("제목을 입력해주세요..png", use_container_width=True)
 
 
 def render_home():
